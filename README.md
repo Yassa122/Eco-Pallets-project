@@ -1,4 +1,4 @@
-# Project Title
+# How to start
 
 A brief description of what this project does and who it's for.
 
@@ -9,9 +9,9 @@ These instructions will help you get a copy of the project up and running on you
 ### Prerequisites
 
 Before you begin, ensure you have met the following requirements:
-- Git
-- Node.js (recommended version: [insert version])
-- npm or yarn (npm is distributed with Node.js - which means that when you download Node.js, you automatically get npm installed on your computer.)
+- Git vscode extension
+- Node.js (no need to install it it's already there from previous projects)
+- npm (no need to install it it's already there from previous projects)
 
 ### Installation
 
