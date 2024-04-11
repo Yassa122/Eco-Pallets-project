@@ -47,7 +47,7 @@ git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
 4. 1. **open the project from vscode and open a new terminal**
    
    3. ```bash
-        cd plastic--pallets
+        cd plastic-pallets
       ```
    4. ```bash
         npm install
