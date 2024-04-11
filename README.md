@@ -20,10 +20,8 @@ Follow these steps to get your development environment running:
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/your-username/your-project-name.git
-cd your-project-name
+git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
 ```
-or
 1. **copy the url of the repo**:
 ****
 3. 1. **open vscode**
