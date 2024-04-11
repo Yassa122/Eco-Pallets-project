@@ -24,7 +24,7 @@ git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
 ```
 1. **copy the url of the repo**:
 ****
-3. 1. **open vscode**
+2. 1. **open vscode**
    2. **open a new window**
    3. **windows **: cntrl + shift + p
       (** on mac**: cmd + shift + p)
