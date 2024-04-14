@@ -32,7 +32,25 @@ git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
    5. **choose clone from github and paste thr repo link**
    6. **choose a file directory to save the repo location on your pc**
 ****
-3. 1. **open the project from vscode and open a new terminal**
+3.1. **Make sure that Kafka is running**
+   
+   2. **Go to the kafka installation folder and open the bin file**
+   
+   3. **click on the path and type cmd**
+   
+   4. **this command will run the zookeeper.properties**
+
+   5. ```bash
+        .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+       ```
+   6. **repeat previous steps and open a new cmd**
+
+   7. **this command will run server.properties** 
+
+   8. ```bash
+       .\bin\windows\kafka-server-start.bat .\config\server.properties
+       ```
+4. 1. **open the project from vscode and open a new terminal**
    
    3. ```bash
         cd backend
@@ -44,15 +62,17 @@ git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
        npm run dev
        ```
 ****
-4. 1. **open the project from vscode and open a new terminal**
+5. 1. **open the project from vscode and open a new terminal**
    
-   3. ```bash
+   2. ```bash
         cd plastic-pallets
       ```
-   4. ```bash
+   3. ```bash
         npm install
       ```
-   5. ```bash
+   4. ```bash
        npm run dev
        ```
 
+      ****
+   
