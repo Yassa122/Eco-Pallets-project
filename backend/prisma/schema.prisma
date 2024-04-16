@@ -11,9 +11,10 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid()) @map("_id")
-  email        String    @unique
-  password     String
+  id       String   @id @default(cuid()) @map("_id")
+  email    String   @unique
+  password String
+  role     UserRole
   firstName    String?
   lastName     String?
   phoneNumber  String?
@@ -28,4 +29,12 @@ model User {
   updatedAt    DateTime  @updatedAt
 
   @@map("users")
+}
+
+enum UserRole {
+  user
+  USER
+  ADMIN
+  MANAGER
+  GUEST
 }
