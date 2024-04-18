@@ -7,9 +7,18 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PrismaModule } from "./auth/modules/prisma.module"; // Assumed correct path
 import { PrismaService } from "./services/prisma.service"; // Corrected the import path
 import { UserModule } from "./auth/modules/user.module"; // Assumed correct path
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: "schema.gql", // This continues to generate your schema file
+      sortSchema: true, // Optional: sorts the schema lexicographically
+      playground: true, // Optional: enables GraphQL Playground
+    }),
+
     PrismaModule,
     ConfigModule.forRoot({
       isGlobal: true, // Makes the configuration globally available
