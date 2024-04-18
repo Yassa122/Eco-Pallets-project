@@ -4,8 +4,9 @@ import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./Jwt.strategy";
 import { AuthService } from "./services/auth.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { PrismaModule } from "../prisma/prisma.moudle"; // Corrected typo from 'prisma.moudle' to 'prisma.module'
-import { PrismaService } from "services/PrismaService"; // This path might need correction depending on your folder structure
+import { PrismaModule } from "./auth/modules/prisma.module"; // Assumed correct path
+import { PrismaService } from "./services/prisma.service"; // Corrected the import path
+import { UserModule } from "./auth/modules/user.module"; // Assumed correct path
 
 @Module({
   imports: [
@@ -17,11 +18,12 @@ import { PrismaService } from "services/PrismaService"; // This path might need 
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_KEY"), // Ensure your .env has JWT_KEY
+        secret: configService.get<string>("JWT_SECRET"), // Ensure your .env has JWT_SECRET
         signOptions: { expiresIn: "3600s" }, // Token expires in 1 hour
-      }), 
+      }),
       inject: [ConfigService],
     }),
+    UserModule, // Assuming UserModule manages user-specific operations
   ],
   providers: [AuthService, JwtStrategy, PrismaService],
   exports: [AuthService],
