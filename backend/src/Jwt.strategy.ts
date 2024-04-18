@@ -11,10 +11,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: process.env.JWT_SECRET,
       ignoreExpiration: false,
     });
-    console.log("JWT Secret Key:", configService.get<string>("JWT_KEY")); // This will log the JWT secret key
+    console.log("JWT Secret Key:", configService.get<string>("JWT_SECRET")); // This will log the JWT secret key
   }
 
   async validate(payload: any) {
     return { userId: payload.sub, username: payload.email };
   }
 }
+export default JwtStrategy;
