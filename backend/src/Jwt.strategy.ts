@@ -6,13 +6,13 @@ import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
-      ignoreExpiration: false,
-    });
-    console.log("JWT Secret Key:", configService.get<string>("JWT_SECRET")); // This will log the JWT secret key
-  }
+  super({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: configService.get<string>('JWT_SECRET'),
+    ignoreExpiration: false,
+  });
+}
+
 
   async validate(payload: any) {
     return { userId: payload.sub, username: payload.email };
