@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "./PrismaService";
+import { PrismaService } from "./prisma.service";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -26,18 +26,22 @@ export class AuthService {
     };
   }
 
-  async register(userDto: any): Promise<any> {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(userDto.password, salt);
+  async register(userDto: any): Promise<boolean> {
+    try {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(userDto.password, salt);
 
-    const user = await this.prisma.user.create({
-      data: {
-        ...userDto,
-        password: hashedPassword,
-      },
-    });
-
-    return this.login(user);
+      await this.prisma.user.create({
+        data: {
+          ...userDto,
+          password: hashedPassword,
+        },
+      });
+      return true; // Return true if registration is successful
+    } catch (error) {
+      console.error("Registration failed:", error);
+      return false; // Return false if registration fails
+    }
   }
 }
 export default AuthService;
