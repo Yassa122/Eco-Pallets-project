@@ -9,32 +9,38 @@ import { PrismaService } from "./services/prisma.service"; // Corrected the impo
 import { UserModule } from "./auth/modules/user.module"; // Assumed correct path
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-
+import { join } from "path";
+import { AppResolver } from "resolvers/queries/app.resolver";
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: "schema.gql", // This continues to generate your schema file
+      autoSchemaFile: join(process.cwd(), "src/schema.gql"), // specifies where to generate and save the schema file
       sortSchema: true, // Optional: sorts the schema lexicographically
       playground: true, // Optional: enables GraphQL Playground
     }),
 
     PrismaModule,
     ConfigModule.forRoot({
-      isGlobal: true, // Makes the configuration globally available
+      isGlobal: true,
+      envFilePath: [".env"], // Make sure this points to the correct path where your .env file is located
     }),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_SECRET"), // Ensure your .env has JWT_SECRET
-        signOptions: { expiresIn: "3600s" }, // Token expires in 1 hour
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const jwtSecret = configService.get<string>("JWT_SECRET");
+        console.log("JWT Secret:", jwtSecret); // This should log the JWT secret value
+        return {
+          secret: jwtSecret,
+          signOptions: { expiresIn: "3600s" },
+        };
+      },
       inject: [ConfigService],
     }),
     UserModule, // Assuming UserModule manages user-specific operations
   ],
-  providers: [AuthService, JwtStrategy, PrismaService],
+  providers: [AuthService, JwtStrategy, PrismaService, AppResolver],
   exports: [AuthService],
 })
 export class AppModule {}
