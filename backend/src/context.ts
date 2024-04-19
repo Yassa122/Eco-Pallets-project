@@ -1,8 +1,8 @@
-import { YogaInitialContext } from 'graphql-yoga';
+import { YogaInitialContext } from "graphql-yoga";
 
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User } from "@prisma/client";
 
-import authenticateUser from './lib/user-auth';
+import authenticateUser from "./lib/user-auth";
 
 const prisma = new PrismaClient();
 
@@ -23,3 +23,4 @@ export const createContext = async (
     user,
   };
 };
+export default createContext;
