@@ -10,7 +10,7 @@ import { UserModule } from "./modules/user.module"; // Assumed correct path
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
-import { AppResolver } from "resolvers/queries/app.resolver";
+import { AppResolver } from "resolvers/mutations/resolvers/queries/app.resolver";
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -18,6 +18,8 @@ import { AppResolver } from "resolvers/queries/app.resolver";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"), // specifies where to generate and save the schema file
       sortSchema: true, // Optional: sorts the schema lexicographically
       playground: true, // Optional: enables GraphQL Playground
+      context: ({ req, res }) => ({ req, res }), // Pass the request and response objects to the GraphQL context
+
     }),
 
     PrismaModule,
