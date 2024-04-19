@@ -4,9 +4,9 @@ import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./Jwt.strategy";
 import { AuthService } from "./services/auth.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { PrismaModule } from "./auth/modules/prisma.module"; // Assumed correct path
+import { PrismaModule } from "./modules/prisma.module"; // Assumed correct path
 import { PrismaService } from "./services/prisma.service"; // Corrected the import path
-import { UserModule } from "./auth/modules/user.module"; // Assumed correct path
+import { UserModule } from "./modules/user.module"; // Assumed correct path
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
