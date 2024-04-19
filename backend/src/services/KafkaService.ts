@@ -12,7 +12,7 @@ export class KafkaService implements OnModuleDestroy {
   constructor() {
     this.connect();
   }
-
+ 
   private async connect() {
     await this.producer.connect();
   }

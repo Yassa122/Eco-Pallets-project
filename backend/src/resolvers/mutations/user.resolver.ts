@@ -1,11 +1,12 @@
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { AuthService } from "../../services/auth.service";
+import { RegisterInput } from "./dto/register.input";
 
 @Resolver()
 export class UserResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation(() => String)
+  @Mutation(() => String) // Keep as String if you return a token or adjust as needed
   async login(
     @Args("email") email: string,
     @Args("password") password: string,
@@ -17,12 +18,11 @@ export class UserResolver {
     return this.authService.login(user);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Boolean) // Changed return type to Boolean
   async register(
-    @Args("registerInput") registerInput: any,
-  ): Promise<{ access_token: string }> {
+    @Args("registerInput") registerInput: RegisterInput,
+  ): Promise<boolean> {
+    // Updated Promise type
     return this.authService.register(registerInput);
   }
-
-  // Additional mutations like resetPassword can be added here following a similar pattern
 }
