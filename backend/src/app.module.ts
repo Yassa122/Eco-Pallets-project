@@ -19,7 +19,6 @@ import { AppResolver } from "resolvers/mutations/resolvers/queries/app.resolver"
       sortSchema: true, // Optional: sorts the schema lexicographically
       playground: true, // Optional: enables GraphQL Playground
       context: ({ req, res }) => ({ req, res }), // Pass the request and response objects to the GraphQL context
-
     }),
 
     PrismaModule,
