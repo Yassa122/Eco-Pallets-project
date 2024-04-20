@@ -39,6 +39,6 @@
 //       message:
 //         "Signup successful! Please check your email to verify your account.",
 
-//     };
+//     };  
 //   }
 // }
