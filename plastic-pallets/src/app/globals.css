@@ -17,6 +17,10 @@
 }
 
 body {
+  ::selection {
+    color: #6dffde;
+    background: #0b1e21;
+  }
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
