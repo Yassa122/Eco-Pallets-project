@@ -18,8 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "paths": {
       "*": ["node_modules/*", "src/*"]
     }
   }
-}
+} 

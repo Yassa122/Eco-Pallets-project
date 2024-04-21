@@ -1,5 +1,9 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
 import { AuthService } from "../../services/auth.service";
+import { RegisterInput } from "./dto/register.input";
+import * as dotenv from "dotenv";
+
+dotenv.config(); // Make sure this is at the top to load environment variables early
 
 @Resolver()
 export class UserResolver {
@@ -9,20 +13,30 @@ export class UserResolver {
   async login(
     @Args("email") email: string,
     @Args("password") password: string,
-  ): Promise<{ access_token: string }> {
+    @Context() context: any,
+  ): Promise<string> {
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       throw new Error("Invalid credentials");
     }
-    return this.authService.login(user);
+    const { access_token } = await this.authService.login(user);
+
+    // Set cookie with the JWT token
+    context.res.cookie("jwt", access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000,
+    });
+
+    return access_token; // Directly return the string token
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Boolean) // Changed return type to Boolean
   async register(
-    @Args("registerInput") registerInput: any,
-  ): Promise<{ access_token: string }> {
+    @Args("registerInput") registerInput: RegisterInput,
+  ): Promise<boolean> {
+    // Updated Promise type
     return this.authService.register(registerInput);
   }
-
-  // Additional mutations like resetPassword can be added here following a similar pattern
 }
