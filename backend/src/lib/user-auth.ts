@@ -29,7 +29,7 @@ const getAccessToken = (req: Request): string => {
   const xAccessToken = req.headers.get('x-access-access');
   if (xAccessToken) return xAccessToken;
   throw new Error('No access token found');
-};
+};//////
 const authenticateUser = async (
   prisma: PrismaClient,
   req: Request,
