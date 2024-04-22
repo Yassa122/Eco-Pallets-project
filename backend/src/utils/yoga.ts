@@ -2,10 +2,8 @@
 import { createYoga } from "graphql-yoga";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { createContext } from "../context";
-import schema from "./schema";
 
 const yoga = createYoga({
-  schema,
   context: async (initialContext) => await createContext(initialContext),
   plugins: [
     useDisableIntrospection({
