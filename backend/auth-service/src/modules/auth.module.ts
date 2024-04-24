@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "../Jwt.strategy";
 import { AuthService } from "../services/auth.service";
-import { PrismaModule } from "./prisma.module";
+import { PrismaModule } from "../../prisma/prisma.module";
 import { JwtModule } from "@nestjs/jwt/dist/jwt.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { join } from "path";
