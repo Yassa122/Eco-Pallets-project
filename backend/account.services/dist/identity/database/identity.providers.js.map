@@ -1,0 +1,1 @@
+{"version":3,"file":"identity.providers.js","sourceRoot":"","sources":["../../../src/identity/database/identity.providers.ts"],"names":[],"mappings":";;;AACA,kEAA8D;AAEjD,QAAA,iBAAiB,GAAG;IAC/B;QACE,OAAO,EAAE,gBAAgB;QACzB,UAAU,EAAE,CAAC,UAAsB,EAAE,EAAE,CACrC,UAAU,CAAC,KAAK,CAAC,UAAU,EAAE,gCAAc,CAAC;QAC9C,MAAM,EAAE,CAAC,qBAAqB,CAAC;KAChC;CACF,CAAC"}
