@@ -15,7 +15,6 @@ export class IdentityController {
        return this.identityService.hello(req.data)
     }
 
-    @UseGuards(ExistsAuthGuard)
     @MessagePattern('register')
     async register(command){
         console.log(command);

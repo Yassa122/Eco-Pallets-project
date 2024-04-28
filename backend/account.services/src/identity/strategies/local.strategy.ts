@@ -17,9 +17,6 @@ async validate(username:string, password:string):Promise<any>{
     }
     const user = await this.identityService.validateUser(loginDto);
 
-    if(!user){
-        throw new UnauthorizedException();
-    }
     console.log('validated user:', user);
     return user;
 }

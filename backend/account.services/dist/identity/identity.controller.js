@@ -15,7 +15,6 @@ const identity_service_1 = require("./identity.service");
 const microservices_1 = require("@nestjs/microservices");
 const local_auth_guard_1 = require("./strategies/local-auth.guard");
 const jwt_auth_guard_1 = require("./strategies/jwt-auth.guard");
-const exists_auth_guard_1 = require("./strategies/exists-auth.guard");
 let IdentityController = class IdentityController {
     constructor(identityService) {
         this.identityService = identityService;
@@ -45,7 +44,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IdentityController.prototype, "hello", null);
 __decorate([
-    (0, common_1.UseGuards)(exists_auth_guard_1.ExistsAuthGuard),
     (0, microservices_1.MessagePattern)('register'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

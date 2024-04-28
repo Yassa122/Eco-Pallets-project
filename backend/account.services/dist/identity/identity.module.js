@@ -17,6 +17,7 @@ const jwt_1 = require("@nestjs/jwt");
 const local_strategy_1 = require("./strategies/local.strategy");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const exists_strategy_1 = require("./strategies/exists.strategy");
+const users_module_1 = require("./users/users.module");
 let IdentityModule = class IdentityModule {
 };
 exports.IdentityModule = IdentityModule;
@@ -27,10 +28,18 @@ exports.IdentityModule = IdentityModule = __decorate([
             jwt_1.JwtModule.register({
                 secret: 'secretKey_YoucANWritewhateveryoulike',
                 signOptions: { expiresIn: '10000s' },
-            })
+            }),
+            users_module_1.UsersModule,
         ],
         controllers: [identity_controller_1.IdentityController],
-        providers: [identity_service_1.IdentityService, ...identity_providers_1.identityProviders, ...database_providers_1.databaseProviders, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy, exists_strategy_1.ExistsStrategy],
+        providers: [
+            identity_service_1.IdentityService,
+            ...identity_providers_1.identityProviders,
+            ...database_providers_1.databaseProviders,
+            local_strategy_1.LocalStrategy,
+            jwt_strategy_1.JwtStrategy,
+            exists_strategy_1.ExistsStrategy,
+        ],
         exports: [...database_providers_1.databaseProviders],
     })
 ], IdentityModule);

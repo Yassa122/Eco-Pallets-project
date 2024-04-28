@@ -25,9 +25,6 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
             username, password
         };
         const user = await this.identityService.validateUser(loginDto);
-        if (!user) {
-            throw new common_1.UnauthorizedException();
-        }
         console.log('validated user:', user);
         return user;
     }

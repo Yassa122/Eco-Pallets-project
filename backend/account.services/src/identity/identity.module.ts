@@ -8,17 +8,27 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ExistsStrategy } from './strategies/exists.strategy';
-
+import { UsersModule } from './users/users.module';
+import { User } from './interfaces/user';
 @Module({
-  imports:[
+  imports: [
     PassportModule,
     JwtModule.register({
-      secret:'secretKey_YoucANWritewhateveryoulike',
-      signOptions:{expiresIn:'10000s'},
-    })
+      secret: 'secretKey_YoucANWritewhateveryoulike',
+      signOptions: { expiresIn: '10000s' },
+    }),
+    UsersModule,
+    
   ],
   controllers: [IdentityController],
-  providers: [IdentityService,...identityProviders ,...databaseProviders, LocalStrategy,JwtStrategy,ExistsStrategy],
+  providers: [
+    IdentityService,
+    ...identityProviders,
+    ...databaseProviders,
+    LocalStrategy,
+    JwtStrategy,
+    ExistsStrategy,
+  ],
   exports: [...databaseProviders],
 })
 export class IdentityModule {}
