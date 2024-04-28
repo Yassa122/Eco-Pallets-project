@@ -1,13 +1,13 @@
-export class CreateIdentityDto{
-    readonly name: String;
-    readonly username: String;
-    readonly password: String; 
+export class CreateIdentityDto {
+  readonly name: String;
+  readonly username: String;
+  readonly password: String;
 
-    toString(){
-        return JSON.stringify({
-            name:this.name,
-            username:this.username,
-            password:this.password}
-        );
-    }
+  toString() {
+    return JSON.stringify({
+      name: this.name,
+      username: this.username,
+      password: this.password,
+    });
+  }
 }
