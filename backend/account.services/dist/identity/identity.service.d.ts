@@ -1,26 +1,41 @@
 /// <reference types="mongoose/types/pipelinestage" />
 import { Model } from 'mongoose';
-import { Identity } from './interfaces/identity';
+import { User } from './interfaces/user';
 import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './users/schemas/user.schema';
 export declare class IdentityService {
-    private identityModel;
+    private userModel;
     private jwtService;
-    constructor(identityModel: Model<Identity>, jwtService: JwtService);
+    constructor(userModel: Model<User>, jwtService: JwtService);
     hello(message: any): any;
     register(createIdentityDto: CreateIdentityDto): Promise<User>;
     validateUser(loginDto: LoginDto): Promise<{
-        name: String;
-        username: String;
-        password: String;
+        firstName: string;
+        lastName: string;
+        email: string;
+        username: string;
+        password: string;
+        phoneNumber?: string;
+        company?: string;
+        address?: string;
+        isEmailVerified?: boolean;
+        passwordResetToken?: string;
+        passwordResetExpires?: Date;
         id: any;
     }>;
     getUserbyUsername(username: string): Promise<{
-        name: String;
-        username: String;
-        password: String;
+        firstName: string;
+        lastName: string;
+        email: string;
+        username: string;
+        password: string;
+        phoneNumber?: string;
+        company?: string;
+        address?: string;
+        isEmailVerified?: boolean;
+        passwordResetToken?: string;
+        passwordResetExpires?: Date;
         id: any;
     }>;
     login(user: any): Promise<{

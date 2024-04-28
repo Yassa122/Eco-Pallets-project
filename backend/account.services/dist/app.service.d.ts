@@ -1,12 +1,10 @@
 /// <reference types="mongoose/types/pipelinestage" />
 import { Model } from 'mongoose';
-import { Identity } from '../src/identity/interfaces/identity';
+import { User } from './identity/interfaces/user';
 export declare class AppService {
     private userModel;
-    constructor(userModel: Model<Identity>);
-    register(command: any): Promise<Identity & {
-        _id: any;
-    }>;
+    constructor(userModel: Model<User>);
+    register(command: any): Promise<User>;
     login(command: any): Promise<{
         status: string;
         message: string;
