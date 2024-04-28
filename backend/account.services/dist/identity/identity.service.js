@@ -16,6 +16,8 @@ exports.IdentityService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("mongoose");
 const jwt_1 = require("@nestjs/jwt");
+const bcrypt = require("bcrypt");
+const userAlreadyExists_exception_1 = require("./exceptions/userAlreadyExists.exception");
 let IdentityService = class IdentityService {
     constructor(identityModel, jwtService) {
         this.identityModel = identityModel;
@@ -24,11 +26,19 @@ let IdentityService = class IdentityService {
     hello(message) {
         return message;
     }
-    async register(CreateIdentityDto) {
-        const createIdentity = new this.identityModel(CreateIdentityDto);
-        let saveResult = await createIdentity.save();
-        console.log(saveResult);
-        return saveResult;
+    async register(createIdentityDto) {
+        const existingUser = await this.identityModel.findOne({ username: createIdentityDto.username }).exec();
+        if (existingUser) {
+            throw new userAlreadyExists_exception_1.UserAlreadyExistsException();
+        }
+        const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
+        const newUser = new this.identityModel({
+            name: createIdentityDto.name,
+            username: createIdentityDto.username,
+            password: hashedPassword,
+        });
+        const savedUser = await newUser.save();
+        return savedUser;
     }
     async validateUser(loginDto) {
         let loginResult = await this.identityModel.findOne({

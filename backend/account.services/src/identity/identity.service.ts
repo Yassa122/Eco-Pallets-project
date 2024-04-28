@@ -5,6 +5,9 @@ import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokenDto } from './dto/token.dto';
+import * as bcrypt from 'bcrypt';
+import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
+import { User } from './users/schemas/user.schema';
 
 @Injectable()
 export class IdentityService {
@@ -18,12 +21,29 @@ export class IdentityService {
         return message;
     }
 
-    async register(CreateIdentityDto:CreateIdentityDto){
-        const createIdentity= new this.identityModel(CreateIdentityDto)
-        let saveResult = await createIdentity.save();
-        console.log(saveResult)
-        return saveResult;
+   
+  async register(createIdentityDto: CreateIdentityDto): Promise<User> {
+    // Check if the username already exists
+    const existingUser = await this.identityModel.findOne({ username: createIdentityDto.username }).exec();
+    if (existingUser) {
+        throw new UserAlreadyExistsException(); // Remove the argument
     }
+
+    // Hash the password using bcrypt with a salt round of 10
+    const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
+
+    const newUser = new this.identityModel({
+        name: createIdentityDto.name as string, // Update the type to 'string'
+        username: createIdentityDto.username,
+        password: hashedPassword, // Store the hashed password
+    });
+    const savedUser = await newUser.save();
+
+    // Cast the result to 'User' after ensuring it aligns with the 'User' type
+    return newUser as User;
+  }
+
+    
 
     async validateUser(loginDto:LoginDto){
         let loginResult =await this.identityModel.findOne({

@@ -12,6 +12,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const identity_module_1 = require("./identity/identity.module");
 const mongoose_1 = require("@nestjs/mongoose");
+const users_module_1 = require("./identity/users/users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -20,6 +21,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
             identity_module_1.IdentityModule,
+            users_module_1.UsersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

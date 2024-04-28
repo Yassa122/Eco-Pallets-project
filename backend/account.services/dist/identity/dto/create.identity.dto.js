@@ -6,7 +6,7 @@ class CreateIdentityDto {
         return JSON.stringify({
             name: this.name,
             username: this.username,
-            password: this.password
+            password: this.password,
         });
     }
 }
