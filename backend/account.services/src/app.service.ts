@@ -1,21 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Identity } from '../src/identity/interfaces/identity'; // Define this interface based on your schema
-
+import { User } from './identity/interfaces/user'; // Define this interface based on your schema
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AppService {
-  constructor(@InjectModel('User') private userModel: Model<Identity>) {}
+  constructor(@InjectModel('User') private userModel: Model<User>) {}
 
-  public async register(command: any) {
+  async register(command: any): Promise<User> {
+    // Hash the password using bcrypt with a salt round of 10
+    const hashedPassword = await bcrypt.hash(command.password, 10);
+
+    // Create a new user instance with all required fields from the schema
     const newUser = new this.userModel({
-      name: command.name,
+      firstName: command.firstName,
+      lastName: command.lastName,
+      email: command.email,
       username: command.username,
-      password: command.password, // Consider hashing the password before storing
+      password: hashedPassword, // Store the hashed password
+      phoneNumber: command.phoneNumber,
+      company: command.company,
+      address: command.address,
+      // Additional fields can be added here if needed
     });
+
+    // Save the new user to the database
     return newUser.save();
   }
-
   public async login(command: any) {
     // Implement login logic, typically finding a user and verifying the password
     const user = await this.userModel.findOne({ username: command.username });
