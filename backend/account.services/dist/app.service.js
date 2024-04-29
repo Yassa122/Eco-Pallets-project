@@ -16,24 +16,14 @@ exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const bcrypt = require("bcrypt");
+const identity_service_1 = require("./identity/identity.service");
 let AppService = class AppService {
-    constructor(userModel) {
+    constructor(userModel, identityService) {
         this.userModel = userModel;
+        this.identityService = identityService;
     }
-    async register(command) {
-        const hashedPassword = await bcrypt.hash(command.password, 10);
-        const newUser = new this.userModel({
-            firstName: command.firstName,
-            lastName: command.lastName,
-            email: command.email,
-            username: command.username,
-            password: hashedPassword,
-            phoneNumber: command.phoneNumber,
-            company: command.company,
-            address: command.address,
-        });
-        return newUser.save();
+    async register(createIdentityDto) {
+        return this.identityService.register(createIdentityDto);
     }
     async login(command) {
         const user = await this.userModel.findOne({ username: command.username });
@@ -50,6 +40,7 @@ exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        identity_service_1.IdentityService])
 ], AppService);
 //# sourceMappingURL=app.service.js.map
