@@ -1,3 +1,6 @@
+//app.controller.ts is used to import all the logic from the app.service.ts file 
+// you need to define each method type eg.. get, post, put, delete
+
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 
