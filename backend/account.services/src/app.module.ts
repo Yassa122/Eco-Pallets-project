@@ -6,11 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './identity/users/users.module';
 import { IdentityService } from './identity/identity.service';
 import { JwtService } from '@nestjs/jwt';
+import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
     IdentityModule,
     UsersModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, IdentityService, JwtService],

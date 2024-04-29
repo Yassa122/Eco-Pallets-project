@@ -3,7 +3,7 @@
 
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-
+import { EmailService } from './email/email.service';
 @Controller('account')
 export class AppController {
   constructor(
@@ -23,5 +23,9 @@ export class AppController {
   @Post('sign-in')
   async login(@Body() reqBody: any) {
     return this.accountServices.login(reqBody);
+  }
+  @Post('send-email')
+  async sendEmail(@Body() reqBody: any) {
+    return this.accountServices.sendEmail(reqBody);
   }
 }

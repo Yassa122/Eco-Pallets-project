@@ -32,6 +32,8 @@
     "class-validator": "^0.14.1",
     "kafkajs": "^2.2.4",
     "mongoose": "^6.2.2",
+    "nodemailer": "^6.9.13",
+    "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

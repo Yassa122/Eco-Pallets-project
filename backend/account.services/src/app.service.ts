@@ -8,7 +8,7 @@ import { User } from './identity/interfaces/user'; // Define this interface base
 import * as bcrypt from 'bcrypt';
 import { CreateIdentityDto } from './identity/dto/create.identity.dto';
 import { IdentityService } from './identity/identity.service';
-
+import { EmailService } from './email/email.service';
 @Injectable()
 export class AppService {
   constructor(
@@ -32,4 +32,8 @@ export class AppService {
   public hello() {
     return 'Hello from API';
   }
+  public async sendEmail(reqBody: any) {
+    return 'Email sent';
+  }
+
 }
