@@ -1,31 +1,23 @@
+//the app.service.ts is used to define the logic for implementing the method 
+//you will implement the methods here 
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './identity/interfaces/user'; // Define this interface based on your schema
 import * as bcrypt from 'bcrypt';
+import { CreateIdentityDto } from './identity/dto/create.identity.dto';
+import { IdentityService } from './identity/identity.service';
+
 @Injectable()
 export class AppService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+    private identityService: IdentityService,
+  ) {}
 
-  async register(command: any): Promise<User> {
-    // Hash the password using bcrypt with a salt round of 10
-    const hashedPassword = await bcrypt.hash(command.password, 10);
-
-    // Create a new user instance with all required fields from the schema
-    const newUser = new this.userModel({
-      firstName: command.firstName,
-      lastName: command.lastName,
-      email: command.email,
-      username: command.username,
-      password: hashedPassword, // Store the hashed password
-      phoneNumber: command.phoneNumber,
-      company: command.company,
-      address: command.address,
-      // Additional fields can be added here if needed
-    });
-
-    // Save the new user to the database
-    return newUser.save();
+  async register(createIdentityDto: CreateIdentityDto): Promise<any> {
+    return this.identityService.register(createIdentityDto);
   }
   public async login(command: any) {
     // Implement login logic, typically finding a user and verifying the password
