@@ -15,7 +15,7 @@ export class ProfileService {
     return {
       name: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      address: user.address,
+      address: user.shippingAddresses,
       phoneNumber: user.phoneNumber,
     };
   }

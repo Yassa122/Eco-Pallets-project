@@ -1,13 +1,12 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProfileService } from './profile/profile.service';
 import { ProfileModule } from './profile/profile.module';
-import { ProfileController } from './profile/profile.controller';
 
 @Module({
-  imports: [ProfileModule],
-  controllers: [AppController],
-  providers: [AppService, ProfileService],
+  imports: [ProfileModule],  // Import ProfileModule here
+  controllers: [AppController], // Only AppController should be here if it's for general app use
+  providers: [AppService], // Only AppService should be here if it's for general app use
 })
 export class AppModule {}
