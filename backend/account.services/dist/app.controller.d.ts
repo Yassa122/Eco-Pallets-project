@@ -4,8 +4,5 @@ export declare class AppController {
     constructor(accountServices: AppService);
     getHello(): any;
     register(reqBody: any): Promise<any>;
-    login(reqBody: any): Promise<{
-        status: string;
-        message: string;
-    }>;
+    login(reqBody: any): Promise<any>;
 }
