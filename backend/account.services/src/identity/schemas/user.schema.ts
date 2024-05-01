@@ -1,6 +1,23 @@
-import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
+// Define the Shipping Address Schema
+const ShippingAddressSchema = new Schema({
+  label: { type: String, required: true },
+  address: { type: String, required: true },
+  city: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  country: { type: String, required: true }
+});
+
+export interface ShippingAddress {
+  label: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+// Define the User Schema
 export const UserSchema = new Schema(
   {
     firstName: { type: String, required: true },
@@ -10,7 +27,7 @@ export const UserSchema = new Schema(
     password: { type: String, required: true },
     phoneNumber: { type: String, required: false },
     company: { type: String, required: false },
-    address: { type: String, required: false },
+    shippingAddresses: [ShippingAddressSchema],  // Include the Shipping Address Schema here
     isEmailVerified: { type: Boolean, default: false },
     passwordResetToken: { type: String, required: false },
     passwordResetExpires: { type: Date, required: false },
@@ -28,9 +45,9 @@ export interface User extends Document {
   password: string;
   phoneNumber?: string;
   company?: string;
-  address?: string;
+  shippingAddresses: ShippingAddress[];
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
-  // Include other fields
 }
+

@@ -1,6 +1,17 @@
 {
   "version": "0.2.0",
   "configurations": [
+<<<<<<< HEAD
+=======
+    
+    {
+      "command": "npm start",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+
+>>>>>>> origin/main
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "lldb",

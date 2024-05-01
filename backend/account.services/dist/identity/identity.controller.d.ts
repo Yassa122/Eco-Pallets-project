@@ -4,9 +4,6 @@ export declare class IdentityController {
     constructor(identityService: IdentityService);
     hello(req: any): any;
     register(command: any): Promise<import("./interfaces/user").User>;
-    login(command: any): Promise<{
-        access_token: string;
-        expires_in: any;
-    }>;
+    login(command: any): Promise<any>;
     me(command: any): Promise<any>;
 }
