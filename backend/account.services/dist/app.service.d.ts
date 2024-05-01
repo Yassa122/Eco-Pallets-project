@@ -9,14 +9,6 @@ export declare class AppService {
     private identityService;
     constructor(userModel: Model<User>, identityService: IdentityService);
     register(createIdentityDto: CreateIdentityDto): Promise<any>;
-    login(loginDto: LoginDto): Promise<{
-        status: string;
-        message: string;
-        user: any;
-    } | {
-        status: string;
-        message: string;
-        user?: undefined;
-    }>;
+    login(loginDto: LoginDto): Promise<any>;
     hello(): string;
 }
