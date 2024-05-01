@@ -28,6 +28,9 @@ let AppController = class AppController {
     async login(reqBody) {
         return this.accountServices.login(reqBody);
     }
+    async sendEmail(reqBody) {
+        return this.accountServices.sendEmail(reqBody);
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -50,6 +53,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('send-email'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "sendEmail", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)('account'),
     __metadata("design:paramtypes", [app_service_1.AppService])

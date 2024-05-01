@@ -13,4 +13,5 @@ export declare class AppService {
         message: string;
     }>;
     hello(): string;
+    sendEmail(reqBody: any): Promise<string>;
 }

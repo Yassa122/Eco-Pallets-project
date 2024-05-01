@@ -8,4 +8,5 @@ export declare class AppController {
         status: string;
         message: string;
     }>;
+    sendEmail(reqBody: any): Promise<string>;
 }

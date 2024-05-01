@@ -8,12 +8,12 @@ export class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.example.com',
+      host: 'smtp.office365.com',
       port: 587,
       secure: false, // false for TLS, true for SSL
       auth: {
-        user: 'plasticpallets-software@outlook.com',
-        pass: 'Plasticpallets!1'
+        user: 'Plasticpallets-software@outlook.com',
+        pass: 'Plastic.pallets'
       }
     });
   }

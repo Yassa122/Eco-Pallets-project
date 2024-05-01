@@ -35,6 +35,9 @@ let AppService = class AppService {
     hello() {
         return 'Hello from API';
     }
+    async sendEmail(reqBody) {
+        return 'Email sent';
+    }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
