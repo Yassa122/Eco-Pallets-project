@@ -1,4 +1,4 @@
-//app.controller.ts is used to import all the logic from the app.service.ts file 
+//app.controller.ts is used to import all the logic from the app.service.ts file
 // you need to define each method type eg.. get, post, put, delete
 
 import { Controller, Post, Get, Body } from '@nestjs/common';
@@ -6,9 +6,7 @@ import { AppService } from './app.service';
 
 @Controller('account')
 export class AppController {
-  constructor(
-    private accountServices: AppService,
-  ) {}
+  constructor(private accountServices: AppService) {}
 
   @Get('hello')
   getHello(): any {
