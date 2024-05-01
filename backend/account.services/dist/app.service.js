@@ -25,10 +25,10 @@ let AppService = class AppService {
     async register(createIdentityDto) {
         return this.identityService.register(createIdentityDto);
     }
-    async login(command) {
-        const user = await this.userModel.findOne({ username: command.username });
-        if (user && user.password === command.password) {
-            return { status: 'success', message: 'User logged in' };
+    async login(loginDto) {
+        const user = await this.identityService.validateUser(loginDto);
+        if (user) {
+            return { status: 'success', message: 'User logged in', user };
         }
         return { status: 'failure', message: 'Invalid credentials' };
     }

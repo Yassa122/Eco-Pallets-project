@@ -57,16 +57,23 @@ let IdentityService = class IdentityService {
         return savedUser;
     }
     async validateUser(loginDto) {
-        let loginResult = await this.userModel.findOne({
-            username: loginDto.username,
-            password: loginDto.password,
-        });
-        let jsonData = loginResult.toObject();
-        let { __v, _id, ...userData } = jsonData;
-        return {
-            id: jsonData._id,
-            ...userData,
-        };
+        let user = await this.userModel.findOne({ username: loginDto.username });
+        console.log('Fetched user:', user);
+        if (!user) {
+            console.log('No user found with this username:', loginDto.username);
+            return null;
+        }
+        const passwordMatches = await bcrypt.compare(loginDto.password, user.password);
+        console.log('Password matches:', passwordMatches);
+        if (passwordMatches) {
+            let userData = user.toObject();
+            let { __v, _id, password, ...userDetails } = userData;
+            return {
+                id: userData._id,
+                ...userDetails,
+            };
+        }
+        return null;
     }
     async getUserbyUsername(username) {
         let loginResult = await this.userModel.findOne({
@@ -82,18 +89,25 @@ let IdentityService = class IdentityService {
             ...userData,
         };
     }
-    async login(user) {
-        let payload = {
-            id: user._id,
-            name: user.name,
-            username: user.username,
-        };
-        var token = this.jwtService.sign(payload);
-        var tokenvalue = this.jwtService.decode(token);
-        return {
-            access_token: this.jwtService.sign(payload),
-            expires_in: tokenvalue.exp,
-        };
+    async login(loginDto) {
+        const user = await this.userModel.findOne({ username: loginDto.username });
+        if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+            const payload = {
+                id: user._id,
+                name: user.firstName + ' ' + user.lastName,
+                username: user.username,
+            };
+            return {
+                status: 'success',
+                message: 'User logged in successfully',
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    name: user.firstName + ' ' + user.lastName,
+                },
+            };
+        }
+        return { status: 'failure', message: 'Invalid credentials' };
     }
 };
 exports.IdentityService = IdentityService;

@@ -7,5 +7,10 @@ export declare class AppController {
     login(reqBody: any): Promise<{
         status: string;
         message: string;
+        user: any;
+    } | {
+        status: string;
+        message: string;
+        user?: undefined;
     }>;
 }
