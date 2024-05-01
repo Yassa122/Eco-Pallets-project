@@ -15,6 +15,7 @@ export class AppService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
     private identityService: IdentityService,
+    private jwtService:JwtService
   ) {}
 
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {

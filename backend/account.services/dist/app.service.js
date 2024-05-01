@@ -18,10 +18,12 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const bcrypt = require("bcrypt");
 const identity_service_1 = require("./identity/identity.service");
+const jwt_1 = require("@nestjs/jwt");
 let AppService = class AppService {
-    constructor(userModel, identityService) {
+    constructor(userModel, identityService, jwtService) {
         this.userModel = userModel;
         this.identityService = identityService;
+        this.jwtService = jwtService;
     }
     async register(createIdentityDto) {
         return this.identityService.register(createIdentityDto);
@@ -60,6 +62,7 @@ exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        identity_service_1.IdentityService])
+        identity_service_1.IdentityService,
+        jwt_1.JwtService])
 ], AppService);
 //# sourceMappingURL=app.service.js.map
