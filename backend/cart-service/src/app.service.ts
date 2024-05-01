@@ -15,5 +15,4 @@ export class AppService {
     const createdCart = new this.cartModel(createCartDto);
     return createdCart.save();
   }
-  asadsasd
 }

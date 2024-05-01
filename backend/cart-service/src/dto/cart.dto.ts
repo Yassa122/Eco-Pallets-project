@@ -1,17 +1,19 @@
+import { CartItemDto } from "./cartItem.dto";
+
 export class CreateCartDto{
-    readonly cartId: String;
-    readonly productId: String;
-    readonly quantity: Number; 
-    readonly price: Number;
-    readonly totalPrice?: Number;
+    readonly userId: String;
+    readonly sessionId: String;
+    readonly createdAt?: Date; 
+    readonly updatedAt?: Date;
+    readonly cartItems: CartItemDto[];
 
     toString(){
         return JSON.stringify({
-            cartId:this.cartId,
-            productId:this.productId,
-            quantity:this.quantity,
-            price:this.price,
-            totalPrice:this.totalPrice
+            userId:this.userId,
+            sessionId:this.sessionId,
+            createdAt:this.createdAt,
+            updatedAt:this.updatedAt,
+            cartItems:this.cartItems
         }
         );
     }
