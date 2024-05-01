@@ -16,19 +16,40 @@ exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const bcrypt = require("bcrypt");
 const identity_service_1 = require("./identity/identity.service");
+const jwt_1 = require("@nestjs/jwt");
 let AppService = class AppService {
-    constructor(userModel, identityService) {
+    constructor(userModel, identityService, jwtService) {
         this.userModel = userModel;
         this.identityService = identityService;
+        this.jwtService = jwtService;
     }
     async register(createIdentityDto) {
         return this.identityService.register(createIdentityDto);
     }
-    async login(command) {
-        const user = await this.userModel.findOne({ username: command.username });
-        if (user && user.password === command.password) {
-            return { status: 'success', message: 'User logged in' };
+    async login(loginDto) {
+        const user = await this.userModel.findOne({ username: loginDto.username });
+        if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+            const payload = {
+                id: user._id,
+                name: user.firstName + ' ' + user.lastName,
+                username: user.username,
+            };
+            const accessToken = this.jwtService.sign(payload, {
+                secret: process.env.JWT_SECRET || 'your_secret_key',
+                expiresIn: '1h',
+            });
+            return {
+                status: 'success',
+                message: 'User logged in successfully',
+                access_token: accessToken,
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    name: user.firstName + ' ' + user.lastName,
+                },
+            };
         }
         return { status: 'failure', message: 'Invalid credentials' };
     }
@@ -41,6 +62,7 @@ exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        identity_service_1.IdentityService])
+        identity_service_1.IdentityService,
+        jwt_1.JwtService])
 ], AppService);
 //# sourceMappingURL=app.service.js.map

@@ -10,20 +10,7 @@ export declare class IdentityService {
     constructor(userModel: Model<User>, jwtService: JwtService);
     hello(message: any): any;
     register(createIdentityDto: CreateIdentityDto): Promise<User>;
-    validateUser(loginDto: LoginDto): Promise<{
-        firstName: string;
-        lastName: string;
-        email: string;
-        username: string;
-        password: string;
-        phoneNumber?: string;
-        company?: string;
-        address?: string;
-        isEmailVerified?: boolean;
-        passwordResetToken?: string;
-        passwordResetExpires?: Date;
-        id: any;
-    }>;
+    validateUser(loginDto: LoginDto): Promise<any>;
     getUserbyUsername(username: string): Promise<{
         firstName: string;
         lastName: string;
@@ -38,8 +25,5 @@ export declare class IdentityService {
         passwordResetExpires?: Date;
         id: any;
     }>;
-    login(user: any): Promise<{
-        access_token: string;
-        expires_in: any;
-    }>;
+    login(loginDto: LoginDto): Promise<any>;
 }

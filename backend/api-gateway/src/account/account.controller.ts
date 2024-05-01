@@ -1,12 +1,12 @@
 import {
   Controller,
-  Request,
   Get,
   ParseFileOptions,
   Inject,
   OnModuleInit,
   Post,
 } from '@nestjs/common';
+import { Request } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { ClientKafka } from '@nestjs/microservices';
 
@@ -23,13 +23,13 @@ export class AccountController implements OnModuleInit {
   }
 
   @Post('sign-up')
-  async register(@Request() req) {
-    return this.accountServices.register({ body: req.body.data });
+  async register(@Request() req: Request) {
+    return this.accountServices.register({ body: req.body });
   }
 
   @Post('sign-in')
-  async login(@Request() req) {
-    return this.accountServices.login({ body: req.body.data });
+  async login(@Request() req: Request) {
+    return this.accountServices.login({ body: req.body });
   }
 
   onModuleInit() {
