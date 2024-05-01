@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "command": "npm start",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/macbookpro/Plastic-Pallets-Software-Project-2/backend",
+      "program": "/Users/macbookpro/Plastic-Pallets-Software-Project-2/backend/build/Debug/outDebug"
+    }
+  ]
+}
