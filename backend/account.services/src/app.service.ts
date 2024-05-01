@@ -1,5 +1,5 @@
-//the app.service.ts is used to define the logic for implementing the method 
-//you will implement the methods here 
+//the app.service.ts is used to define the logic for implementing the method
+//you will implement the methods here
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,7 @@ import { User } from './identity/interfaces/user'; // Define this interface base
 import * as bcrypt from 'bcrypt';
 import { CreateIdentityDto } from './identity/dto/create.identity.dto';
 import { IdentityService } from './identity/identity.service';
+import { LoginDto } from './identity/dto/login.dto';
 
 @Injectable()
 export class AppService {
@@ -19,12 +20,11 @@ export class AppService {
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {
     return this.identityService.register(createIdentityDto);
   }
-  public async login(command: any) {
-    // Implement login logic, typically finding a user and verifying the password
-    const user = await this.userModel.findOne({ username: command.username });
-    if (user && user.password === command.password) {
-      // Hash comparison in real scenario
-      return { status: 'success', message: 'User logged in' };
+  public async login(loginDto: LoginDto) {
+    // Use validateUser to handle login
+    const user = await this.identityService.validateUser(loginDto);
+    if (user) {
+      return { status: 'success', message: 'User logged in', user };
     }
     return { status: 'failure', message: 'Invalid credentials' };
   }
