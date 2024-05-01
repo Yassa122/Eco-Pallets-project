@@ -6,7 +6,7 @@ export declare class AccountController implements OnModuleInit {
     private readonly accountClient;
     constructor(accountServices: AccountService, accountClient: ClientKafka);
     getHello(): any;
-    regster(req: any): Promise<import("rxjs").Subscription>;
-    login(req: any): Promise<import("rxjs").Subscription>;
+    register(req: Request): Promise<import("rxjs").Subscription>;
+    login(req: Request): Promise<import("rxjs").Subscription>;
     onModuleInit(): void;
 }

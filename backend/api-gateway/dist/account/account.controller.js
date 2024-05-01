@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccountController = void 0;
 const common_1 = require("@nestjs/common");
+const common_2 = require("@nestjs/common");
 const account_service_1 = require("./account.service");
 const microservices_1 = require("@nestjs/microservices");
 let AccountController = class AccountController {
@@ -24,11 +25,11 @@ let AccountController = class AccountController {
     getHello() {
         return this.accountServices.hello();
     }
-    async regster(req) {
-        return this.accountServices.register({ body: req.body.data });
+    async register(req) {
+        return this.accountServices.register({ body: req.body });
     }
     async login(req) {
-        return this.accountServices.login({ body: req.body.data });
+        return this.accountServices.login({ body: req.body });
     }
     onModuleInit() {
         this.accountClient.subscribeToResponseOf('hellofromapi');
@@ -45,14 +46,14 @@ __decorate([
 ], AccountController.prototype, "getHello", null);
 __decorate([
     (0, common_1.Post)('sign-up'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_2.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AccountController.prototype, "regster", null);
+], AccountController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('sign-in'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_2.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

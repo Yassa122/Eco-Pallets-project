@@ -8,5 +8,4 @@ export declare class AppController {
         status: string;
         message: string;
     }>;
-    //oh no
 }
