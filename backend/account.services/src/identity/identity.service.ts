@@ -109,10 +109,7 @@ export class IdentityService {
     };
   }
   async login(loginDto: LoginDto): Promise<any> {
-    // Fetch user by username
     const user = await this.userModel.findOne({ username: loginDto.username });
-
-    // Check if user exists and password is correct
     if (user && (await bcrypt.compare(loginDto.password, user.password))) {
       const payload = {
         id: user._id,
@@ -120,22 +117,13 @@ export class IdentityService {
         username: user.username,
       };
 
-      // Generate JWT token
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || 'your_secret_key', // Use an environment variable or a fallback secret
+        expiresIn: '1h', // Token validity time
+      });
 
-      // Return token and user details
-      return {
-        status: 'success',
-        message: 'User logged in successfully',
-
-        user: {
-          id: user._id,
-          username: user.username,
-          name: user.firstName + ' ' + user.lastName,
-        },
-      };
+      return { success: true, accessToken: accessToken };
     }
-
-    // Return null if login credentials are invalid
-    return { status: 'failure', message: 'Invalid credentials' };
+    return { success: false };
   }
 }
