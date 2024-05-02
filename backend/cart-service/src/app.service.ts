@@ -15,4 +15,11 @@ export class AppService {
     const createdCart = new this.cartModel(createCartDto);
     return createdCart.save();
   }
+  async getAllCarts() {
+    return this.cartModel.find().exec();
+  }
+
+  async getCartsByUserId(userId: string) {
+    return this.cartModel.find({ userId }).exec();
+  }
 }
