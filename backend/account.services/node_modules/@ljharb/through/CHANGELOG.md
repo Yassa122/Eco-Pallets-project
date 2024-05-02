@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.3.13](https://github.com/ljharb/through/compare/v2.3.12...v2.3.13) - 2024-03-08
+
+### Commits
+
+- [types] use shared tsconfig [`8e77c7b`](https://github.com/ljharb/through/commit/8e77c7bd23365d0950730fa4e402c17549b48680)
+- [Tests] increase coverage [`0a0a33f`](https://github.com/ljharb/through/commit/0a0a33fb2a5fbe63d449371f1e3ea91a969b8817)
+- [types] fix d.ts errors; use a namespace [`653e55d`](https://github.com/ljharb/through/commit/653e55d7bc2ac4f43500e327e45bb2b8c24e4a1f)
+- [actions] remove redundant finisher; use reusable workflows [`65ab32c`](https://github.com/ljharb/through/commit/65ab32c807b748cd96623169b99561aa05993d6d)
+- [Dev Deps] update `@arethetypeswrong/cli`, `tape`, `typescript` [`1d2c513`](https://github.com/ljharb/through/commit/1d2c51309a4b5d70aa16431c9514b2805d7374ec)
+- [Dev Deps] update `@types/node`, `typescript` [`d5bdc23`](https://github.com/ljharb/through/commit/d5bdc23afc0610c37524b4ef615fd3aee442b16d)
+- [Deps] update `call-bind` [`2633dc6`](https://github.com/ljharb/through/commit/2633dc6c9c728099cf105c40ad8990c463fbc054)
+- [Tests] install missing `@types/node` [`fe34373`](https://github.com/ljharb/through/commit/fe343735e8df0122d1856fc4f88c46e3ee1a33df)
+
 ## [v2.3.12](https://github.com/ljharb/through/compare/v2.3.11...v2.3.12) - 2024-01-24
 
 ### Commits

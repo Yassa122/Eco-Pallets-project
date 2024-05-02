@@ -78,8 +78,16 @@ test('simple functions', function (assert) {
 	write(expected, t);
 });
 
-test('pauses', function (assert) {
+test('pauses twice', function (t) {
+	var ts = through();
 
+	t.equal(ts.pause(), ts, 'when pausing, returns stream');
+	t.equal(ts.pause(), undefined, 'when already paused, returns void');
+
+	t.end();
+});
+
+test('pauses', function (assert) {
 	var l = 1000;
 	var expected = [];
 

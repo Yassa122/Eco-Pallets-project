@@ -12,7 +12,7 @@ export class AppController {
   getHello(): any {
     return this.accountServices.hello();
   }
-
+//
   @Post('sign-up')
   async register(@Body() reqBody: any) {
     return this.accountServices.register(reqBody);
