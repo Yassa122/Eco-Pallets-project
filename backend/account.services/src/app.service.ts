@@ -15,39 +15,14 @@ export class AppService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
     private identityService: IdentityService,
-    private jwtService:JwtService
+    private jwtService: JwtService,
   ) {}
 
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {
     return this.identityService.register(createIdentityDto);
   }
-  async login(loginDto: LoginDto): Promise<any> {
-    const user = await this.userModel.findOne({ username: loginDto.username });
-    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
-      const payload = {
-        id: user._id,
-        name: user.firstName + ' ' + user.lastName, // assuming you want to use full name
-        username: user.username,
-      };
-
-      const accessToken = this.jwtService.sign(payload, {
-        secret: process.env.JWT_SECRET || 'your_secret_key', // Use an environment variable or a fallback secret
-        expiresIn: '1h', // Token validity time
-      });
-
-      return {
-        status: 'success',
-        message: 'User logged in successfully',
-        access_token: accessToken,
-        user: {
-          id: user._id,
-          username: user.username,
-          name: user.firstName + ' ' + user.lastName,
-        },
-      };
-    }
-
-    return { status: 'failure', message: 'Invalid credentials' };
+  async login(LoginDto: LoginDto): Promise<any> {
+    return this.identityService.login(LoginDto);
   }
 
   public hello() {
