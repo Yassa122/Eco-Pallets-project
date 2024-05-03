@@ -71,9 +71,9 @@ export class IdentityService {
     }
 
     // Check if the password matches
-    const passwordMatches = await bcrypt.compare(
-      loginDto.password,
-      user.password,
+    const passwordMatches = bcrypt.compare(
+      Buffer.from(loginDto.password),
+      user.password
     );
     console.log('Password matches:', passwordMatches);
 
@@ -110,7 +110,7 @@ export class IdentityService {
   }
   async login(loginDto: LoginDto): Promise<any> {
     const user = await this.userModel.findOne({ username: loginDto.username });
-    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+    if (user && bcrypt.compare(Buffer.from(loginDto.password), user.password)) {
       const payload = {
         id: user._id,
         name: user.firstName + ' ' + user.lastName, // assuming you want to use full name
