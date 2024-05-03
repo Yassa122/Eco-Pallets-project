@@ -5,17 +5,19 @@ var through = require('../');
 
 // must emit end before close.
 
-test('end before close', function (assert) {
+test('end before close', function (t) {
+	t.plan(4);
+
 	var ts = through();
 	var ended = false;
 	var closed = false;
 
 	ts.on('end', function () {
-		assert.ok(!closed);
+		t.ok(!closed);
 		ended = true;
 	});
 	ts.on('close', function () {
-		assert.ok(ended);
+		t.ok(ended);
 		closed = true;
 	});
 
@@ -23,12 +25,16 @@ test('end before close', function (assert) {
 	ts.write(2);
 	ts.write(3);
 	ts.end();
-	assert.ok(ended);
-	assert.ok(closed);
-	assert.end();
+
+	t.ok(ended);
+	t.ok(closed);
+
+	t.end();
 });
 
 test('end only once', function (t) {
+	t.plan(4);
+
 	var ts = through();
 	var ended = false;
 
@@ -42,6 +48,32 @@ test('end only once', function (t) {
 	ts.queue(null);
 
 	ts.resume();
+
+	t.equal(ended, true, 'is ended');
+
+	ts.end();
+	t.equal(ended, true, 'is still ended after end()');
+
+	ts.end();
+	t.equal(ended, true, 'is still ended after end() 2x');
+
+	t.end();
+});
+
+test('end with value', function (t) {
+	var ts = through(null, null, { autoDestroy: false });
+
+	var results = [];
+	ts.on('data', function (data) {
+		results.push(data);
+	});
+
+	ts.queue(123);
+	ts.queue(456);
+
+	ts.end('end');
+
+	t.deepEqual(results, [123, 456, 'end']);
 
 	t.end();
 });

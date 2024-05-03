@@ -18,7 +18,6 @@ import { User } from './interfaces/user';
       signOptions: { expiresIn: '10000s' },
     }),
     UsersModule,
-    
   ],
   controllers: [IdentityController],
   providers: [

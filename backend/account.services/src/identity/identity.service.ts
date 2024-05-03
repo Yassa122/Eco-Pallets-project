@@ -57,19 +57,39 @@ export class IdentityService {
     return savedUser;
   }
 
-  async validateUser(loginDto: LoginDto) {
-    let loginResult = await this.userModel.findOne({
-      username: loginDto.username,
-      password: loginDto.password,
-    });
+  async validateUser(loginDto: LoginDto): Promise<any> {
+    // Fetch user by username
+    let user = await this.userModel.findOne({ username: loginDto.username });
 
-    let jsonData = loginResult.toObject();
-    let { __v, _id, ...userData } = jsonData;
+    // Log the found user for debugging
+    console.log('Fetched user:', user);
 
-    return {
-      id: jsonData._id,
-      ...userData,
-    };
+    // Check if user exists
+    if (!user) {
+      console.log('No user found with this username:', loginDto.username);
+      return null;
+    }
+
+    // Check if the password matches
+    const passwordMatches = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+    console.log('Password matches:', passwordMatches);
+
+    if (passwordMatches) {
+      let userData = user.toObject();
+      let { __v, _id, password, ...userDetails } = userData;
+
+      // Return user details without sensitive data
+      return {
+        id: userData._id,
+        ...userDetails,
+      };
+    }
+
+    // Return null if password doesn't match
+    return null;
   }
 
   async getUserbyUsername(username: string) {
@@ -88,39 +108,22 @@ export class IdentityService {
       ...userData,
     };
   }
-  async login(user: any) {
-    //console.log(command)
-    let payload = {
-      id: user._id,
-      name: user.name,
-      username: user.username,
-    };
+  async login(loginDto: LoginDto): Promise<any> {
+    const user = await this.userModel.findOne({ username: loginDto.username });
+    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+      const payload = {
+        id: user._id,
+        name: user.firstName + ' ' + user.lastName, // assuming you want to use full name
+        username: user.username,
+      };
 
-    var token = this.jwtService.sign(payload);
-    var tokenvalue: any = this.jwtService.decode(token);
-    //for refresh token
-    // var date= new Date(tokenvalue.exp*1000);
-    // var refreshTokenDate = new Date(
-    //     date.setDate(date.getDate()+1)
-    // );
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || 'your_secret_key', // Use an environment variable or a fallback secret
+        expiresIn: '1h', // Token validity time
+      });
 
-    // const tokenData:TokenDto={
-    //     token: token,
-    //     expiresIn:tokenvalue.exp,
-    //     refreshTokenexpiresIn: refreshTokenDate,
-    //     expired:false
-    // }
-
-    return {
-      access_token: this.jwtService.sign(payload),
-      expires_in: tokenvalue.exp,
-    };
-    //let jsonData =loginResult.toObject();
-    //let {__v, _id, ...userData}=jsonData;
-
-    //return {
-    //id:jsonData._id,
-    //...userData
-    //}
+      return { success: true, accessToken: accessToken };
+    }
+    return { success: false };
   }
 }
