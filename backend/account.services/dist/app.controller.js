@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
+const microservices_1 = require("@nestjs/microservices");
 let AppController = class AppController {
-    constructor(accountServices) {
+    constructor(accountServices, client) {
         this.accountServices = accountServices;
+        this.client = client;
     }
     getHello() {
         return this.accountServices.hello();
@@ -27,6 +29,12 @@ let AppController = class AppController {
     }
     async login(reqBody) {
         return this.accountServices.login(reqBody);
+    }
+    handleOrderCreated(data) {
+        this.accountServices.handleUserInfo(data.value);
+    }
+    onModuleInit() {
+        this.client.subscribeToResponseOf('get_user_info');
     }
 };
 exports.AppController = AppController;
@@ -50,8 +58,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "login", null);
+__decorate([
+    (0, microservices_1.EventPattern)('user_fetched'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "handleOrderCreated", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)('account'),
-    __metadata("design:paramtypes", [app_service_1.AppService])
+    __param(1, (0, common_1.Inject)('USER_SERVICE')),
+    __metadata("design:paramtypes", [app_service_1.AppService,
+        microservices_1.ClientKafka])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

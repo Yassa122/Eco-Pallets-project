@@ -19,11 +19,15 @@ const mongoose_2 = require("mongoose");
 const bcrypt = require("bcrypt");
 const identity_service_1 = require("./identity/identity.service");
 const jwt_1 = require("@nestjs/jwt");
+const microservices_1 = require("@nestjs/microservices");
+const event_emitter_1 = require("@nestjs/event-emitter");
 let AppService = class AppService {
-    constructor(userModel, identityService, jwtService) {
+    constructor(userModel, identityService, jwtService, client) {
         this.userModel = userModel;
         this.identityService = identityService;
         this.jwtService = jwtService;
+        this.client = client;
+        this.client.subscribeToResponseOf('get_user_info');
     }
     async register(createIdentityDto) {
         return this.identityService.register(createIdentityDto);
@@ -56,13 +60,33 @@ let AppService = class AppService {
     hello() {
         return 'Hello from API';
     }
+    async handleUserInfo(data) {
+        const user = await this.userModel.findById(data.userId).exec();
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return {
+            id: user._id,
+            name: user.firstName + ' ' + user.lastName,
+            email: user.email,
+            phoneNumber: user.phoneNumber
+        };
+    }
 };
 exports.AppService = AppService;
+__decorate([
+    (0, event_emitter_1.OnEvent)('get_user_info'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppService.prototype, "handleUserInfo", null);
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
+    __param(3, (0, common_1.Inject)('USER_SERVICE')),
     __metadata("design:paramtypes", [mongoose_2.Model,
         identity_service_1.IdentityService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        microservices_1.ClientKafka])
 ], AppService);
 //# sourceMappingURL=app.service.js.map
