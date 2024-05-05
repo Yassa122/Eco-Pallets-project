@@ -1,9 +1,20 @@
-//app.controller.ts is used to import all the logic from the app.service.ts file
-// you need to define each method type eg.. get, post, put, delete
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Body,
+  Res,
+  UseGuards,
+  Request,
+  Param,
+} from '@nestjs/common';
 
-import { Controller, Post, Get, Body, Res } from '@nestjs/common';
-import { Response } from 'express'; // Make sure to import Response from express
+import { Response } from 'express'; // Import Response from express for handling HTTP responses
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
+import { GetUserId } from './identity/decorators/get-user-id.decorator';
+
 @Controller('account')
 export class AppController {
   constructor(private accountServices: AppService) {}
@@ -12,7 +23,7 @@ export class AppController {
   getHello(): any {
     return this.accountServices.hello();
   }
-  //
+
   @Post('sign-up')
   async register(@Body() reqBody: any) {
     return this.accountServices.register(reqBody);
@@ -21,8 +32,8 @@ export class AppController {
   @Post('sign-in')
   async login(@Body() reqBody: any, @Res() res: Response) {
     const result = await this.accountServices.login(reqBody);
-    if (result.success === true) {
-      res.cookie('accessToken', result.access_token, {
+    if (result.success) {
+      res.cookie('accessToken', result.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development', // Set to true in production
         sameSite: 'strict', // Adjust according to your cross-site request needs
@@ -32,5 +43,16 @@ export class AppController {
     } else {
       return res.status(401).json({ message: 'Authentication failed' });
     }
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getUser(@GetUserId() userId: string) { // Using the custom decorator to extract the userId
+    return this.accountServices.getUser(userId);
+  }
+  
+
+  @Put('profile/:userId')
+  async updateUser(@Param('userId') userId: string, @Body() updateBody: any) {
+    return this.accountServices.updateUser(userId, updateBody);
   }
 }
