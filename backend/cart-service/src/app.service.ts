@@ -33,19 +33,68 @@ export class AppService {
     return cart ? cart.cartItems : [];
   }
 
-  async addOneQuantity(userId: string, cartItemId: String) {
+  async addOneQuantity(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
     const cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
     }
-    const cartItem = cart.cartItems.find(item => item.productId == cartItemId);
-    if (!cartItem) {
+      
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    if (cartItemIndex === -1) {
       throw new Error('CartItem not found');
     }
-    cartItem.quantity++;
-    return cart.save();
+    
+    // Increment the quantity of the cart item
+    cart.cartItems[cartItemIndex].quantity++;
 
+    // Recalculate the total price based on the updated quantity
+    const updatedCartItem = cart.cartItems[cartItemIndex];
+    updatedCartItem.totalPrice = updatedCartItem.quantity * updatedCartItem.price;
+    
+    // Save the updated cart
+    return cart.save();
   }
+
+  async subtractOneQuantity(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+      
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    if (cartItemIndex === -1) {
+      throw new Error('CartItem not found');
+    }
+    
+    // Decrement the quantity of the cart item
+    cart.cartItems[cartItemIndex].quantity--;
+
+    // Recalculate the total price based on the updated quantity
+    const updatedCartItem = cart.cartItems[cartItemIndex];
+    updatedCartItem.totalPrice = updatedCartItem.quantity * updatedCartItem.price;
+    
+    // Save the updated cart
+    return cart.save();
+  }
+  
+  async removeCartItem(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    if (cartItemIndex === -1) {
+      throw new Error('CartItem not found');
+    }
+
+    cart.cartItems.splice(cartItemIndex, 1); // Remove the cart item from the array
+    // Recalculate the total price based on the updated quantity
+    const updatedCartItem = cart.cartItems[cartItemIndex];
+    updatedCartItem.totalPrice = updatedCartItem.quantity * updatedCartItem.price;
+    return cart.save();
+  }
+  
 
   async createCartItem(cartItem: CartItemDto): Promise<CartItemDto> {
     const createdCartItem = new this.cartItemModel(cartItem);

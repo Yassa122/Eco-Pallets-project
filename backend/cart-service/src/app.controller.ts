@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UsePipes, ValidationPipe, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes, ValidationPipe, Param, Put, Delete } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto'; 
 import { CartItemDto } from './dto/cartItem.dto'; 
@@ -32,10 +32,18 @@ export class AppController {
   }
 
   @Put('addQuantity/:userId')
-  async addOneQuantity (@Param('userId') userId: string, @Body() cartItemId: String){
-    return this.appService.addOneQuantity(userId, cartItemId);
+  async addOneQuantity(@Param('userId') userId: string, @Body() cartItemIdObj: { cartItemId: string }) {
+    return this.appService.addOneQuantity(userId, cartItemIdObj);
   }
 
+  @Put('subtractQuantity/:userId')
+  async subtractOneQuantity(@Param('userId') userId: string, @Body() cartItemIdObj: { cartItemId: string }) {
+    return this.appService.subtractOneQuantity(userId, cartItemIdObj);
+  }
+  @Delete('removeCartItem/:userId')
+  async removeCartItem(@Param('userId') userId: string, @Body() cartItemIdObj: { cartItemId: string }): Promise<any> {
+    return this.appService.removeCartItem(userId, cartItemIdObj);
+  }
   @Post('createCartItem')
   async createCartItem(@Body() cartItem: CartItemDto): Promise<CartItemDto> {
     return this.appService.createCartItem(cartItem);
