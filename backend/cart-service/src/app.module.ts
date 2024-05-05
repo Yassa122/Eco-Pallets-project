@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [    
     MongooseModule.forRoot('mongodb://localhost:27017/plastic-pallets-E-commerce'), // Set your MongoDB connection URI and database name
-   MongooseModule.forFeature([{ name: 'Cart', schema: CartSchema }]), // Specify the schema to use
+   MongooseModule.forFeature([{ name: 'Cart', schema: CartSchema }, { name: 'CartItem', schema: CartItemSchema }]), // Specify the schema to use
 ],
   controllers: [AppController],
   providers: [AppService],
