@@ -5,7 +5,6 @@ export interface Product extends Document {
     images: string[];
     price: number;
     availability: boolean;
-    specifications: string[];
     rentalOptions: {
       available: boolean;
       duration?: number;
