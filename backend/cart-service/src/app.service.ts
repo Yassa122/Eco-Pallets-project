@@ -135,6 +135,8 @@ export class AppService {
       throw new Error('Cart not found');
     }
     cart.PromoCodeMultiplier=1-(discount.discountInPercent/100);
-    cart.totalPrice=cart.PromoCodeMultiplier*cart.subtotal;
+    cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
+      // Save the updated cart
+      return cart.save();
   }
 }
