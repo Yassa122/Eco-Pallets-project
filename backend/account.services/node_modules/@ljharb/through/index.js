@@ -22,7 +22,7 @@ function through(write, end, opts) {
 	stream.writable = true;
 	stream.paused = false;
 
-	//  stream.autoPause   = !(opts && opts.autoPause   === false)
+	// stream.autoPause = !(opts && opts.autoPause === false)
 	stream.autoDestroy = !(opts && opts.autoDestroy === false);
 
 	stream.write = function (data) {
@@ -49,9 +49,7 @@ function through(write, end, opts) {
 	stream.push = stream.queue;
 
 	/*
-	 * this will be registered as the first 'end' listener
-	 * must call destroy next tick, to make sure we're after any
-	 * stream piped from here.
+	 * this will be registered as the first 'end' listener must call destroy next tick, to make sure we're after any stream piped from here.
 	 * this is only a problem if end is not emitted synchronously.
 	 * a nicer way to do this is to make sure this is the last listener for 'end'
 	 */
@@ -102,10 +100,7 @@ function through(write, end, opts) {
 			stream.emit('resume');
 		}
 		drain();
-		/*
-		 * may have become paused again,
-		 * as drain emits 'data'.
-		 */
+		// may have become paused again, as drain emits 'data'.
 		if (!stream.paused) { stream.emit('drain'); }
 		return stream;
 	};

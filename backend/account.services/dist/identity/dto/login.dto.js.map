@@ -1,1 +1,0 @@
-{"version":3,"file":"login.dto.js","sourceRoot":"","sources":["../../../src/identity/dto/login.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,QAAQ;IAIjB,QAAQ;QACJ,OAAO,IAAI,CAAC,SAAS,CAAC;YAElB,QAAQ,EAAC,IAAI,CAAC,QAAQ;YACtB,QAAQ,EAAC,IAAI,CAAC,QAAQ;SAAC,CAC1B,CAAC;IACN,CAAC;CACJ;AAXD,4BAWC"}

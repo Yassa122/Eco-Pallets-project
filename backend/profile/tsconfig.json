@@ -6,16 +6,23 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true, // Ensures compatibility between CommonJS and ES modules
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "strict": true, // Enable all strict type-checking options
+    "strictNullChecks": true, // Enable strict null checks
+    "noImplicitAny": true, // Ensure no implicit 'any' types
+    "strictBindCallApply": true, // Enable stricter checking of bind, call, and apply methods
+    "forceConsistentCasingInFileNames": true, // Ensure file names are case-consistent in imports
+    "noFallthroughCasesInSwitch": true, // Prevent fall-through in switch cases
+    "traceResolution": true, // Trace the module resolution process
+    "lib": ["ES2021", "dom"], // Include typings for ES2021 and DOM for compatibility
+    "strictPropertyInitialization": false // Disable strict property initialization
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist from the compilation process
 }

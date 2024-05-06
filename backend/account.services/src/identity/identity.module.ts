@@ -10,9 +10,13 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { ExistsStrategy } from './strategies/exists.strategy';
 import { UsersModule } from './users/users.module';
 import { User } from './interfaces/user';
+import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
+import { KafkaModule } from 'src/kafka/kafka.module';
+import { KafkaService } from 'src/kafka/kafka.service';
 @Module({
   imports: [
     PassportModule,
+    KafkaModule,
     JwtModule.register({
       secret: 'secretKey_YoucANWritewhateveryoulike',
       signOptions: { expiresIn: '10000s' },
@@ -27,6 +31,7 @@ import { User } from './interfaces/user';
     LocalStrategy,
     JwtStrategy,
     ExistsStrategy,
+    KafkaService,
   ],
   exports: [...databaseProviders],
 })

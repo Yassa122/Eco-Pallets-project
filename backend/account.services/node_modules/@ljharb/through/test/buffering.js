@@ -68,3 +68,32 @@ test('buffering has data in queue, when ends', function (assert) {
 	assert.ok(ended, 'end should be emitted once all data was delivered');
 	assert.end();
 });
+
+test('data pauses', function (t) {
+	var ts = through();
+
+	var results = [];
+	ts.on('data', function (data) {
+		ts.pause();
+		results.push(data);
+	});
+
+	t.equal(ts.paused, false, 'starts not paused');
+
+	ts.write(1);
+	t.equal(ts.paused, true, 'pauses on write');
+	ts.write(2);
+	t.equal(ts.paused, true, 'pauses on write');
+	ts.write(3);
+	t.equal(ts.paused, true, 'pauses on write');
+
+	t.deepEqual(results, [1], 'has not been resumed');
+	ts.resume();
+	t.equal(ts.paused, true, 'resume unpauses, but write re-pauses');
+
+	t.deepEqual(results, [1, 2], 'has only been resumed once');
+	ts.resume();
+	t.deepEqual(results, [1, 2, 3], 'has been resumed twice');
+
+	t.end();
+});
