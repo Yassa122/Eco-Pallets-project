@@ -1,9 +1,5 @@
 {
-<<<<<<<< HEAD:backend/product-service/package.json
-  "name": "product-service",
-========
   "name": "profile",
->>>>>>>> origin/main:backend/profile/package.json
   "version": "0.0.1",
   "description": "",
   "author": "",
