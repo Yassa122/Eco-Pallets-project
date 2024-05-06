@@ -8,7 +8,9 @@ import { CartItemDto } from './dto/cartItem.dto';
 export class AppService {
   constructor(
     @InjectModel('Cart') private readonly cartModel: Model<any>,
-    @InjectModel('CartItem') private readonly cartItemModel: Model<any>
+    @InjectModel('CartItem') private readonly cartItemModel: Model<any>,
+    @InjectModel('PromoCode') private readonly promoCodeModel: Model<any>
+
 
   ) {}
 
@@ -89,9 +91,7 @@ export class AppService {
     }
 
     cart.cartItems.splice(cartItemIndex, 1); // Remove the cart item from the array
-    // Recalculate the total price based on the updated quantity
-    const updatedCartItem = cart.cartItems[cartItemIndex];
-    updatedCartItem.totalPrice = updatedCartItem.quantity * updatedCartItem.price;
+
     return cart.save();
   }
   
@@ -120,5 +120,21 @@ export class AppService {
 
     // Save the updated cart
     return cart.save();
+  }
+
+
+
+
+  async applyPromoCode(userId: string, promoCode:string): Promise<any> {
+    const discount = await this.promoCodeModel.findOne({promoCode}).exec();
+    if (!discount) {
+      throw new Error('Invalid Promo Code');
+    }
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+    cart.PromoCodeMultiplier=1-(discount.discountInPercent/100);
+    cart.totalPrice=cart.PromoCodeMultiplier*cart.subtotal;
   }
 }

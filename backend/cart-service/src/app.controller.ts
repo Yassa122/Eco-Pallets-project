@@ -52,4 +52,9 @@ export class AppController {
   async addToCart(@Param('userId') userId: string, @Body() cartItem: CartItemDto): Promise<any> {
     return this.appService.addToCart(userId, cartItem);
   }
+
+  @Put('applyPromoCode/:userId')
+  async applyPromoCode (@Param('userId') userId: string, @Body('promoCode') promoCode: string): Promise<any> {
+    return this.appService.applyPromoCode(userId, promoCode);
+  }
 }
