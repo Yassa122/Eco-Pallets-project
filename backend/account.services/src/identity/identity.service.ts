@@ -1,97 +1,128 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './interfaces/user';
 import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { TokenDto } from './dto/token.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
-import { UserSchema } from './users/schemas/user.schema';
-import { InjectModel } from '@nestjs/mongoose';
+import { KafkaService } from '../kafka/kafka.service';
+import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
 @Injectable()
 export class IdentityService {
+  private readonly logger = new Logger(IdentityService.name);
+  hello: any;
+
   constructor(
-    @InjectModel('User') private userModel: Model<User>, // Make sure 'User' matches the name given in forFeature
+    @InjectModel('User') private userModel: Model<User>,
     private jwtService: JwtService,
+    private kafkaService: KafkaService,
   ) {}
 
-  hello(message) {
-    return message;
-  }
-
   async register(createIdentityDto: CreateIdentityDto): Promise<User> {
-    // Check if the username or email already exists
-    const existingUser = await this.userModel
-      .findOne({
-        $or: [
-          { username: createIdentityDto.username },
-          { email: createIdentityDto.email },
-        ],
-      })
-      .exec();
-    if (existingUser) {
+    this.logger.debug('Attempting to register a new user');
+
+    if (
+      await this.userExists(createIdentityDto.username, createIdentityDto.email)
+    ) {
+      this.logger.warn(
+        `Registration failed: User already exists with username ${createIdentityDto.username} or email ${createIdentityDto.email}`,
+      );
       throw new UserAlreadyExistsException();
     }
 
-    // Hash the password using bcrypt with a salt round of 10
     const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
-
-    // Create a new user with all provided details
-    const newUser = new this.userModel({
-      firstName: createIdentityDto.firstName,
-      lastName: createIdentityDto.lastName,
-      email: createIdentityDto.email,
-      username: createIdentityDto.username,
-      password: hashedPassword,
-      phoneNumber: createIdentityDto.phoneNumber,
-      company: createIdentityDto.company,
-      address: createIdentityDto.address,
-      isEmailVerified: false, // Default to false until verified
-      passwordResetToken: createIdentityDto.passwordResetToken,
-      passwordResetExpires: createIdentityDto.passwordResetExpires,
-    });
-
-    const savedUser = await newUser.save();
-
-    return savedUser;
+    const user = await this.createUser(createIdentityDto, hashedPassword);
+    this.logger.debug(`User ${user._id} registered successfully`);
+    return user;
   }
 
-  async validateUser(loginDto: LoginDto): Promise<any> {
-    // Fetch user by username
-    let user = await this.userModel.findOne({ username: loginDto.username });
+  private async userExists(username: string, email: string): Promise<boolean> {
+    const user = await this.userModel
+      .findOne({
+        $or: [{ username }, { email }],
+      })
+      .exec();
+    return !!user;
+  }
 
-    // Log the found user for debugging
-    console.log('Fetched user:', user);
+  private async createUser(
+    dto: CreateIdentityDto,
+    hashedPassword: string,
+  ): Promise<User> {
+    const newUser = new this.userModel({
+      ...dto,
+      password: hashedPassword,
+      isEmailVerified: false,
+    });
+    return newUser.save();
+  }
 
-    // Check if user exists
+  async validateUser(loginDto: LoginDto): Promise<User | null> {
+    const user = await this.userModel.findOne({ username: loginDto.username });
     if (!user) {
-      console.log('No user found with this username:', loginDto.username);
+      this.logger.warn(
+        `Login failed: No user found with username ${loginDto.username}`,
+      );
       return null;
     }
 
-    // Check if the password matches
-    const passwordMatches = await bcrypt.compare(
-      loginDto.password,
+    const passwordMatches = bcrypt.compare(
+      loginDto.password.toString(),
       user.password,
     );
-    console.log('Password matches:', passwordMatches);
-
-    if (passwordMatches) {
-      let userData = user.toObject();
-      let { __v, _id, password, ...userDetails } = userData;
-
-      // Return user details without sensitive data
-      return {
-        id: userData._id,
-        ...userDetails,
-      };
+    if (!passwordMatches) {
+      this.logger.warn(
+        `Login failed: Incorrect password for username ${loginDto.username}`,
+      );
+      return null;
     }
 
-    // Return null if password doesn't match
-    return null;
+    this.logger.debug(`User ${user._id} authenticated successfully`);
+    return this.stripSensitiveDetails(user.toObject());
   }
 
+  private stripSensitiveDetails(user: any): any {
+    const { password, __v, _id, ...userDetails } = user;
+    return { id: _id, ...userDetails };
+  }
+  async getUserProfileInfo(id: string): Promise<User> {
+    try {
+      const user = await this.userModel
+        .findById(id)
+        .select('-password -__v')
+        .exec();
+      if (!user) {
+        this.logger.warn(`No user found with ID: ${id}`);
+        return null; // Ensure to return null if no user found
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(`Error retrieving user profile: ${error}`);
+      throw new Error('Failed to retrieve user profile');
+    }
+  }
+
+  async updateUserProfile(
+    userId: string,
+    profileDto: UpdateUserProfileDto,
+  ): Promise<User> {
+    try {
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(userId, profileDto, { new: true })
+        .select('-password -__v')
+        .exec();
+      if (!updatedUser) {
+        this.logger.warn(`No user found with ID: ${userId}`);
+        return null;
+      }
+      return updatedUser;
+    } catch (error) {
+      this.logger.error(`Error updating user profile: ${error}`);
+      throw new Error('Failed to update user profile');
+    }
+  }
   async getUserbyUsername(username: string) {
     let loginResult = await this.userModel.findOne({
       username: username,
@@ -108,34 +139,27 @@ export class IdentityService {
       ...userData,
     };
   }
-  async login(loginDto: LoginDto): Promise<any> {
-    // Fetch user by username
-    const user = await this.userModel.findOne({ username: loginDto.username });
-
-    // Check if user exists and password is correct
-    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
-      const payload = {
-        id: user._id,
-        name: user.firstName + ' ' + user.lastName, // assuming you want to use full name
-        username: user.username,
-      };
-
-      // Generate JWT token
-
-      // Return token and user details
-      return {
-        status: 'success',
-        message: 'User logged in successfully',
-
-        user: {
-          id: user._id,
-          username: user.username,
-          name: user.firstName + ' ' + user.lastName,
-        },
-      };
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ success: boolean; accessToken?: string }> {
+    this.logger.debug(`Attempting login for username ${loginDto.username}`);
+    const user = await this.validateUser(loginDto);
+    if (!user) {
+      return { success: false };
     }
 
-    // Return null if login credentials are invalid
-    return { status: 'failure', message: 'Invalid credentials' };
+    const payload = {
+      id: user.id, // Using MongoDB '_id' as the subject of the token
+      name: `${user.firstName} ${user.lastName}`,
+      username: user.username,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulike',
+      expiresIn: '1h',
+    });
+
+    this.logger.debug(`JWT issued for user ID ${user.id}`);
+    return { success: true, accessToken };
   }
 }
