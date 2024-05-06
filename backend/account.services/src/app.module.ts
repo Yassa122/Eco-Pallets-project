@@ -10,6 +10,8 @@ import { KafkaModule } from './kafka/kafka.module';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaService } from './kafka/kafka.service';
+import { ProfileService } from './profile/profile.service';
+
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
@@ -19,6 +21,6 @@ import { KafkaService } from './kafka/kafka.service';
 
   ],
   controllers: [AppController],
-  providers: [AppService, IdentityService, JwtService,KafkaService],
+  providers: [AppService, IdentityService, JwtService,KafkaService,ProfileService],
 })
 export class AppModule {}
