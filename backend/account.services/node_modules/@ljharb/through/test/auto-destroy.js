@@ -6,8 +6,7 @@ var through = require('../');
 // must emit end before close.
 
 test('end before close', function (assert) {
-	var ts = through();
-	ts.autoDestroy = false;
+	var ts = through(null, null, { autoDestroy: false });
 	var ended = false;
 	var closed = false;
 
