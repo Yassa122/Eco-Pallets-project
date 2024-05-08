@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { Identityschema } from './../schemas/identity.schema';
+import { Identityschema } from '../identity/schemas/identity.schema';
 
 export const identityProviders = [
   {

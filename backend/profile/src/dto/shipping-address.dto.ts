@@ -4,28 +4,28 @@ import { IsString, IsNotEmpty } from 'class-validator';
 export class ShippingAddressDto {
     @IsNotEmpty()
     @IsString()
-    label: string;
+    label!: string; // Note the use of `!`
 
     @IsNotEmpty()
     @IsString()
-    address: string;
+    address!: string;
 
     @IsNotEmpty()
     @IsString()
-    city: string;
+    city!: string;
 
     @IsNotEmpty()
     @IsString()
-    postalCode: string;
+    postalCode!: string;
 
     @IsNotEmpty()
     @IsString()
-    country: string;
+    country!: string;
 }
 
 export class CreateShippingAddressDto extends ShippingAddressDto {}
 
 export class UpdateShippingAddressesDto {
     @IsNotEmpty()
-    addresses: ShippingAddressDto[];
+    addresses!: ShippingAddressDto[]; // Note the use of `!`
 }
