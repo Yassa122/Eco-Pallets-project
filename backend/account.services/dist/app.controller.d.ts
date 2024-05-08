@@ -1,12 +1,11 @@
 import { AppService } from './app.service';
-import { ClientKafka } from '@nestjs/microservices';
+import { GetUserDto } from './get-user.dto';
 export declare class AppController {
     private accountServices;
-    private readonly client;
-    constructor(accountServices: AppService, client: ClientKafka);
+    constructor(accountServices: AppService);
     getHello(): any;
     register(reqBody: any): Promise<any>;
     login(reqBody: any): Promise<any>;
-    handleOrderCreated(data: any): void;
-    onModuleInit(): void;
+    getUser(id: string): Promise<import("./identity/interfaces/user").User>;
+    updateUser(id: string, userData: GetUserDto): Promise<import("./identity/interfaces/user").User>;
 }

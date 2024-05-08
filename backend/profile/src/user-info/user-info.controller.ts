@@ -1,15 +1,21 @@
 import { Controller, Get, Post, Delete, Patch, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { UserInfoService } from './user-info.service';
 import { MessagePattern } from '@nestjs/microservices';
+import { UpdateProfileDto } from 'src/dto/update-profile-info.dto';
 // import { ShippingAddressDto } from 'src/dto/shipping-address.dto';
 
 @Controller('user-info')
 export class UserInfoController {
   constructor(private readonly userInfoService: UserInfoService) {}
 
-  @Get(':id')
-  async getProfileInfo(@Param('id') id: string) {
-    return this.userInfoService.getProfileInfo(id);
+  @Get(':userId')
+  getProfile(@Param('userId') userId: string) {
+    return this.userInfoService.getProfileInfo(userId);
+  }
+
+  @Post('update/:userId')
+  updateProfile(@Param('userId') userId: string, @Body() updateData: UpdateProfileDto) {
+    return this.userInfoService.updateProfileInfo(userId, updateData);
   }
 
 //   @Post(':userId/addresses')

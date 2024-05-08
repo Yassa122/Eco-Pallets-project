@@ -15,11 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
-const microservices_1 = require("@nestjs/microservices");
+const get_user_dto_1 = require("./get-user.dto");
 let AppController = class AppController {
-    constructor(accountServices, client) {
+    constructor(accountServices) {
         this.accountServices = accountServices;
-        this.client = client;
     }
     getHello() {
         return this.accountServices.hello();
@@ -30,11 +29,11 @@ let AppController = class AppController {
     async login(reqBody) {
         return this.accountServices.login(reqBody);
     }
-    handleOrderCreated(data) {
-        this.accountServices.handleUserInfo(data.value);
+    getUser(id) {
+        return this.accountServices.getUserData(id);
     }
-    onModuleInit() {
-        this.client.subscribeToResponseOf('get_user_info');
+    updateUser(id, userData) {
+        return this.accountServices.updateUserData(id, userData);
     }
 };
 exports.AppController = AppController;
@@ -59,15 +58,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "login", null);
 __decorate([
-    (0, microservices_1.EventPattern)('user_fetched'),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], AppController.prototype, "handleOrderCreated", null);
+], AppController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Post)('update/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, get_user_dto_1.GetUserDto]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "updateUser", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)('account'),
-    __param(1, (0, common_1.Inject)('USER_SERVICE')),
-    __metadata("design:paramtypes", [app_service_1.AppService,
-        microservices_1.ClientKafka])
+    __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

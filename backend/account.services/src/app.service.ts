@@ -12,7 +12,7 @@ import { LoginDto } from './identity/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ClientKafka } from '@nestjs/microservices';
 import { GetUserRequestEvent } from './user-info.event';
-import { GetUserRequestDto } from './get-user.dto';
+import { GetUserDto } from './get-user.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 
 
@@ -23,13 +23,15 @@ export class AppService {
     @InjectModel('User') private userModel: Model<User>,
     private identityService: IdentityService,
     private jwtService:JwtService,
-    @Inject ('USER_SERVICE') private readonly client:ClientKafka,
-  ) {    this.client.subscribeToResponseOf('get_user_info');
+    @Inject('USER_SERVICE') private clientKafka: ClientKafka
+  ) {  
     }
   
 
-  async register(createIdentityDto: CreateIdentityDto): Promise<any> {
-    return this.identityService.register(createIdentityDto);
+    async register(createIdentityDto: CreateIdentityDto): Promise<any> {
+      const createdUser = await this.identityService.register(createIdentityDto);
+      this.clientKafka.emit('user_data', createdUser); // Assuming 'user_data' is your Kafka topic
+      return createdUser;
   }
   async login(loginDto: LoginDto): Promise<any> {
     const user = await this.userModel.findOne({ username: loginDto.username });
@@ -70,20 +72,27 @@ export class AppService {
   //   });
   // }
 
-  @OnEvent('get_user_info')
-  async handleUserInfo(data: { userId: string }): Promise<any> {
-    const user = await this.userModel.findById(data.userId).exec() as User;
+  // @OnEvent('get_user_info')
+  // async handleUserInfo(data: { userId: string }): Promise<any> {
+  //   const user = await this.userModel.findById(data.userId).exec() as User;
 
-    if (!user) {
-      throw new Error('User not found');
-    }
-    // Process and return the user details
-    return {
-      id: user._id,
-      name: user.firstName + ' ' + user.lastName,
-      email:user.email,
-      phoneNumber:user.phoneNumber
-    };
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
+  //   // Process and return the user details
+  //   return {
+  //     id: user._id,
+  //     name: user.firstName + ' ' + user.lastName,
+  //     email:user.email,
+  //     phoneNumber:user.phoneNumber
+  //   };
+  // }
+  async getUserData(id: string): Promise<User | null> {
+    return this.userModel.findById(id).exec();
+  }
+
+  async updateUserData(id: string, userData: GetUserDto): Promise<User> {
+    return this.userModel.findByIdAndUpdate(id, userData, { new: true }).exec();
   }
 
   

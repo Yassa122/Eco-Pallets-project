@@ -6,16 +6,16 @@ import { IdentityService } from './identity/identity.service';
 import { LoginDto } from './identity/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ClientKafka } from '@nestjs/microservices';
+import { GetUserDto } from './get-user.dto';
 export declare class AppService {
     private userModel;
     private identityService;
     private jwtService;
-    private readonly client;
-    constructor(userModel: Model<User>, identityService: IdentityService, jwtService: JwtService, client: ClientKafka);
+    private clientKafka;
+    constructor(userModel: Model<User>, identityService: IdentityService, jwtService: JwtService, clientKafka: ClientKafka);
     register(createIdentityDto: CreateIdentityDto): Promise<any>;
     login(loginDto: LoginDto): Promise<any>;
     hello(): string;
-    handleUserInfo(data: {
-        userId: string;
-    }): Promise<any>;
+    getUserData(id: string): Promise<User | null>;
+    updateUserData(id: string, userData: GetUserDto): Promise<User>;
 }

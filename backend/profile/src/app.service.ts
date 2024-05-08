@@ -4,23 +4,23 @@ import { GetUserRequest } from './dto/get-user-request.dto';
 
 @Injectable()
 export class AppService {
-  private readonly users: any[] =[
-    {
-      userId:'123',
-      stripeUserId:'34567'
-    },
-    {
-      userId:'13',
-      stripeUserId:'3567'
-    },
-    ];
+  // private readonly users: any[] =[
+  //   {
+  //     userId:'123',
+  //     stripeUserId:'34567'
+  //   },
+  //   {
+  //     userId:'13',
+  //     stripeUserId:'3567'
+  //   },
+  //   ];
   getHello(): string {
     return 'Hello World!';
   }
 
-  getUser(getUserRequest:GetUserRequest){
-    return this.users.find((user)=>user.userId===getUserRequest.userId);
-  }
+  // getUser(getUserRequest:GetUserRequest){
+  //   return this.users.find((user)=>user.userId===getUserRequest.userId);
+  // }
   
 }
 

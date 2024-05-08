@@ -15,34 +15,21 @@ const mongoose_1 = require("@nestjs/mongoose");
 const users_module_1 = require("./identity/users/users.module");
 const identity_service_1 = require("./identity/identity.service");
 const jwt_1 = require("@nestjs/jwt");
-const microservices_1 = require("@nestjs/microservices");
+const kafka_module_1 = require("./kafka/kafka/kafka.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            microservices_1.ClientsModule.register([
-                {
-                    name: 'USER_SERVICE',
-                    transport: microservices_1.Transport.KAFKA,
-                    options: {
-                        client: {
-                            clientId: 'user',
-                            brokers: ['localhost:9092']
-                        },
-                        consumer: {
-                            groupId: '1',
-                        }
-                    }
-                }
-            ]),
+            kafka_module_1.KafkaModule,
             mongoose_1.MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
             identity_module_1.IdentityModule,
             users_module_1.UsersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, identity_service_1.IdentityService, jwt_1.JwtService],
+        exports: [],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

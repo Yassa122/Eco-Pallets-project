@@ -11,8 +11,8 @@ export class AppController {
     return this.appService.getHello();
   }
   
-  @MessagePattern('get_user')
-  getUser(data:any){
-    return this.appService.getUser(data.value);
-  }
+  // @MessagePattern('get_user')
+  // getUser(data:any){
+  //   return this.appService.getUser(data.value);
+  // }
 }

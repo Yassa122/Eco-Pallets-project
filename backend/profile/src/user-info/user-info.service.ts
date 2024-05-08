@@ -1,30 +1,32 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 // import { ShippingAddressDto } from 'src/dto/shipping-address.dto'; 
 import { ClientKafka } from '@nestjs/microservices';
+import { UpdateProfileDto } from 'src/dto/update-profile-info.dto';
 
 
 @Injectable()
-export class UserInfoService {
+export class UserInfoService implements OnModuleInit {
   constructor(@Inject('ACCOUNT_SERVICE') private readonly client: ClientKafka) {}
 
-  async getProfileInfo(userId: string): Promise<any> {
-    // Sending a request to the other service to handle user information
-    const response = this.client.emit('get_user_info', { userId }).toPromise();
-
-    // Await response from the other service
-    const user = await response;
-    if (!user) {
-      throw new Error('User not found');
+  onModuleInit() {
+    this.client.subscribeToResponseOf('getUserData');
+    this.client.subscribeToResponseOf('updateUserData');
+  }
+    async getProfileInfo(userId: string): Promise<any> {
+      const user = await this.client.send('getUserData', { userId }).toPromise();
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+      return user;
+    }
+  
+    async updateProfileInfo(userId: string, updateData: UpdateProfileDto): Promise<any> {
+      const updatedUser = await this.client.send('updateUserData', { userId, ...updateData }).toPromise();
+      return updatedUser;
     }
 
-    return {
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-    };
-  }
 }
 
 
