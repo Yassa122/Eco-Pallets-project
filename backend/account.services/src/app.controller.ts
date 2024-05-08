@@ -10,12 +10,20 @@ import {
   Param,
 } from '@nestjs/common';
 
+<<<<<<< HEAD
+import { Controller, Post, Get, Body, Inject, Param, Put } from '@nestjs/common';
+import { AppService } from './app.service';
+import { ClientKafka, EventPattern } from '@nestjs/microservices';
+import { GetUserDto } from './user-info/dto/get-user.dto';
+//n
+=======
 import { Response } from 'express'; // Import Response from express for handling HTTP responses
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 import { GetUserId } from './identity/decorators/get-user-id.decorator';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 
+>>>>>>> main
 @Controller('account')
 export class AppController {
   constructor(private accountServices: AppService) {}
@@ -30,6 +38,11 @@ export class AppController {
     return this.accountServices.register(reqBody);
   }
 
+<<<<<<< HEAD
+  @Post('sign-in') 
+  async login(@Body() reqBody: any) {
+    return this.accountServices.login(reqBody);
+=======
   @Post('sign-in')
   async login(@Body() reqBody: any, @Res() res: Response) {
     const result = await this.accountServices.login(reqBody);
@@ -60,5 +73,23 @@ export class AppController {
   @Put('profile/update')
   async updateUser(@GetUserId() userId: string, @Body() updateUserDto: UpdateUserProfileDto) {
     return this.accountServices.updateUser(userId, updateUserDto);
+>>>>>>> main
   }
+
+  // @Get(':id')
+  // getUser(@Param('id') id: string) {
+  //   return this.accountServices.getUserData(id);
+  // }
+
+  // @Put('update/:id')
+  // updateUser(@Param('id') id: string, @Body() userData: GetUserDto) {
+  //   return this.accountServices.updateUserData(id, userData);
+  // }
+  // @EventPattern('user_fetched')
+  // handleOrderCreated(data:any){
+  // this.accountServices.handleUserInfo(data.value)}
+
+  // onModuleInit() {
+  //   this.client.subscribeToResponseOf('get_user_info');
+  // }
 }
