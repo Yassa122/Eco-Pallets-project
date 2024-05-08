@@ -7,20 +7,23 @@ import { databaseProviders } from './database/database.provider'; // Adjust path
 import { UserInfoService } from './user-info/user-info.service';
 import { UserInfoController } from './user-info/user-info.controller';
 import { UserInfoModule } from './user-info/user-info.module';
-
-
+import { KafkaService } from './kafka/kafka.service';
+import { KafkaModule } from './kafka/kafka.module';
 @Module({
   imports: [
- MongooseModule.forRoot('mongodb://localhost:27017/plastic-pallets'),
-  OrderModule,
-  UserInfoModule],
-  controllers: [AppController, UserInfoController],
-  providers: [AppService,
-    ...databaseProviders,
-    UserInfoService 
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallet2'),
+    OrderModule,
+    UserInfoModule,
+    KafkaModule,
   ],
-  exports: [
-    ...databaseProviders  
-  ]
+  controllers: [AppController, UserInfoController],
+  providers: [
+    AppService,
+    ...databaseProviders,
+    UserInfoService,
+    UserInfoModule, // Make sure UserInfoModule is included
+    KafkaService,
+  ],
+  exports: [...databaseProviders],
 })
 export class AppModule {}

@@ -14,6 +14,7 @@ import { Response } from 'express'; // Import Response from express for handling
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 import { GetUserId } from './identity/decorators/get-user-id.decorator';
+import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 
 @Controller('account')
 export class AppController {
@@ -46,13 +47,18 @@ export class AppController {
   }
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getUser(@GetUserId() userId: string) { // Using the custom decorator to extract the userId
+  async getUser(@GetUserId() userId: string) {
+    // Using the custom decorator to extract the userId
     return this.accountServices.getUser(userId);
   }
-  
-
-  @Put('profile/:userId')
-  async updateUser(@Param('userId') userId: string, @Body() updateBody: any) {
-    return this.accountServices.updateUser(userId, updateBody);
+  @Get(':id/send-info')
+  async handleSendUserInfo(@Param('id') id: string) {
+    await this.accountServices.sendUserInfo(id);
+    return { message: 'User info sent to Kafka' };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put('profile/update')
+  async updateUser(@GetUserId() userId: string, @Body() updateUserDto: UpdateUserProfileDto) {
+    return this.accountServices.updateUser(userId, updateUserDto);
   }
 }

@@ -68,7 +68,7 @@ export class IdentityService {
       return null;
     }
 
-    const passwordMatches = bcrypt.compare(
+    const passwordMatches = await bcrypt.compare(
       loginDto.password.toString(),
       user.password,
     );
@@ -84,45 +84,10 @@ export class IdentityService {
   }
 
   private stripSensitiveDetails(user: any): any {
-    const { password, __v, _id, ...userDetails } = user;
-    return { id: _id, ...userDetails };
-  }
-  async getUserProfileInfo(id: string): Promise<User> {
-    try {
-      const user = await this.userModel
-        .findById(id)
-        .select('-password -__v')
-        .exec();
-      if (!user) {
-        this.logger.warn(`No user found with ID: ${id}`);
-        return null; // Ensure to return null if no user found
-      }
-      return user;
-    } catch (error) {
-      this.logger.error(`Error retrieving user profile: ${error}`);
-      throw new Error('Failed to retrieve user profile');
-    }
+    const { password, __v, ...userDetails } = user;
+    return { id: user._id, ...userDetails };
   }
 
-  async updateUserProfile(
-    userId: string,
-    profileDto: UpdateUserProfileDto,
-  ): Promise<User> {
-    try {
-      const updatedUser = await this.userModel
-        .findByIdAndUpdate(userId, profileDto, { new: true })
-        .select('-password -__v')
-        .exec();
-      if (!updatedUser) {
-        this.logger.warn(`No user found with ID: ${userId}`);
-        return null;
-      }
-      return updatedUser;
-    } catch (error) {
-      this.logger.error(`Error updating user profile: ${error}`);
-      throw new Error('Failed to update user profile');
-    }
-  }
   async getUserbyUsername(username: string) {
     let loginResult = await this.userModel.findOne({
       username: username,

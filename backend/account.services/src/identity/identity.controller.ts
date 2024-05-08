@@ -33,16 +33,5 @@ export class IdentityController {
     const { id, ...rest } = command.user;
     return rest;
   }
-  @UseGuards(JwtAuthGuard)
-  @MessagePattern('updateUser')
-  async updateUser(command) {
-    console.log('Updating user: ', command.user);
-    return this.identityService.updateUserProfile(command.userId, command.data);
-  }
-
-  @Get('me')
-@UseGuards(JwtAuthGuard)
-getUserProfile(@GetUserId() userId: string) {
-  return this.identityService.getUserProfileInfo(userId);
-}
+  
 }
