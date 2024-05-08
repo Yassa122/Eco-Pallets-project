@@ -58,7 +58,10 @@ export class AppController {
   }
   @UseGuards(JwtAuthGuard)
   @Put('profile/update')
-  async updateUser(@GetUserId() userId: string, @Body() updateUserDto: UpdateUserProfileDto) {
+  async updateUser(
+    @GetUserId() userId: string,
+    @Body() updateUserDto: UpdateUserProfileDto,
+  ) {
     return this.accountServices.updateUser(userId, updateUserDto);
   }
 }

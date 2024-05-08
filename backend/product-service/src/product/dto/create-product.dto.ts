@@ -25,34 +25,17 @@ class RentalOptions {
 
 // Then define CreateProductDto class
 export class CreateProductDto {
-  @IsString()
-  @IsDefined()
-  name: string;
-
-  @IsString()
-  @IsDefined()
-  description: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  @IsDefined()
-  images: string[];
-
-  @IsNumber()
-  @IsDefined()
-  price: number;
-
-  @IsBoolean()
-  @IsDefined()
-  availability: boolean;
-
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional() // Make specifications optional
-  specifications?: string[];
-
-  @IsOptional()
-  @ValidateNested() // Ensures nested object validations
-  @Type(() => RentalOptions)
-  rentalOptions?: RentalOptions;
-}
+     name: string;
+     description: string;
+     images: string[];
+     price: number;
+     color: string;       
+     size: string;        
+     material: string;
+     availability: boolean;
+     rentalOptions?: {
+      available: boolean;
+      duration?: number;
+      price?: number;
+    };
+  }

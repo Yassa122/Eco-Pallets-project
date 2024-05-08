@@ -4,6 +4,10 @@ import { Model } from 'mongoose';
 import { CreateCartDto } from './dto/cart.dto'; 
 import { CartItemDto } from './dto/cartItem.dto'; 
 
+
+const stripe = require('stripe')('sk_test_51PDlJnP0bLgNNnYQV2v1dxD0RysfZXXUJYZJnSTQ2fmMlBfA4yu1zH9khjbvZcyZLsovYZNSo9hXITRC0ZXKpYgH00dYznYGKg');
+
+
 @Injectable()
 export class AppService {
   constructor(
@@ -122,9 +126,6 @@ export class AppService {
     return cart.save();
   }
 
-
-
-
   async applyPromoCode(userId: string, promoCode:string): Promise<any> {
     const discount = await this.promoCodeModel.findOne({promoCode}).exec();
     if (!discount) {
@@ -138,5 +139,67 @@ export class AppService {
     cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
       // Save the updated cart
       return cart.save();
+  }
+
+
+
+
+
+  async createStripe(userId: string): Promise<any>{
+    // Fetch the user's cart based on the userId
+    const userCart = await this.cartModel.findOne({ userId });
+    if (!userCart) {
+      throw new Error('Cart not found');
+    }
+
+
+    let session;
+    if(userCart.PromoCodeMultiplier<1){
+    const userCoupon = await stripe.coupons.create({
+      percent_off: Math.round((1 - userCart.PromoCodeMultiplier) * 100 * 100) / 100, // Round to two decimal places
+      duration: 'once',
+    });
+    // Create a Stripe session with the user's cart items
+    session = await stripe.checkout.sessions.create({
+      line_items: userCart.cartItems.map(cartItem => ({
+        price_data:{
+          currency:'egp',
+          unit_amount: cartItem.price * 100,
+          product_data:{
+            name:cartItem.productName
+          }
+        },
+        quantity: cartItem.quantity,
+      })),
+
+      discounts: [
+        {
+          coupon: userCoupon.id,
+        },
+      ],  
+      mode: 'payment',
+      success_url: `http://localhost:3000/success.html`,
+      cancel_url: `http://localhost:3000/cancel.html`,
+    });
+    
+  }else{
+    // Create a Stripe session with the user's cart items
+    session = await stripe.checkout.sessions.create({
+      line_items: userCart.cartItems.map(cartItem => ({
+        price_data:{
+          currency:'egp',
+          unit_amount: cartItem.price * 100,
+          product_data:{
+            name:cartItem.productName
+          }
+        },
+        quantity: cartItem.quantity,
+      })),
+      mode: 'payment',
+      success_url: `http://localhost:3000/success.html`,
+      cancel_url: `http://localhost:3000/cancel.html`,
+    });
+  }
+    return session;
   }
 }

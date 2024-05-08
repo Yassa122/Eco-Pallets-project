@@ -12,11 +12,33 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> afc9ed8c873e7b7a8fd360f59ab772b4993d903a
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
+<<<<<<< HEAD
   },
   "include": ["src/**/*"]
+=======
+  }
+=======
+    "strict": true, // Enable all strict type-checking options
+    "strictNullChecks": true, // Enable strict null checks
+    "noImplicitAny": true, // Ensure no implicit 'any' types
+    "strictBindCallApply": true, // Enable stricter checking of bind, call, and apply methods
+    "forceConsistentCasingInFileNames": true, // Ensure file names are case-consistent in imports
+    "noFallthroughCasesInSwitch": true, // Prevent fall-through in switch cases
+    "traceResolution": true, // Trace the module resolution process
+    "lib": ["ES2021", "dom"], // Include typings for ES2021 and DOM for compatibility
+    "strictPropertyInitialization": false // Disable strict property initialization
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist from the compilation process
+>>>>>>> main
+>>>>>>> afc9ed8c873e7b7a8fd360f59ab772b4993d903a
 }

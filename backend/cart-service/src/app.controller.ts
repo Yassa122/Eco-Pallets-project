@@ -83,4 +83,8 @@ export class AppController {
   ): Promise<any> {
     return this.appService.applyPromoCode(userId, promoCode);
   }
+  @Post('stripe/:userId')
+  async stripe(@Param('userId') userId:string):Promise<any>{
+    return this.appService.createStripe(userId);
+  }
 }

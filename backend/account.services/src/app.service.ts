@@ -8,6 +8,7 @@ import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { IdentityService } from './identity/identity.service';
 import { LoginDto } from './identity/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+
 import { ProfileService } from './profile/profile.service';
 
 @Injectable()
@@ -35,6 +36,7 @@ export class AppService implements OnModuleInit {
   public hello() {
     return 'Hello from API';
   }
+
   async sendUserInfo(userId: string) {
     const userInfo = await this.getUser(userId);
     this.kafkaClient.emit('user-info-topic', {

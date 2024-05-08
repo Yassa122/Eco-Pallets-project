@@ -5,12 +5,12 @@ export const ReviewSchema = new Schema({
     productId: {
         type: Types.ObjectId,
         ref: 'Product',
-        required: true
+        required: false
     },
     userId: {
         type: Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     },
     rating: {
         type: Number,
