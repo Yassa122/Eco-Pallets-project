@@ -19,11 +19,11 @@ export declare class IdentityService {
         password: string;
         phoneNumber?: string;
         company?: string;
-        address?: string;
         isEmailVerified?: boolean;
         passwordResetToken?: string;
         passwordResetExpires?: Date;
         id: any;
+        shippingAddresses: import("mongoose").LeanDocument<import("../user-info/interfaces/shipping-address").ShippingAddress>[];
     }>;
     login(loginDto: LoginDto): Promise<any>;
 }

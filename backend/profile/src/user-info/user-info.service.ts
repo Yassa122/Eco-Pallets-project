@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 // import { ShippingAddressDto } from 'src/dto/shipping-address.dto'; 
 import { ClientKafka } from '@nestjs/microservices';
 import { UpdateProfileDto } from 'src/dto/update-profile-info.dto';
+import { ShippingAddressDto } from 'src/dto/shipping-address.dto';
 
 
 @Injectable()
@@ -13,6 +14,13 @@ export class UserInfoService implements OnModuleInit {
   onModuleInit() {
     this.client.subscribeToResponseOf('getUserData');
     this.client.subscribeToResponseOf('updateUserData');
+    this.client.subscribeToResponseOf('addShippingAddress');
+    this.client.subscribeToResponseOf('removeShippingAddress');
+    this.client.subscribeToResponseOf('updateShippingAddress');
+    this.client.subscribeToResponseOf('getShippingAddresses');
+
+
+
   }
     async getProfileInfo(userId: string): Promise<any> {
       const user = await this.client.send('getUserData', { userId }).toPromise();
@@ -27,25 +35,27 @@ export class UserInfoService implements OnModuleInit {
       return updatedUser;
     }
 
+    async addShippingAddress(userId: string, addressDto: ShippingAddressDto): Promise<any> {
+      return this.client.send('addShippingAddress', { userId, addressDto }).toPromise();
+    }
+  
+    async removeShippingAddress(userId: string, addressLabel: string): Promise<any> {
+      return this.client.send('removeShippingAddress', { userId, addressLabel }).toPromise();
+    }
+  
+    async updateShippingAddress(userId: string, addressIndex: number, addressDto: ShippingAddressDto): Promise<any> {
+      const updatedShippingAddress = await this.client.send('updateShippingAddress', { userId, addressIndex, addressDto }).toPromise();
+      return updatedShippingAddress;
+    }
+  
+    async getShippingAddresses(userId: string): Promise<any> {
+      const shippingAddresses = await this.client.send('getShippingAddresses', { userId }).toPromise();
+      return shippingAddresses;
+    }
+
 }
 
 
-//   async addShippingAddress(userId: string, addressDto: ShippingAddressDto): Promise<User> {
-//     const user = await this.userModel.findById(userId);
-//     user.shippingAddresses.push(addressDto);
-//     return user.save();
-//   }
 
-//   async removeShippingAddress(userId: string, addressLabel: string): Promise<User> {
-//     const user = await this.userModel.findById(userId);
-//     user.shippingAddresses = user.shippingAddresses.filter(address => address.label !== addressLabel);
-//     return user.save();
-//   }
-
-//   async updateShippingAddress(userId: string, addressIndex: number, addressDto: ShippingAddressDto): Promise<User> {
-//     const user = await this.userModel.findById(userId);
-//     user.shippingAddresses[addressIndex] = addressDto;
-//     return user.save();
-//   }
  
 

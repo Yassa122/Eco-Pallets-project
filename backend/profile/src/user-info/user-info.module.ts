@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
-// import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserInfoService } from './user-info.service';
 import { UserInfoController } from './user-info.controller';
-import { AppModule } from '../app.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-// import { UserSchema } from 'src/schemas/user.schema';
 
 @Module({
   imports: [
@@ -18,15 +15,16 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
             brokers: ['localhost:9092'],
           },
           consumer: {
-            groupId: '2'
+            groupId: '2',
+            heartbeatInterval: 3000,  // Heartbeat interval in milliseconds
+            sessionTimeout: 30000, 
           }
         },
       },
     ]),
   ],
-    controllers: [UserInfoController],
-    providers: [UserInfoService],
-    exports: [UserInfoService]  // Export UserInfoService if it needs to be used elsewhere
-  })
-  export class UserInfoModule {}
-  
+  controllers: [UserInfoController],
+  providers: [UserInfoService],
+  exports: [UserInfoService]
+})
+export class UserInfoModule {}

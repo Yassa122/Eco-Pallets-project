@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Patch, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Param, Body, HttpException, HttpStatus, Put } from '@nestjs/common';
 import { UserInfoService } from './user-info.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { UpdateProfileDto } from 'src/dto/update-profile-info.dto';
@@ -13,7 +13,7 @@ export class UserInfoController {
     return this.userInfoService.getProfileInfo(userId);
   }
 
-  @Post('update/:userId')
+  @Put('update/:userId')
   updateProfile(@Param('userId') userId: string, @Body() updateData: UpdateProfileDto) {
     return this.userInfoService.updateProfileInfo(userId, updateData);
   }
@@ -54,9 +54,9 @@ export class UserInfoController {
 //     throw new HttpException('Failed to update address', HttpStatus.BAD_REQUEST);
 //   }
 // }
-@MessagePattern('get_user')
-  getUser(data:any){
-    return this.userInfoService.getProfileInfo(data.value);
-  }
+// @MessagePattern('get_user')
+//   getUser(data:any){
+//     return this.userInfoService.getProfileInfo(data.value);
+//   }
 
 }

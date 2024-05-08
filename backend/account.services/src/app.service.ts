@@ -12,7 +12,7 @@ import { LoginDto } from './identity/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ClientKafka } from '@nestjs/microservices';
 import { GetUserRequestEvent } from './user-info.event';
-import { GetUserDto } from './get-user.dto';
+import { GetUserDto } from './user-info/dto/get-user.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 
 
@@ -87,13 +87,13 @@ export class AppService {
   //     phoneNumber:user.phoneNumber
   //   };
   // }
-  async getUserData(id: string): Promise<User | null> {
-    return this.userModel.findById(id).exec();
-  }
+  // async getUserData(id: string): Promise<User | null> {
+  //   return this.userModel.findById(id).exec();
+  // }
 
-  async updateUserData(id: string, userData: GetUserDto): Promise<User> {
-    return this.userModel.findByIdAndUpdate(id, userData, { new: true }).exec();
-  }
+  // async updateUserData(id: string, userData: GetUserDto): Promise<User> {
+  //   return this.userModel.findByIdAndUpdate(id, userData, { new: true }).exec();
+  // }
 
   
 }
