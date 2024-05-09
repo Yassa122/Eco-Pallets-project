@@ -10,7 +10,7 @@ import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
 @Controller('product')
-export class ProductController {
+export class ProductController { 
   constructor(private readonly productService: ProductService) {}
 
   @Post()
