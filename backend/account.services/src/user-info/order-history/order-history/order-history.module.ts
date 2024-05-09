@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrderHistoryService } from './order-history.service';
 import { OrderHistoryController } from './order-history.controller';
-import { Order, OrderSchema } from '../../schemas/order.schema';
+import {  OrderSchema } from '../../schemas/order.schema';
 import { UserSchema } from 'src/identity/schemas/user.schema';
 
 @Module({

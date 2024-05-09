@@ -2,7 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { OrderSchema, Order } from '../../schemas/order.schema';
+import { OrderSchema } from '../../schemas/order.schema';
+import { Order } from 'src/user-info/interfaces/order';
 import { OrderHistoryDTO } from '../../dto/order-history.dto';
 import { CreateOrderDTO } from 'src/user-info/dto/create-order.dto';
 import { User } from 'src/identity/interfaces/user';
@@ -39,7 +40,7 @@ async findUserOrders(userId: mongoose.Types.ObjectId): Promise<OrderHistoryDTO[]
     orderNumber: order.orderNumber,
     date: order.date,
     items: order.items.map(item => ({
-      itemId: item.productId,
+      itemId: item.id,
       quantity: item.quantity,
       price: item.price,
     } as OrderItemDTO)),

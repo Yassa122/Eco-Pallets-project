@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
 import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
 import { KafkaService } from '../kafka/kafka.service';
 import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 @Injectable()
 export class IdentityService {
   private readonly logger = new Logger(IdentityService.name);
@@ -127,4 +128,30 @@ export class IdentityService {
     this.logger.debug(`JWT issued for user ID ${user.id}`);
     return { success: true, accessToken };
   }
+
+  async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+    const { oldPassword, newPassword } = updatePasswordDto;
+  
+    // Find user by their ID
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+  
+    // Verify old password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordValid) {
+      throw new UnauthorizedException('Old password is incorrect.');
+    }
+  
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  
+    // Update user's password
+    await this.userModel.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
+  
+    this.logger.debug(`Password updated successfully for user ID ${userId}`);
+    return true;
+  }
+  
 }

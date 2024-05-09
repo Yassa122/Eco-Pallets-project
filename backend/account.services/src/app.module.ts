@@ -6,40 +6,25 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './identity/users/users.module';
 import { IdentityService } from './identity/identity.service';
 import { JwtService } from '@nestjs/jwt';
-<<<<<<< HEAD
-// import { ClientsModule, Transport } from '@nestjs/microservices';
-import { KafkaModule } from './kafka/kafka/kafka.module';
-import { UserInfoModule } from './user-info/user-info/user-info.module';
-import { OrderHistoryModule } from './user-info/order-history/order-history/order-history.module';
-import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
-=======
 import { KafkaModule } from './kafka/kafka.module';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaService } from './kafka/kafka.service';
 import { ProfileService } from './profile/profile.service';
+import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
+import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
 
->>>>>>> main
 @Module({
   imports: [
     KafkaModule,
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
     IdentityModule,
     UsersModule,
-<<<<<<< HEAD
-    UserInfoModule,
-    OrderHistoryModule,
-    ReviewsModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService, IdentityService, JwtService],
-  exports: [],
-=======
     KafkaModule,
-
+    ReviewsModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService, IdentityService, JwtService,KafkaService,ProfileService],
->>>>>>> main
 })
 export class AppModule {}
