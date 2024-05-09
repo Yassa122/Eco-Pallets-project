@@ -11,6 +11,8 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { AppService } from './app.service';
+import { MessagePattern } from '@nestjs/microservices';
+
 import { ShippingAddressDto } from 'src/dto/shipping-address.dto';
 import { GetUserId } from './decorators/get-user-id.decorator';
 
@@ -86,4 +88,9 @@ export class AppController {
       );
     }
   }
+  
+  // @MessagePattern('get_user')
+  // getUser(data:any){
+  //   return this.appService.getUser(data.value);
+  // }
 }

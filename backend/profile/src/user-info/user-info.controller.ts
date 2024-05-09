@@ -15,7 +15,6 @@ import { ShippingAddressDto } from 'src/dto/shipping-address.dto';
 @Controller('user-info')
 export class UserInfoController {
   constructor(private readonly userInfoService: UserInfoService) {}
-
   @Get(':id')
   async getProfileInfo(@Param('id') id: string) {
     try {

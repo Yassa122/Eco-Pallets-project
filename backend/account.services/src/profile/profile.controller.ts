@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices/decorators';
-import { GetUserId } from 'src/identity/decorators/get-user-id.decorator';
+import { GetUserId } from 'src/decorators/get-user-id.decorator';
 import { JwtAuthGuard } from 'src/identity/strategies/jwt-auth.guard';
 import { ProfileService } from './profile.service';
 

@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './interfaces/product';
+import { Review } from './interfaces/review';
+import { Wishlist } from './interfaces/wishlist';
 import { CreateProductDto } from './dto/create-product.dto';
+import { CreateReviewDto } from './dto/create.review.dto';
+import { CreateWishlistDto } from './dto/wishlist.dto';
+import { CustomizationDto } from './dto/customization.dto';
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectModel('Product') private readonly productModel: Model<Product>) {}
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  constructor(
+    @InjectModel('Product') private readonly productModel: Model<Product>,
+    @InjectModel('Review') private readonly reviewModel: Model<Review>,
+    @InjectModel('Wishlist') private readonly wishlistModel: Model<Wishlist>
+  ) {}
+
+  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
@@ -67,6 +77,5 @@ export class ProductService {
 
     return product.save();
   }
-  
   
 }
