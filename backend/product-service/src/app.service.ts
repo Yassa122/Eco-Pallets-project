@@ -12,7 +12,7 @@ export class AppService {
   }
 
   async create(createIdentityDto: CreateProductDto): Promise<any> {
-    return this.productService.create(createIdentityDto);
+    return this.productService.createProduct(createIdentityDto);
   }
 
   
