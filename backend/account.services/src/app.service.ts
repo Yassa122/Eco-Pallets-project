@@ -10,6 +10,7 @@ import { LoginDto } from './identity/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 
 import { ProfileService } from './profile/profile.service';
+import { UserInfoService } from './user-info/user-info/user-info.service'; // Import UserInfoService
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -18,13 +19,14 @@ export class AppService implements OnModuleInit {
     private identityService: IdentityService,
     private jwtService: JwtService,
     private profileService: ProfileService,
-    @Inject('ACCOUNT_SERVICE_KAFKA') private kafkaClient: ClientKafka, // Check this key
+    private userInfoService: UserInfoService, // Add UserInfoService
+    @Inject('ACCOUNT_SERVICE_KAFKA') private kafkaClient: ClientKafka,
   ) {}
 
   async onModuleInit() {
-    // Subscribe to any necessary response topics
     await this.kafkaClient.connect();
   }
+
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {
     return this.identityService.register(createIdentityDto);
   }
@@ -44,6 +46,7 @@ export class AppService implements OnModuleInit {
       value: JSON.stringify(userInfo),
     });
   }
+
   async getUser(userId: string): Promise<User | null> {
     return this.profileService.getUserProfileInfo(userId);
   }
