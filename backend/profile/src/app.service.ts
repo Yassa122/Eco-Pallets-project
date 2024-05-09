@@ -96,4 +96,8 @@ export class AppService {
       throw error;
     }
   }
+
+  // getUser(getUserRequest:GetUserRequest){
+  //   return this.users.find((user)=>user.userId===getUserRequest.userId);
+  // }
 }
