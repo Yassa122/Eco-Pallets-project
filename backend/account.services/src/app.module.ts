@@ -12,7 +12,7 @@ import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaService } from './kafka/kafka.service';
 import { ProfileService } from './profile/profile.service';
-
+import { UserInfoService } from './user-info/user-info/user-info.service';
 @Module({
   imports: [
     KafkaModule,
@@ -29,6 +29,7 @@ import { ProfileService } from './profile/profile.service';
     JwtService,
     KafkaService,
     ProfileService,
+    UserInfoService,
   ],
 })
 export class AppModule {}
