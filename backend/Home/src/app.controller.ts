@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateListingDto } from './dto/service.dto';
 
@@ -30,5 +30,10 @@ export class AppController {
   @Delete('favorites/:id')
   async removeFromFavorites(@Param('id') id: string): Promise<void> {
     return this.appService.removeFromFavorites(id);
+  }
+
+  @Get('/searchItem/:query') // Define route to accept query parameter in URL path
+  async searchItem(@Param('query') query: string) {
+    return await this.appService.searchItem(query);
   }
 }

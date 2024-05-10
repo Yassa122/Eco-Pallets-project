@@ -77,6 +77,18 @@ export class AppService {
       throw error;
     }
   }
+  async searchItem(query: string): Promise<any[]> {
+    try {
+      // Assuming 'name' field is used for searching
+      const foundItems = await this.itemModel.find({ name: { $regex: query, $options: 'i' } })
+        .select('name image price')
+        .exec();
+      return foundItems;
+    } catch (error) {
+      console.error('Error searching for items:', error);
+      throw error;
+    }
+  }
 
   getHello(): string {
     return 'Hello World!';
