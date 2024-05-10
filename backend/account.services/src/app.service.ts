@@ -47,8 +47,8 @@ export class AppService implements OnModuleInit {
     });
   }
 
-  async getUser(userId: string): Promise<User | null> {
-    return this.profileService.getUserProfileInfo(userId);
+  async getUser(id: string): Promise<User | null> {
+    return this.profileService.getUserProfileInfo(id);
   }
 
   async updateUser(
