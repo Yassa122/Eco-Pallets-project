@@ -130,7 +130,7 @@ export class IdentityService {
 
     // Sign the JWT with the payload that now includes extended user data
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || 'your-secret-key',
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
       expiresIn: '1h', // Token expiration time
     });
 
