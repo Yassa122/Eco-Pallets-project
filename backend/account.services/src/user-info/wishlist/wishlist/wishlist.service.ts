@@ -6,10 +6,11 @@ import { Wishlist } from '../../interfaces/wishlist';
 import { Product } from '../../interfaces/product';
 import { AddProductWishlistDto } from '../../dto/add-to-wishlist.dto';
 import { RemoveProductWishlistDto } from 'src/user-info/dto/remove-from-wishlist.dto';
-
+import { UserSchema, User } from 'src/identity/schemas/user.schema';
 @Injectable()
 export class WishlistService {
   constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
     @InjectModel('Wishlist') private readonly wishlistModel: Model<Wishlist>,
     @InjectModel('Product') private readonly productModel: Model<Product>
   ) {}
@@ -32,7 +33,7 @@ export class WishlistService {
       throw new NotFoundException(`Product with ID ${productId} not found.`);
     }
   
-    const wishlist = await this.wishlistModel.findOne({ userId });
+    let wishlist = await this.wishlistModel.findOne({ userId });
   
     if (wishlist) {
       // Check if the product is already in the wishlist
@@ -43,20 +44,24 @@ export class WishlistService {
       }
   
       // Add the new product to the existing wishlist
-      // Convert string productId to ObjectId before pushing
       wishlist.products.push({
-          productId: new Types.ObjectId(productId),
-          addedAt: undefined
+        productId: new Types.ObjectId(productId),
+        addedAt: undefined
       });
-      return wishlist.save();
+      await wishlist.save();
     } else {
       // Create a new wishlist if the user doesn't have one yet
-      const newWishlist = new this.wishlistModel({
+      wishlist = new this.wishlistModel({
         userId,
-        products: [{ productId: new Types.ObjectId(productId) }], // Convert here as well
+        products: [{ productId: new Types.ObjectId(productId) }]
       });
-      return newWishlist.save();
+      await wishlist.save();
+
+      // Link this wishlist to the user
+      await this.userModel.findByIdAndUpdate(userId, { $set: { wishlist: wishlist._id } });
     }
+
+    return wishlist;
   }
   
 
@@ -73,4 +78,55 @@ export class WishlistService {
 
     return wishlist;
   }
+
+  async addItemToCartFromWishlist(userId: string, productId: string): Promise<Types.ObjectId[]> {
+    console.log("Received UserId:", userId); // Debug log
+    console.log("Received ProductId:", productId); // Debug log
+
+    const user = await this.userModel.findById(userId).populate('wishlist').exec();
+    if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+
+    console.log("User's Wishlist ID:", user.wishlist?._id); // Debug log
+
+    if (!user.wishlist) {
+        throw new NotFoundException(`Wishlist for user with ID ${userId} not found.`);
+    }
+
+    const wishlist = await this.wishlistModel.findById(user.wishlist._id);
+    if (!wishlist) {
+        throw new NotFoundException(`Wishlist for user with ID ${userId} not found.`);
+    }
+
+    console.log("Wishlist Products Detailed:", JSON.stringify(wishlist.products, null, 2));
+
+    const productIndex = wishlist.products.findIndex(item => {
+        console.log(`Comparing ${item.productId.toString()} to ${productId}`);
+        return item.productId.toString() === productId;
+    });
+
+    if (productIndex === -1) {
+        throw new NotFoundException(`Product with ID ${productId} is not in the wishlist.`);
+    }
+
+    const isProductInCart = user.cart.some(id => id.toString() === productId);
+    if (isProductInCart) {
+        throw new ConflictException(`Product with ID ${productId} is already in the cart.`);
+    }
+
+    // Add product to the cart
+    user.cart.push(new Types.ObjectId(productId));
+
+    // Remove product from the wishlist
+    wishlist.products.splice(productIndex, 1);
+
+    await wishlist.save();
+    await user.save();
+
+    // Return only the cart array
+    return user.cart;
+}
+
+
 }

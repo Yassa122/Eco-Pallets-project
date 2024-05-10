@@ -8,7 +8,7 @@ import { ProfileService } from './profile.service';
 export class ProfileController {
   constructor(private proileService: ProfileService) {}
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @MessagePattern('updateUser')
   async updateUser(command) {
     console.log('Updating user: ', command.user);
@@ -16,7 +16,7 @@ export class ProfileController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+ // @UseGuards(JwtAuthGuard)
   getUserProfile(@GetUserId() userId: string) {
     return this.proileService.getUserProfileInfo(userId);
   }

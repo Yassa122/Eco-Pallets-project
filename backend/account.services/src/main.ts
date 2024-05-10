@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { KafkaModule } from './kafka/kafka/kafka.module'; // Import Kafka module
 
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 
 async function bootstrap() {
   // Create and start an HTTP server

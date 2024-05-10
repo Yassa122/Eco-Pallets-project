@@ -5,6 +5,7 @@ import { UpdateReviewDto } from 'src/user-info/dto/update-review.dto';
 import { CreateProductDto } from 'src/user-info/dto/create-product.dto';
 import { JwtAuthGuard } from 'src/identity/strategies/jwt-auth.guard';
 import { UserReviewsDto } from 'src/user-info/dto/get-reviews.dto';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 
 @Controller('reviews')
@@ -16,22 +17,16 @@ export class ReviewsController {
     return this.reviewService.createProduct(createProductDto);
   }
 
-  @Get('user-reviews/:userId')
+  @Get('user-reviews')
   @UseGuards(JwtAuthGuard)
-  async getUserReviews(@Param('userId') userId: string): Promise<UserReviewsDto[]> {
+  async getUserReviews(@CurrentUser()  userId: string): Promise<UserReviewsDto[]> {
   return this.reviewService.findUserReviews(userId);
 }
 
-  // @Get('myreviews')
-  // @UseGuards(JwtAuthGuard)  // Ensure that this route is protected and that req.user is populated
-  // async getUserReviews(@Request() req): Promise<any> {
-  //   return await this.reviewService.findUserReviews(req.user._id.toString());
-  // }
-
-  @Post('addreview/:id')
-async addReview(
+  @Post('add-review/:id')
+  async addReview(
   @Param('id') productId: string,
-  @Query('userId') userId: string,
+  @CurrentUser()  userId: string,
   @Body() createReviewDto: CreateReviewDto
 ) {
   return this.reviewService.addReview(productId, userId, createReviewDto);
