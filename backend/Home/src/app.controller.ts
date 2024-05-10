@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateListingDto } from './dto/service.dto';
 
@@ -22,8 +22,13 @@ export class AppController {
     return this.appService.addToFavorites(body.name, body.image, body.price);
   }
 
-  @Get('/items') // Define route for getting all items
+  @Get('/items')
   async getAllItems() {
     return await this.appService.getAllItems();
+  }
+
+  @Delete('favorites/:id')
+  async removeFromFavorites(@Param('id') id: string): Promise<void> {
+    return this.appService.removeFromFavorites(id);
   }
 }

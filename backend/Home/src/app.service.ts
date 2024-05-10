@@ -30,12 +30,19 @@ export class AppService {
 
   async addToFavorites(name: string, image: string, price: number): Promise<AddToFavDto> {
     try {
+      const existingFavorite = await this.favModel.findOne({ name }).exec();
+  
+      if (existingFavorite) {
+        throw new Error('Item already exists in favorites');
+      }
+  
       const favoriteItem = await this.favModel.create({
         name,
         image,
         price,
         isFavorite: true,
       });
+  
       console.log('Added to favorites:', favoriteItem);
       return favoriteItem;
     } catch (error) {
@@ -43,6 +50,8 @@ export class AppService {
       throw error;
     }
   }
+  
+  
 
   async getAllItems(): Promise<any[]> {
     try {
@@ -51,6 +60,20 @@ export class AppService {
       return allItems;
     } catch (error) {
       console.error('Error retrieving all items:', error);
+      throw error;
+    }
+  }
+  async removeFromFavorites(itemId: string): Promise<void> {
+    try {
+      const deletedItem = await this.favModel.findByIdAndDelete(itemId).exec();
+  
+      if (!deletedItem) {
+        throw new Error('Item not found in favorites');
+      }
+  
+      console.log('Removed from favorites:', deletedItem);
+    } catch (error) {
+      console.error('Error removing from favorites:', error);
       throw error;
     }
   }
