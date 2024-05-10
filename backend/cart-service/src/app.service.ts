@@ -22,8 +22,9 @@ export class AppService {
     return 'Hello from CART SERVICE!';
   }
 
-  async createCart(createCartDto: CreateCartDto): Promise<CreateCartDto> {
+async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCartDto> {
     const createdCart = new this.cartModel(createCartDto);
+    createdCart.userId=userId;
     return createdCart.save();
   }
   async getAllCarts() {
@@ -36,7 +37,10 @@ export class AppService {
 
   async getCartItemsByUserId(userId: string) {
     const cart = await this.cartModel.findOne({ userId }).select('cartItems').exec();
-    return cart ? cart.cartItems : [];
+    if(!cart){
+      return "no cart for this userId"
+    }
+    return cart.cartItems;
   }
 
   async addOneQuantity(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {

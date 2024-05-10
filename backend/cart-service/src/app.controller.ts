@@ -11,6 +11,7 @@ import {
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto';
 import { CartItemDto } from './dto/cartItem.dto';
+import { CurrentUser } from './decorators/get-user-id.decorator';
 
 @Controller()
 export class AppController {
@@ -24,21 +25,22 @@ export class AppController {
   @Post('create-cart')
   async createCart(
     @Body() createCartDto: CreateCartDto,
+    @CurrentUser('userId') userId: string // Extract userId from token
   ): Promise<CreateCartDto> {
-    return this.appService.createCart(createCartDto);
+    return this.appService.createCart(createCartDto, userId);
   }
   @Get('carts')
   async getAllCarts() {
     return this.appService.getAllCarts();
   }
 
-  @Get('carts/:userId')
-  async getCartsByUserId(@Param('userId') userId: string) {
+  @Get('carts')
+  async getCartsByUserId(@CurrentUser('userId') userId: string) {
     return this.appService.getCartsByUserId(userId);
   }
 
-  @Get('cartItems/:userId')
-  async getCartItemsByUserId(@Param('userId') userId: string) {
+  @Get('cartItems')
+  async getCartItemsByUserId(@CurrentUser('userId') userId: string) {
     return this.appService.getCartItemsByUserId(userId);
   }
 

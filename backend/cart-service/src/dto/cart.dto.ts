@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
 import { CartItemDto } from './cartItem.dto';
 
 export class CreateCartDto {
-    readonly userId: string;
+    readonly userId: Types.ObjectId;
     readonly cartItems: CartItemDto[];
     readonly totalPrice: number; // Added attribute
     readonly Subtotal: number; // Added attribute
@@ -10,7 +11,7 @@ export class CreateCartDto {
 
     toString(){
         return JSON.stringify({
-            userId: this.userId,
+            userId:this.userId,
             cartItems: this.cartItems,
             totalPrice: this.totalPrice, // Include totalPrice in the output
             Subtotal: this.Subtotal, // Include Subtotal in the output
