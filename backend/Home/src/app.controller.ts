@@ -18,8 +18,8 @@ export class AppController {
   }
 
   @Post('/addToFavorites')
-  async addToFavorites(@Body() body: { name: string; image: string; price: number }) {
-    return this.appService.addToFavorites(body.name, body.image, body.price);
+  async addToFavorites(@Body() body: { name: string; image: string; price: number ,userID: string}) {
+    return this.appService.addToFavorites(body.name, body.image, body.price,body.userID);
   }
 
   @Get('/items')

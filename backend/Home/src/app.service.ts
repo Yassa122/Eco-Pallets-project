@@ -28,9 +28,9 @@ export class AppService {
     }
   }
 
-  async addToFavorites(name: string, image: string, price: number): Promise<AddToFavDto> {
+  async addToFavorites(name: string, image: string, price: number,userId: string): Promise<AddToFavDto> {
     try {
-      const existingFavorite = await this.favModel.findOne({ name }).exec();
+      const existingFavorite = await this.favModel.findOne({ userId }).exec();
   
       if (existingFavorite) {
         throw new Error('Item already exists in favorites');
@@ -42,6 +42,9 @@ export class AppService {
         price,
         isFavorite: true,
       });
+
+
+      
   
       console.log('Added to favorites:', favoriteItem);
       return favoriteItem;
