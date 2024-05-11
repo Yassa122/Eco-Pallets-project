@@ -8,37 +8,46 @@ import {
   UseGuards,
   Request,
   Param,
+  Delete,
 } from '@nestjs/common';
 
 import { Response } from 'express'; // Import Response from express for handling HTTP responses
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
-import { GetUserId } from './identity/decorators/get-user-id.decorator';
+import { CurrentUser } from './decorators/get-user-id.decorator';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
+import { AddShippingAddressDto } from './user-info/dto/add-shipping-address.dto';
+import { DeleteShippingAddressDto } from './user-info/dto/delete-shipping-address.dto';
+import { UpdateShippingAddressDto } from './user-info/dto/update-shipping-address.dto';
+import { UserInfoService } from './user-info/user-info/user-info.service';
 
 @Controller('account')
 export class AppController {
-  constructor(private accountServices: AppService) {}
+  constructor(
+    private accountServices: AppService,
+    private userInfoService: UserInfoService,
+  ) {}
 
   @Get('hello')
   getHello(): any {
     return this.accountServices.hello();
   }
-
+  //working
   @Post('sign-up')
   async register(@Body() reqBody: any) {
     return this.accountServices.register(reqBody);
   }
-
-
+  //working
+  
+  @UseGuards(JwtAuthGuard)
   @Post('sign-in')
   async login(@Body() reqBody: any, @Res() res: Response) {
     const result = await this.accountServices.login(reqBody);
     if (result.success) {
       res.cookie('accessToken', result.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development', // Set to true in production
-        sameSite: 'strict', // Adjust according to your cross-site request needs
+        httpOnly: false, // Should be true to prevent client-side JS from accessing the cookie
+        secure: false, // Should be true in production to send the cookie only over HTTPS
+        sameSite: 'none', // Typically 'lax' is sufficient for most use cases and improves CSRF protection
         expires: new Date(Date.now() + 3600000), // Set cookie to expire in 1 hour
       });
       return res.status(200).json(result);
@@ -46,12 +55,15 @@ export class AppController {
       return res.status(401).json({ message: 'Authentication failed' });
     }
   }
+
+  //working
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getUser(@GetUserId() userId: string) {
+  async getUser(@CurrentUser() userId: string) {
     // Using the custom decorator to extract the userId
     return this.accountServices.getUser(userId);
   }
+
   @Get(':id/send-info')
   async handleSendUserInfo(@Param('id') id: string) {
     await this.accountServices.sendUserInfo(id);
@@ -63,20 +75,48 @@ export class AppController {
     return this.accountServices.updateUser(userId, updateUserDto);
   }
 
-  // @Get(':id')
-  // getUser(@Param('id') id: string) {
-  //   return this.accountServices.getUserData(id);
+  // @Get(':id/send-info')
+  // async handleSendUserInfo(@Param('id') id: string) {
+  //   await this.accountServices.sendUserInfo(id);
+  //   return { message: 'User info sent to Kafka' };
   // }
 
-  // @Put('update/:id')
-  // updateUser(@Param('id') id: string, @Body() userData: GetUserDto) {
-  //   return this.accountServices.updateUserData(id, userData);
-  // }
-  // @EventPattern('user_fetched')
-  // handleOrderCreated(data:any){
-  // this.accountServices.handleUserInfo(data.value)}
+  //working
+  @Put('profile/update')
+  async updateUser(
+    @CurrentUser() userId: string,
+    @Body() updateUserDto: UpdateUserProfileDto,
+  ) {
+    return this.userInfoService.updateUserData(userId, updateUserDto);
+  }
+  //workong
+  @Get('user-info/addresses')
+  getShippingAddresses(@CurrentUser('userId') userId: string) {
+    return this.userInfoService.getShippingAddresses(userId);
+  }
 
-  // onModuleInit() {
-  //   this.client.subscribeToResponseOf('get_user_info');
-  // }
+  //working
+  @Post('user-info/add-address')
+  addShippingAddress(
+    @CurrentUser('userId') userId: string,
+    @Body() addressDto: AddShippingAddressDto,
+  ) {
+    return this.userInfoService.addShippingAddress(userId, addressDto);
+  }
+  //working (when testingg in postman, use the _id of the address you want to update as the id in the body)
+  @Put('user-info/update-address')
+  updateShippingAddress(
+    @CurrentUser('userId') userId: string,
+    @Body() updateDto: UpdateShippingAddressDto,
+  ) {
+    return this.userInfoService.updateShippingAddress(userId, updateDto);
+  }
+  //working
+  @Delete('user-info/delete-address')
+  deleteShippingAddress(
+    @CurrentUser('userId') userId: string,
+    @Body() deleteDto: DeleteShippingAddressDto,
+  ) {
+    return this.userInfoService.deleteShippingAddress(userId, deleteDto._id);
+  }
 }

@@ -1,8 +1,6 @@
-// src/identity/dtos/delete-shipping-address.dto.ts
-import { IsNotEmpty } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsString } from 'class-validator';
 
 export class DeleteShippingAddressDto {
-  @IsNotEmpty()
-  _id: Types.ObjectId;
+  @IsString()
+  _id: string; // Use string type to match the method signature
 }

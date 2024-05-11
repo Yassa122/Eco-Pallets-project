@@ -1,3 +1,29 @@
+import {
+  IsString,
+  IsBoolean,
+  IsNumber,
+  IsArray,
+  IsOptional,
+  ValidateNested,
+  IsDefined,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+// Define RentalOptions class first
+class RentalOptions {
+  @IsBoolean()
+  available: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  duration?: number;
+
+  @IsNumber()
+  @IsOptional()
+  price?: number;
+}
+
+// Then define CreateProductDto class
 export class CreateProductDto {
      name: string;
      description: string;
