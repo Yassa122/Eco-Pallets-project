@@ -34,6 +34,8 @@ export class KafkaService {
 }
 
 
+
+
   getConsumer(groupId: string): Consumer {
     return this.kafka.consumer({ groupId });
   }
