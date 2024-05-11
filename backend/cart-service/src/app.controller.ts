@@ -7,12 +7,16 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto';
 import { CartItemDto } from './dto/cartItem.dto';
+import { UserId } from './decorator/user.decorator';
+import { JwtStrategy } from './stratgies/jwt.stratgy';
 
-@Controller()
+
+@Controller("cart-service")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -21,12 +25,14 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post('create-cart')
-  async createCart(
-    @Body() createCartDto: CreateCartDto,
-  ): Promise<CreateCartDto> {
+  
+  @UseGuards(JwtStrategy)
+  @Post('create')
+  async createCart(@UserId() userId: string, @Body() createCartDto: CreateCartDto) {
+    createCartDto.userId = userId; // Set the user ID from the token
     return this.appService.createCart(createCartDto);
   }
+  
   @Get('carts')
   async getAllCarts() {
     return this.appService.getAllCarts();
