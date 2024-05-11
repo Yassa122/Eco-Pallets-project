@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { CartItemDto } from './cartItem.dto';
 
 export class CreateCartDto {
@@ -10,7 +11,7 @@ export class CreateCartDto {
 
     toString(){
         return JSON.stringify({
-            userId: this.userId,
+            userId:this.userId,
             cartItems: this.cartItems,
             totalPrice: this.totalPrice, // Include totalPrice in the output
             Subtotal: this.Subtotal, // Include Subtotal in the output

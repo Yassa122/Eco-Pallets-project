@@ -18,34 +18,38 @@ export class AppService {
 
   ) {}
 
-  getHello(): string {
+  getHello(): string { //working
     return 'Hello from CART SERVICE!';
   }
 
-  async createCart(createCartDto: CreateCartDto): Promise<CreateCartDto> {
+async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCartDto> { // working
     const createdCart = new this.cartModel(createCartDto);
+    createdCart.userId=userId;
     return createdCart.save();
   }
-  async getAllCarts() {
+  async getAllCarts() { //working
     return this.cartModel.find().exec();
   }
 
-  async getCartsByUserId(userId: string) {
+  async getCartsByUserId(userId: string) { //working
     return this.cartModel.find({ userId }).exec();
   }
 
-  async getCartItemsByUserId(userId: string) {
+  async getCartItemsByUserId(userId: string) { //working
     const cart = await this.cartModel.findOne({ userId }).select('cartItems').exec();
-    return cart ? cart.cartItems : [];
+    if(!cart){
+      return "no cart for this userId"
+    }
+    return cart.cartItems;
   }
 
-  async addOneQuantity(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
+  async addOneQuantity(userId: string, prodId: string): Promise<any> { //working
     const cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
     }
       
-    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId == prodId);
     if (cartItemIndex === -1) {
       throw new Error('CartItem not found');
     }
@@ -61,13 +65,13 @@ export class AppService {
     return cart.save();
   }
 
-  async subtractOneQuantity(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
+  async subtractOneQuantity(userId: string, prodId: string): Promise<any> { //working
     const cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
     }
       
-    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId == prodId);
     if (cartItemIndex === -1) {
       throw new Error('CartItem not found');
     }
@@ -83,13 +87,13 @@ export class AppService {
     return cart.save();
   }
   
-  async removeCartItem(userId: string, cartItemIdObj: { cartItemId: string }): Promise<any> {
+  async removeCartItem(userId: string, prodId: string): Promise<any> { //working
     const cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
     }
 
-    const cartItemIndex = cart.cartItems.findIndex(item => item.productId === cartItemIdObj.cartItemId.trim());
+    const cartItemIndex = cart.cartItems.findIndex(item => item.productId == prodId);
     if (cartItemIndex === -1) {
       throw new Error('CartItem not found');
     }
@@ -100,12 +104,12 @@ export class AppService {
   }
   
 
-  async createCartItem(cartItem: CartItemDto): Promise<CartItemDto> {
+  async createCartItem(cartItem: CartItemDto): Promise<CartItemDto> { //working
     const createdCartItem = new this.cartItemModel(cartItem);
     return createdCartItem.save();
   }
 
-  async addToCart(userId: string, cartItem: CartItemDto): Promise<any> {
+  async addToCart(userId: string, cartItem: CartItemDto): Promise<any> { //working
     const cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
@@ -126,7 +130,7 @@ export class AppService {
     return cart.save();
   }
 
-  async applyPromoCode(userId: string, promoCode:string): Promise<any> {
+  async applyPromoCode(userId: string, promoCode:string): Promise<any> { //working
     const discount = await this.promoCodeModel.findOne({promoCode}).exec();
     if (!discount) {
       throw new Error('Invalid Promo Code');
@@ -145,7 +149,7 @@ export class AppService {
 
 
 
-  async createStripe(userId: string): Promise<any>{
+  async createStripe(userId: string): Promise<any>{ //working
     // Fetch the user's cart based on the userId
     const userCart = await this.cartModel.findOne({ userId });
     if (!userCart) {

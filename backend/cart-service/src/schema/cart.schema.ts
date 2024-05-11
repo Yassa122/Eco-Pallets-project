@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { CartItemSchema } from './cartItem.schema';
 
 export const CartSchema = new mongoose.Schema({
-    userId: { type: String, required: true },
+    userId: { type: mongoose.Types.ObjectId, required: true },
     cartItems: { type: [CartItemSchema] },
     PromoCodeMultiplier: { type: Number, default: 1},
     Subtotal: { type: Number }, 
