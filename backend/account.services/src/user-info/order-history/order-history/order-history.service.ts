@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { IOrder, Order } from '../../schemas/order.schema';
+import mongoose, { Model } from 'mongoose';
+import { OrderSchema } from '../../schemas/order.schema';
+import { Order } from 'src/user-info/interfaces/order';
 import { OrderHistoryDTO } from '../../dto/order-history.dto';
 import { User } from 'src/identity/interfaces/user';
 import { OrderItemDTO } from 'src/user-info/dto/order-item.dto';
@@ -29,23 +30,23 @@ export class OrderHistoryService {
     //     return order;
     //   }
 
-    return orders.map((order) => {
-      return {
-        orderId: order._id, // Keeping as ObjectId
-        orderNumber: order.orderNumber,
-        date: order.date,
-        items: order.items.map(
-          (item) =>
-            ({
-              itemId: item._id.toString(), // Assuming OrderItemDTO uses string for itemId
-              itemName: item.itemName,
-              quantity: item.quantity,
-              price: item.price,
-            }) as unknown as OrderItemDTO,
-        ),
-        totalAmount: order.totalAmount,
-        status: order.status,
-      } as OrderHistoryDTO;
-    });
-  }
+
+async findUserOrders(userId: mongoose.Types.ObjectId): Promise<OrderHistoryDTO[]> {
+  // Query the orders collection for orders matching the given userId
+  const orders = await this.orderModel.find({ userId }).lean();
+
+  // Transform orders into OrderHistoryDTO format
+  return orders.map(order => ({
+    orderId: order._id,
+    orderNumber: order.orderNumber,
+    date: order.date,
+    items: order.items.map(item => ({
+      itemId: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    } as OrderItemDTO)),
+    totalAmount: order.totalAmount,
+    status: order.status,
+  } as OrderHistoryDTO));
+}
 }
