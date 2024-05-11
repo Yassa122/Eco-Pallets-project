@@ -1,8 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { Order } from 'src/user-info/schemas/order.schema';
-import { Review} from 'src/user-info/schemas/review.schema';  // Adjust the path as necessary
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
-// Define the Shipping Address Schema
+// ShippingAddressSchema remains unchanged
 const ShippingAddressSchema = new Schema({
   label: { type: String, required: true },
   address: { type: String, required: true },
@@ -19,22 +17,22 @@ export interface ShippingAddress {
   country: string;
 }
 
-// Define the User Schema
+// Define the User Schema with reference to orders and reviews
 export const UserSchema = new Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: false },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phoneNumber: { type: String },
-    company: { type: String },
-    shippingAddresses: [ShippingAddressSchema],  // Include the Shipping Address Schema here
-    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],  // Reference to the Order model
+    phoneNumber: { type: String, optional: true },
+    company: { type: String, optional: true },
+    shippingAddresses: [ShippingAddressSchema],
+    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],  // References Order documents
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }], // Array to store references to Review documents
     isEmailVerified: { type: Boolean, default: false },
-    passwordResetToken: { type: String },
-    passwordResetExpires: { type: Date },
-    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],  // Reference to the Review model
+    passwordResetToken: { type: String, optional: true },
+    passwordResetExpires: { type: Date, optional: true },
   },
   {
     timestamps: true,
@@ -50,9 +48,9 @@ export interface User extends Document {
   phoneNumber?: string;
   company?: string;
   shippingAddresses: ShippingAddress[];
-  orders: mongoose.Types.ObjectId[]; 
+  orders: Types.ObjectId[];  // Array of Order references
+  reviews: Types.ObjectId[];  // Array of Review references
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
-  reviews: mongoose.Types.ObjectId[];  // Array of ObjectIds referencing Reviews
 }

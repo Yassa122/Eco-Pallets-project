@@ -38,6 +38,7 @@ export class AppController {
     return this.accountServices.register(reqBody);
   }
   //working
+  
   @UseGuards(JwtAuthGuard)
   @Post('sign-in')
   async login(@Body() reqBody: any, @Res() res: Response) {
@@ -61,6 +62,17 @@ export class AppController {
   async getUser(@CurrentUser() userId: string) {
     // Using the custom decorator to extract the userId
     return this.accountServices.getUser(userId);
+  }
+
+  @Get(':id/send-info')
+  async handleSendUserInfo(@Param('id') id: string) {
+    await this.accountServices.sendUserInfo(id);
+    return { message: 'User info sent to Kafka' };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put('profile/update')
+  async updateUser(@GetUserId() userId: string, @Body() updateUserDto: UpdateUserProfileDto) {
+    return this.accountServices.updateUser(userId, updateUserDto);
   }
 
   // @Get(':id/send-info')
