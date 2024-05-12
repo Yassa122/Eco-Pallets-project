@@ -1,95 +1,92 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
 import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { TokenDto } from './dto/token.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
-import { UserSchema } from './users/schemas/user.schema';
-import { InjectModel } from '@nestjs/mongoose';
+import { KafkaService } from '../kafka/kafka.service';
+import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 @Injectable()
 export class IdentityService {
+  private readonly logger = new Logger(IdentityService.name);
+  hello: any;
+
   constructor(
-    @InjectModel('User') private userModel: Model<User>, // Make sure 'User' matches the name given in forFeature
+    @InjectModel('User') private userModel: Model<User>,
     private jwtService: JwtService,
+    private kafkaService: KafkaService,
   ) {}
 
-  hello(message) {
-    return message;
-  }
-
   async register(createIdentityDto: CreateIdentityDto): Promise<User> {
-    // Check if the username or email already exists
-    const existingUser = await this.userModel
-      .findOne({
-        $or: [
-          { username: createIdentityDto.username },
-          { email: createIdentityDto.email },
-        ],
-      })
-      .exec();
-    if (existingUser) {
+    this.logger.debug('Attempting to register a new user');
+
+    if (
+      await this.userExists(createIdentityDto.username, createIdentityDto.email)
+    ) {
+      this.logger.warn(
+        `Registration failed: User already exists with username ${createIdentityDto.username} or email ${createIdentityDto.email}`,
+      );
       throw new UserAlreadyExistsException();
     }
 
-    // Hash the password using bcrypt with a salt round of 10
     const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
-
-    // Create a new user with all provided details
-    const newUser = new this.userModel({
-      firstName: createIdentityDto.firstName,
-      lastName: createIdentityDto.lastName,
-      email: createIdentityDto.email,
-      username: createIdentityDto.username,
-      password: hashedPassword,
-      phoneNumber: createIdentityDto.phoneNumber,
-      company: createIdentityDto.company,
-      address: createIdentityDto.address,
-      isEmailVerified: false, // Default to false until verified
-      passwordResetToken: createIdentityDto.passwordResetToken,
-      passwordResetExpires: createIdentityDto.passwordResetExpires,
-    });
-
-    const savedUser = await newUser.save();
-
-    return savedUser;
+    const user = await this.createUser(createIdentityDto, hashedPassword);
+    this.logger.debug(`User ${user._id} registered successfully`);
+    return user;
   }
 
-  async validateUser(loginDto: LoginDto): Promise<any> {
-    // Fetch user by username
-    let user = await this.userModel.findOne({ username: loginDto.username });
+  private async userExists(username: string, email: string): Promise<boolean> {
+    const user = await this.userModel
+      .findOne({
+        $or: [{ username }, { email }],
+      })
+      .exec();
+    return !!user;
+  }
 
-    // Log the found user for debugging
-    console.log('Fetched user:', user);
+  private async createUser(
+    dto: CreateIdentityDto,
+    hashedPassword: string,
+  ): Promise<User> {
+    const newUser = new this.userModel({
+      ...dto,
+      password: hashedPassword,
+      isEmailVerified: false,
+    });
+    return newUser.save();
+  }
 
-    // Check if user exists
+  async validateUser(loginDto: LoginDto): Promise<User | null> {
+    const user = await this.userModel.findOne({ username: loginDto.username });
     if (!user) {
-      console.log('No user found with this username:', loginDto.username);
+      this.logger.warn(
+        `Login failed: No user found with username ${loginDto.username}`,
+      );
       return null;
     }
 
-    // Check if the password matches
     const passwordMatches = await bcrypt.compare(
-      loginDto.password,
+      loginDto.password.toString(),
       user.password,
     );
-    console.log('Password matches:', passwordMatches);
-
-    if (passwordMatches) {
-      let userData = user.toObject();
-      let { __v, _id, password, ...userDetails } = userData;
-
-      // Return user details without sensitive data
-      return {
-        id: userData._id,
-        ...userDetails,
-      };
+    if (!passwordMatches) {
+      this.logger.warn(
+        `Login failed: Incorrect password for username ${loginDto.username}`,
+      );
+      return null;
     }
 
-    // Return null if password doesn't match
-    return null;
+    this.logger.debug(`User ${user._id} authenticated successfully`);
+    return this.stripSensitiveDetails(user.toObject());
+  }
+
+  private stripSensitiveDetails(user: any): any {
+    const { password, __v, ...userDetails } = user;
+    return { id: user._id, ...userDetails };
   }
 
   async getUserbyUsername(username: string) {
@@ -108,22 +105,82 @@ export class IdentityService {
       ...userData,
     };
   }
-  async login(loginDto: LoginDto): Promise<any> {
-    const user = await this.userModel.findOne({ username: loginDto.username });
-    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
-      const payload = {
-        id: user._id,
-        name: user.firstName + ' ' + user.lastName, // assuming you want to use full name
-        username: user.username,
-      };
 
-      const accessToken = this.jwtService.sign(payload, {
-        secret: process.env.JWT_SECRET || 'your_secret_key', // Use an environment variable or a fallback secret
-        expiresIn: '1h', // Token validity time
-      });
-
-      return { success: true, accessToken: accessToken };
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ success: boolean; accessToken?: string }> {
+    const user = await this.validateUser(loginDto);
+    if (!user) {
+      return { success: false };
     }
-    return { success: false };
+
+    // Prepare the payload
+    const payload = {
+      id: user.id, // Unique identifier for the user
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber, // Optional field
+      company: user.company, // Optional field
+      shippingAddresses: user.shippingAddresses,
+      isEmailVerified: user.isEmailVerified, // Default is false, optional
+      passwordResetToken: user.passwordResetToken, // Optional for password resets
+      passwordResetExpires: user.passwordResetExpires, // Optional for password resets
+    };
+
+    // Sign the JWT with the payload that now includes extended user data
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+      expiresIn: '1h', // Token expiration time
+    });
+
+    // Optional: Send user details to other services via Kafka
+    await this.kafkaService.sendMessage('user-logged-in', {
+      userId: user.id.toString(),
+      userDetails: this.prepareUserData(user),
+      token: accessToken,
+    });
+
+    return { success: true, accessToken };
   }
+
+  // Ensure that the prepareUserData method does not strip out data you now want to include in the JWT
+  private prepareUserData(user: any): any {
+    // Directly destructuring without converting to Mongoose document
+    const {
+      password,
+      passwordResetToken,
+      passwordResetExpires,
+      __v,
+      ...safeData
+    } = user;
+    return safeData;
+  }
+
+  async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+    const { oldPassword, newPassword } = updatePasswordDto;
+  
+    // Find user by their ID
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+  
+    // Verify old password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordValid) {
+      throw new UnauthorizedException('Old password is incorrect.');
+    }
+  
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  
+    // Update user's password
+    await this.userModel.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
+  
+    this.logger.debug(`Password updated successfully for user ID ${userId}`);
+    return true;
+  }
+  
 }
