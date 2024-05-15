@@ -3,16 +3,21 @@ import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Pallet1 from '../../images/cart/pallet1.png';
-import axios from 'axios';
+import Proceed from './proceed';
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [subtotal, setSubtotal] = useState(0); // State to hold the subtotal
 
   useEffect(() => {
     // Fetch cart items when the component mounts
     fetchCartItems();
   }, []);
 
+  useEffect(() => {
+    // Recalculate subtotal whenever cartItems change
+    calculateTotal();
+  }, [cartItems]);
 
 
   const fetchCartItems = async () => {
@@ -124,33 +129,38 @@ const ShoppingCart = () => {
     };
         
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+      const subbtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+      setSubtotal(subbtotal);
+    };
 
-  return (
-    <div style={{ color: 'white', width: '50%', float: 'left', marginLeft:'1vw'}} className='p-8'> {/* Set width to 50% and float to left */}
-      {cartItems.map((item, index) => (
-        <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
-          <Image src={Pallet1} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }} />
-          <div>
-            <p>{item.productName}</p>
-            <p>Price: ${item.price}</p>
-            <div style={{ display: 'flex', alignItems: 'center' }}> {/* Adjusted spacing */}
-              <button onClick={() => decrementQuantity(item.productId)}>-</button>
-              <span style={{ margin: '0 10px' }}>{item.quantity}</span> {/* Adjusted spacing */}
-              <button onClick={() => incrementQuantity(item.productId)}>+</button>
+    return (
+      <div>
+        <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
+          {cartItems.map((item, index) => (
+            <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
+              <Image src={Pallet1} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }} />
+              <div>
+                <p style={{ padding: "0.5vh" }}>{item.productName}</p>
+                <p style={{ padding: "0.5vh" }}>Price: ${item.price}</p>
+                <div style={{ display: 'flex', alignItems: 'center', padding: "0.5vh" }}>
+                <button onClick={() => decrementQuantity(item.productId)} style={{ backgroundColor: "transparent", color: "#7F92B3", padding: "0.2rem", borderRadius: "100%", marginRight: "0.2rem", fontSize: "1rem", fontWeight: "bold", border: "1px solid #7F92B3" }}>-</button>
+                <span style={{ margin: '0 10px', fontSize: "0.8rem" }}>{item.quantity}</span>
+                <button onClick={() => incrementQuantity(item.productId)} style={{ backgroundColor: "transparent", color: "#7F92B3", padding: "0.2rem", borderRadius: "100%", marginLeft: "0.2rem",fontSize: "1rem", fontWeight: "bold", border: "1px solid #7F92B3" }}>+</button>
+
+                </div>
+                <p style={{ padding: "0.5vh" }}>Total Price: ${item.price * item.quantity}</p>
+                <button onClick={() => removeItem(item.productId)} style={{ padding: "0.5vh" }}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </div>
             </div>
-            <p>Total Price: ${item.price * item.quantity}</p>
-            <button onClick={() => removeItem(item.productId)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
-          </div>
+          ))}
         </div>
-      ))}
-      <p>Subtotal: ${calculateTotal()}</p>
-    </div>
-  );
+        <Proceed subtotal={subtotal} />
+      </div>
+    );
+    
+    
+  };
   
-};
-
-export default ShoppingCart;
+  export default ShoppingCart;

@@ -15,8 +15,8 @@ const PhasesComponent = () => {
                 {steps.stepsItems.map((item, idx) => (
                     <li aria-current={steps.currentStep == idx + 1 ? "step" : false} className="flex-1 last:flex-none flex gap-x-2 md:items-center">
                         <div className="flex items-center flex-col gap-x-2">
-                            <div className={`w-8 h-8 rounded-full border-2 flex-none flex items-center justify-center ${steps.currentStep > idx + 1 ? "bg-indigo-600 border-indigo-600" : "" || steps.currentStep == idx + 1 ? "border-indigo-600" : ""}`}>
-                                <span className={` ${steps.currentStep > idx + 1 ? "hidden" : "" || steps.currentStep == idx + 1 ? "text-indigo-600" : ""}`}>
+                            <div className={`w-8 h-8 rounded-full border-2 flex-none flex items-center justify-center ${steps.currentStep > idx + 1 ? "bg-cyan-600 border-cyan-600" : "" || steps.currentStep == idx + 1 ? "border-cyan-600" : ""}`}>
+                                <span className={` ${steps.currentStep > idx + 1 ? "hidden" : "" || steps.currentStep == idx + 1 ? "text-cyan-600" : ""}`}>
                                     {idx + 1}
                                 </span>
                                 {
@@ -27,14 +27,14 @@ const PhasesComponent = () => {
                                     ) : ""
                                 }
                             </div>
-                            <hr className={`h-12 border md:hidden ${idx + 1 == steps.stepsItems.length ? "hidden" : "" || steps.currentStep > idx + 1 ? "border-indigo-600" : ""}`} />
+                            <hr className={`h-12 border md:hidden ${idx + 1 == steps.stepsItems.length ? "hidden" : "" || steps.currentStep > idx + 1 ? "border-cyan-600" : ""}`} />
                         </div>
                         <div className="h-8 flex items-center md:h-auto">
-                            <h3 className={`text-sm ${steps.currentStep == idx + 1 ? "text-indigo-600" : ""}`}>
+                            <h3 className={`text-sm ${steps.currentStep == idx + 1 ? "text-cyan-600" : ""}`}>
                                 {item}
                             </h3>
                         </div>
-                        <hr className={`hidden mr-2 w-full border md:block ${idx + 1 == steps.stepsItems.length ? "hidden" : "" || steps.currentStep > idx + 1 ? "border-indigo-600" : ""}`} />
+                        <hr className={`hidden mr-2 w-full border md:block ${idx + 1 == steps.stepsItems.length ? "hidden" : "" || steps.currentStep > idx + 1 ? "border-cyan-600" : ""}`} />
                     </li>
                 ))}
             </ul>

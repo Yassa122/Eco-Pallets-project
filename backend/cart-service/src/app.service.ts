@@ -146,9 +146,22 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
     }
     cart.PromoCodeMultiplier=1-(discount.discountInPercent/100);
     cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
+    await cart.save();
       // Save the updated cart
-      return cart.save();
-  }
+      return { discount, cart };
+    }
+
+    async resetPromoCode(userId: string): Promise<any> { //working
+      const cart = await this.cartModel.findOne({ userId }).exec();
+      if (!cart) {
+        throw new Error('Cart not found');
+      }
+      cart.PromoCodeMultiplier=1;
+      cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
+      await cart.save();
+        // Save the updated cart
+        return { cart };
+      }
 
 
 

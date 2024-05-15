@@ -87,6 +87,12 @@ export class AppController {
   ): Promise<any> {
     return this.appService.applyPromoCode(userId, promoCode);
   }
+  @Put('resetPromoCode')//working
+  async resetPromoCode(
+    @CurrentUser('userId') userId: string ,
+  ): Promise<any> {
+    return this.appService.resetPromoCode(userId);
+  }
   @Post('stripe')//working
   async stripe(@CurrentUser('userId') userId: string):Promise<any>{
     return this.appService.createStripe(userId);

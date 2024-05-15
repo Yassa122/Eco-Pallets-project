@@ -10,8 +10,9 @@ export default function Cart() {
     <main>
       <Navbar />
       <PhasesComponent />
+      <div className="p-16">
       <ShoppingCart />
-      <Proceed />
+</div>
     </main>
   );
 }
