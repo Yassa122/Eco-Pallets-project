@@ -51,7 +51,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError(error.message || "Failed to log in.");
+      //setError(error.message || "Failed to log in.");
 
     }
   };

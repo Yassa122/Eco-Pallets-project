@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import product1 from '../pics/Unknowncs.jpeg'
+import product1 from '../pics/p4 Background Removed.png';
+import cart from '../pics/cacart Background Removed.png';
+import heart from '../pics/heart .png';
 
 const FeaturedProducts = () => {
   const [items, setItems] = useState([]);
@@ -76,25 +78,31 @@ const FeaturedProducts = () => {
   };
 
   return (
-    <section style={{ color: 'white' }}>
-      <h2>Featured Products</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+    <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20px' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>  Products</h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {items.map((item) => (
-          <li key={item.id} style={{ marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
-            <div style={{ marginRight: '20px', flex: '0 0 auto' }}>
-              <Image src={product1} width={100} height={100} />
+          <div key={item.id} style={{ flex: '1 1 300px', border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#111111', color: '#fff', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
+            <div style={{ width: '150px', height: '150px', margin: '0 auto 20px', position: 'relative', overflow: 'hidden', borderRadius: '50%' }}>
+              <Image src={product1} layout="fill" objectFit="cover" />
             </div>
-            <div style={{ flex: '1 1 auto' }}>
-              <h3 style={{ margin: '0', marginBottom: '5px' }}>{item.name}</h3>
-              <p style={{ margin: '0', color: '#888' }}>Price: {item.price}</p>
+            <div style={{ textAlign: 'left', marginBottom: '10px' }}>
+              <h3 style={{ margin: '0', fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>{item.name}</h3>
+              <p style={{ margin: '0', color: '#888', fontSize: '1rem' }}>Price: {item.price}</p>
             </div>
-            <div style={{ flex: '0 0 auto' }}>
-              <button onClick={() => addToCart(item.id)} style={{ marginRight: '10px', padding: '8px 12px', border: 'none', backgroundColor: '#007bff', color: 'white', borderRadius: '5px', cursor: 'pointer' }}>Add to Cart</button>
-              <button onClick={() => addToFavorites(item.id)} style={{ padding: '8px 12px', border: 'none', backgroundColor: '#28a745', color: 'white', borderRadius: '5px', cursor: 'pointer' }}>Add to Favorites</button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <button onClick={() => addToCart(item.id)} style={{ margin: '5px 0', padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'white', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
+                <Image src={cart} alt="Add to Cart" width={20} height={20} style={{ marginRight: '5px' }} />
+                <span>+ to Cart</span>
+              </button>
+              <button onClick={() => addToFavorites(item.id)} style={{ margin: '5px 0', padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'white', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
+                <Image src={heart} alt="Add to Favorites" width={20} height={20} style={{ marginRight: '5px' }} />
+                <span>+ to Favorites</span>
+              </button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </section>
   );
 };
