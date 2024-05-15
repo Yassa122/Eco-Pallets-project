@@ -61,14 +61,12 @@ async addToFavorites(userId: string, cartItem: AddToFavDto): Promise<any> {
     // If favorites not found, create a new favorites document
     favModel = new this.favModel({
       userId: userId,
-      productId: new ObjectId(),
       name: cartItem.name,
       image: cartItem.image,
       price: cartItem.price,
     });
   } else {
     // Update existing favorite item or add a new one
-    favModel.productId = new ObjectId();
     favModel.name = cartItem.name;
     favModel.image = cartItem.image;
     favModel.price = cartItem.price;
