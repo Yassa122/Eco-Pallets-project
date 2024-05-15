@@ -76,6 +76,11 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
       throw new Error('CartItem not found');
     }
     
+    // Check if the quantity is already 1
+    if (cart.cartItems[cartItemIndex].quantity === 1) {
+      // If quantity is already 1, do not decrement further
+      return cart;
+  }
     // Decrement the quantity of the cart item
     cart.cartItems[cartItemIndex].quantity--;
 

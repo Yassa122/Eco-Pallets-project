@@ -15,7 +15,7 @@ import { CartItemDto } from './dto/cartItem.dto';
 import { CurrentUser } from './decorators/get-user-id.decorator';
 
 
-@Controller("cart-service")
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
