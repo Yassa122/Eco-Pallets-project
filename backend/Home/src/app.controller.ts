@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateListingDto } from './dto/service.dto';
+import { AddToFavDto } from './dto/fav.dto';
+import { CurrentUser } from 'src/decorators/get-user-id.decorator';
+
 
 @Controller()
 export class AppController {
@@ -17,10 +20,18 @@ export class AppController {
     return await this.appService.createListing(name, image, price);
   }
 
-  @Post('/addToFavorites')
-  async addToFavorites(@Body() body: { name: string; image: string; price: number; productId: number; userId: number }) {
-    return this.appService.addToFavorites(body.name, body.image, body.price, body.productId, body.userId);
+  // @Post('/addToFavorites')
+  // async addToFavorites(@Body() body: { name: string; image: string; price: number; productId: number; userId: number }) {
+  //   return this.appService.addToFavorites(body.name, body.image, body.price, body.productId, body.userId);
+  // }
+  @Post('addToFavorites')//working
+  async addToCart(
+    @CurrentUser('userId') userId: string ,
+    @Body() cartItem: AddToFavDto,
+  ): Promise<any> {
+    return this.appService.addToFavorites(userId, cartItem);
   }
+
 
   @Get('/items')
   async getAllItems() {

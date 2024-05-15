@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateListingDto } from './dto/service.dto';
-import { AddToFavDto } from './dto/fav.dto';
+import { AddToFavDto } from './dto/fav.dto'
+;
+import { ObjectId } from 'mongodb';
+
 
 @Injectable()
 export class AppService {
@@ -26,30 +29,55 @@ export class AppService {
     }
   }
 
-  async addToFavorites(name: string, image: string, price: number, productID: number, userId: number): Promise<AddToFavDto> {
-    try {
-      const existingFavorite = await this.favModel.findOne({productID}).exec();
+//   async addToFavorites(name: string, image: string, price: number, productID: number, userId: number): Promise<AddToFavDto | string> {
+//     try {
+//       const existingFavorite = await this.favModel.findOne({ productID, userId ,name}).exec();
   
-      if (existingFavorite) {
-        throw new Error('Item already exists in favorites');
-      }
+//       if (existingFavorite) {
+//         return 'Item already exists in favorites';
+//       }
   
-      const favoriteItem = await this.favModel.create({
-        name,
-        image,
-        price,
-        productID,
-        userId,
-        isFavorite: true,
-      });
+//       const favoriteItem = await this.favModel.create({
+//         name,
+//         image,
+//         price,
+//         productID,
+//         userId,
+//         isFavorite: true,
+//       });
   
-      console.log('Added to favorites:', favoriteItem);
-      return favoriteItem;
-    } catch (error) {
-      console.error('Error adding to favorites:', error);
-      throw new Error(`Failed to add item to favorites: ${error.message}`);
-    }
+//       console.log('Added to favorites:', favoriteItem);
+//       return favoriteItem;
+//     } catch (error) {
+//       console.error('Error adding to favorites:', error);
+//       throw new Error(`Failed to add item to favorites: ${error.message}`);
+//     }
+// }
+
+async addToFavorites(userId: string, cartItem: AddToFavDto): Promise<any> {
+  let favModel = await this.favModel.findOne({ userId }).exec();
+  
+  if (!favModel) {
+    // If favorites not found, create a new favorites document
+    favModel = new this.favModel({
+      userId: userId,
+      productId: new ObjectId(),
+      name: cartItem.name,
+      image: cartItem.image,
+      price: cartItem.price,
+    });
+  } else {
+    // Update existing favorite item or add a new one
+    favModel.productId = new ObjectId();
+    favModel.name = cartItem.name;
+    favModel.image = cartItem.image;
+    favModel.price = cartItem.price;
   }
+
+  // Save the updated favorites
+  return favModel.save();
+}
+  
 
   async getAllItems(): Promise<any[]> {
     try {
