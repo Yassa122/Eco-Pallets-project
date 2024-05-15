@@ -9,8 +9,6 @@ export class AppService {
   constructor(
     @InjectModel('Item') private readonly itemModel: Model<any>,
     @InjectModel('Favorite') private readonly favModel: Model<any>
-    
-    
   ) {}
 
   async createListing(name: string, image: string, price: number): Promise<CreateListingDto> {
@@ -28,9 +26,9 @@ export class AppService {
     }
   }
 
-  async addToFavorites(name: string, image: string, price: number,userId: string): Promise<AddToFavDto> {
+  async addToFavorites(name: string, image: string, price: number, productID: number, userId: number): Promise<AddToFavDto> {
     try {
-      const existingFavorite = await this.favModel.findOne({ userId }).exec();
+      const existingFavorite = await this.favModel.findOne({productID}).exec();
   
       if (existingFavorite) {
         throw new Error('Item already exists in favorites');
@@ -40,21 +38,18 @@ export class AppService {
         name,
         image,
         price,
+        productID,
+        userId,
         isFavorite: true,
       });
-
-
-      
   
       console.log('Added to favorites:', favoriteItem);
       return favoriteItem;
     } catch (error) {
       console.error('Error adding to favorites:', error);
-      throw error;
+      throw new Error(`Failed to add item to favorites: ${error.message}`);
     }
   }
-  
-  
 
   async getAllItems(): Promise<any[]> {
     try {
@@ -66,23 +61,24 @@ export class AppService {
       throw error;
     }
   }
+
   async removeFromFavorites(itemId: string): Promise<void> {
     try {
       const deletedItem = await this.favModel.findByIdAndDelete(itemId).exec();
-  
+
       if (!deletedItem) {
         throw new Error('Item not found in favorites');
       }
-  
+
       console.log('Removed from favorites:', deletedItem);
     } catch (error) {
       console.error('Error removing from favorites:', error);
       throw error;
     }
   }
+
   async searchItem(query: string): Promise<any[]> {
     try {
-      // Assuming 'name' field is used for searching
       const foundItems = await this.itemModel.find({ name: { $regex: query, $options: 'i' } })
         .select('name image price')
         .exec();

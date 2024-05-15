@@ -1,12 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { FormEvent, useState } from "react";
-import { useMutation, gql } from "@apollo/client";
-import loginMutation from "@/app/graphql/user/login";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "", // Include password in your state
   });
 
@@ -20,31 +18,41 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    if (!formData.email.trim() || !formData.password.trim()) {
-      setError("Both email and password are required.");
+    if (!formData.username.trim() || !formData.password.trim()) {
+      setError("Both username and password are required.");
       return;
     }
 
     try {
-      // Execute the login mutation
-      const response = await loginMutation({
-        email: formData.email,
-        password: formData.password,
+      const response = await fetch("http://localhost:8000/account/sign-in", {
+        // Change to match your backend URL and endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
-      console.log("Login successful:", response);
-      // Assuming the response includes accessToken
-      localStorage.setItem("accessToken", response); // Store the token
-      console.log("Access token stored in local storage.");
-      setShowSubmissionMessage(true); // Optionally update UI state
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Login successful", data);
+        localStorage.setItem("token", data.accessToken);
+
+        // Handle successful login here (e.g., redirect or store JWT)
+      } else {
+        throw new Error(data.message || "Failed to log in");
+      }
     } catch (error) {
       console.error("Login error:", error);
-      setError("Failed to log in.");
+      setError(error.message);
     }
   };
-
   const handleBackToLogin = () => {
     setShowSubmissionMessage(false); // This will trigger the animation back to the login form
   };
@@ -71,11 +79,11 @@ export default function Login() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="font-medium text-white">Email</label>
+            <label className="font-medium text-white">username</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="username"
+              name="username"
+              value={formData.username}
               onChange={handleInputChange}
               required
               className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
