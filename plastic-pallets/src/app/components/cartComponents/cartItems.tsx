@@ -140,16 +140,16 @@ const ShoppingCart = () => {
             <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
               <Image src={Pallet1} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }} />
               <div>
-                <p style={{ padding: "0.5vh" }}>{item.productName}</p>
-                <p style={{ padding: "0.5vh" }}>Price: ${item.price}</p>
+                <p>{item.productName}</p>
+                <p>Price: ${item.price}</p>
                 <div style={{ display: 'flex', alignItems: 'center', padding: "0.5vh" }}>
-                <button onClick={() => decrementQuantity(item.productId)} style={{ backgroundColor: "transparent", color: "#7F92B3", padding: "0.2rem", borderRadius: "100%", marginRight: "0.2rem", fontSize: "1rem", fontWeight: "bold", border: "1px solid #7F92B3" }}>-</button>
+                <button onClick={() => decrementQuantity(item.productId)}>-</button>
                 <span style={{ margin: '0 10px', fontSize: "0.8rem" }}>{item.quantity}</span>
-                <button onClick={() => incrementQuantity(item.productId)} style={{ backgroundColor: "transparent", color: "#7F92B3", padding: "0.2rem", borderRadius: "100%", marginLeft: "0.2rem",fontSize: "1rem", fontWeight: "bold", border: "1px solid #7F92B3" }}>+</button>
+                <button onClick={() => incrementQuantity(item.productId)} >+</button>
 
                 </div>
-                <p style={{ padding: "0.5vh" }}>Total Price: ${item.price * item.quantity}</p>
-                <button onClick={() => removeItem(item.productId)} style={{ padding: "0.5vh" }}>
+                <p>Total Price: ${item.price * item.quantity}</p>
+                <button onClick={() => removeItem(item.productId)}>
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
