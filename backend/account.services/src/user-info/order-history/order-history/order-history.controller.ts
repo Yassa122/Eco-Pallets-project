@@ -4,7 +4,6 @@ import { OrderHistoryService } from './order-history.service';
 import { OrderHistoryDTO } from '../../dto/order-history.dto';
 import { Types } from 'mongoose';
 import { CreateOrderDTO } from 'src/user-info/dto/create-order.dto';
-import { Order } from 'src/user-info/schemas/order.schema';
 import mongoose from 'mongoose';
 
 @Controller('/orders')

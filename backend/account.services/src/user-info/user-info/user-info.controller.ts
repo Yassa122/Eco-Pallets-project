@@ -1,50 +1,57 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  UseGuards,
-  Put,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { UserInfoService } from './user-info.service';
-import { GetUserId } from '../../decorators/get-user-id.decorator';
+import { GetUserDto } from 'src/user-info/dto/get-user.dto';
 import { AddShippingAddressDto } from '../dto/add-shipping-address.dto';
 import { UpdateShippingAddressDto } from '../dto/update-shipping-address.dto';
 import { DeleteShippingAddressDto } from '../dto/delete-shipping-address.dto';
 
 @Controller('user-info')
-@UseGuards(AuthGuard('jwt')) // Apply JWT Auth Guard to all routes in the controller
 export class UserInfoController {
-  constructor(private userInfoService: UserInfoService) {}
+  constructor(private UserInfoService: UserInfoService) {}
 
-  @Get('addresses')
-  getShippingAddresses(@GetUserId('userId') userId: string) {
-    return this.userInfoService.getShippingAddresses(userId);
+  @Get(':id')
+  getUser(@Param('id') id: string) {
+    return this.UserInfoService.getUserData(id);
   }
 
-  @Post('add-address')
+  @Put('update/:id')
+  updateUser(@Param('id') id: string, @Body() userData: GetUserDto) {
+    return this.UserInfoService.updateUserData(id, userData);
+  }
+  @Post('add-address/:userId')
   addShippingAddress(
-    @GetUserId('userId') userId: string,
+    @Param('userId') userId: string,
     @Body() addressDto: AddShippingAddressDto,
   ) {
-    return this.userInfoService.addShippingAddress(userId, addressDto);
+    return this.UserInfoService.addShippingAddress(userId, addressDto);
   }
 
-  @Put('update-address')
+  @Put('update-address/:userId')
   updateShippingAddress(
-    @GetUserId('userId') userId: string,
+    @Param('userId') userId: string,
     @Body() updateDto: UpdateShippingAddressDto,
   ) {
-    return this.userInfoService.updateShippingAddress(userId, updateDto);
+    return this.UserInfoService.updateShippingAddress(userId, updateDto);
   }
 
-  @Delete('delete-address')
+  @Delete('delete-address/:userId')
   deleteShippingAddress(
-    @GetUserId('userId') userId: string,
+    @Param('userId') userId: string,
     @Body() deleteDto: DeleteShippingAddressDto,
   ) {
-    return this.userInfoService.deleteShippingAddress(userId, deleteDto._id);
+    return this.UserInfoService.deleteShippingAddress(userId, deleteDto._id);
+  }
+
+  @Get('addresses/:userId')
+  getShippingAddresses(@Param('userId') userId: string) {
+    return this.UserInfoService.getShippingAddresses(userId);
   }
 }

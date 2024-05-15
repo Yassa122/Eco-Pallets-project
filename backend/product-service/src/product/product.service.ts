@@ -23,6 +23,19 @@ export class ProductService {
     return createdProduct.save();
   }
 
+async findAllProducts(): Promise<Product[]> {
+    try {
+      const products = await this.productModel.find().exec();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No products found');
+      }
+      return products;
+    } catch (error) {
+      console.error('Error retrieving all products', error);
+      throw error;
+    }
+  }
+
   async findById(id: string): Promise<Product> {
     try {
       console.log(`Finding product with ID: ${id}`);

@@ -15,7 +15,6 @@ export class UserInfoService {
   async getUserData(userId: string): Promise<User | null> {
     return this.userModel
       .findById(userId)
-      .select('firstName lastName email phoneNumber shippingAddresses')
       .exec();
   }
 

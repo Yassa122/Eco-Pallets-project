@@ -7,7 +7,7 @@ import { favschema } from './schema/fav.schema'; // Import the schema for favori
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/plastic_pallets2'), // Set your MongoDB connection URI and database name
+    MongooseModule.forRoot('mongodb://localhost:27017/plastic-pallets-E-commerce'), // Set your MongoDB connection URI and database name
     MongooseModule.forFeature([
       { name: 'Item', schema: ItemSchema }, // Specify the schema for items
       { name: 'Favorite', schema: favschema }, // Specify the schema for favorites

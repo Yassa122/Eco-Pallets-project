@@ -1,16 +1,17 @@
+import { Types } from 'mongoose';
 import { CartItemDto } from './cartItem.dto';
 
 export class CreateCartDto {
-    readonly userId: string;
-    readonly cartItems: CartItemDto[];
-    readonly totalPrice: number; // Added attribute
-    readonly Subtotal: number; // Added attribute
-    readonly PromoCodeMultiplier: number; // Added attribute
-    readonly PromoCode: string; // Added attribute
+     userId: string;
+     cartItems: CartItemDto[];
+     totalPrice: number; // Added attribute
+     Subtotal: number; // Added attribute
+     PromoCodeMultiplier: number; // Added attribute
+     PromoCode: string; // Added attribute
 
     toString(){
         return JSON.stringify({
-            userId: this.userId,
+            userId:this.userId,
             cartItems: this.cartItems,
             totalPrice: this.totalPrice, // Include totalPrice in the output
             Subtotal: this.Subtotal, // Include Subtotal in the output
