@@ -1,3 +1,4 @@
+"use client";
 import Navbar from '../../components/navbar';
 import FeaturedProducts from '../../components/FeaturedProducts';
 import WelcomeHome from '../../components/welcomeHome'; // Corrected import and component name
@@ -5,7 +6,7 @@ import WelcomeHome from '../../components/welcomeHome'; // Corrected import and 
 const HomePage = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <WelcomeHome /> {/* Capitalized component name */}
       <main>
         <h1>Welcome to Our Store!</h1>
