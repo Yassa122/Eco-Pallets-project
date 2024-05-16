@@ -43,7 +43,6 @@ export default function Login() {
       if (response.ok) {
         console.log("Login successful", data);
         localStorage.setItem("token", data.accessToken);
-        
         // Handle successful login here (e.g., redirect or store JWT)
       } else {
         throw new Error(data.message || "Failed to log in");
@@ -51,6 +50,7 @@ export default function Login() {
     } catch (error) {
       console.error("Login error:", error);
       setError(error.message || "Failed to log in.");
+
     }
   };
   const handleBackToLogin = () => {
