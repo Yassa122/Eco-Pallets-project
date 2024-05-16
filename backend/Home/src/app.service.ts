@@ -9,8 +9,6 @@ export class AppService {
   constructor(
     @InjectModel('Item') private readonly itemModel: Model<any>,
     @InjectModel('Favorite') private readonly favModel: Model<any>
-    
-    
   ) {}
 
   async createListing(name: string, image: string, price: number): Promise<CreateListingDto> {
@@ -28,19 +26,28 @@ export class AppService {
     }
   }
 
-  async addToFavorites(name: string, image: string, price: number): Promise<AddToFavDto> {
+  async addToFavorites(name: string, image: string, price: number, productID: number, userId: number): Promise<AddToFavDto> {
     try {
+      const existingFavorite = await this.favModel.findOne({productID}).exec();
+  
+      if (existingFavorite) {
+        throw new Error('Item already exists in favorites');
+      }
+  
       const favoriteItem = await this.favModel.create({
         name,
         image,
         price,
+        productID,
+        userId,
         isFavorite: true,
       });
+  
       console.log('Added to favorites:', favoriteItem);
       return favoriteItem;
     } catch (error) {
       console.error('Error adding to favorites:', error);
-      throw error;
+      throw new Error(`Failed to add item to favorites: ${error.message}`);
     }
   }
 
@@ -51,6 +58,33 @@ export class AppService {
       return allItems;
     } catch (error) {
       console.error('Error retrieving all items:', error);
+      throw error;
+    }
+  }
+
+  async removeFromFavorites(itemId: string): Promise<void> {
+    try {
+      const deletedItem = await this.favModel.findByIdAndDelete(itemId).exec();
+
+      if (!deletedItem) {
+        throw new Error('Item not found in favorites');
+      }
+
+      console.log('Removed from favorites:', deletedItem);
+    } catch (error) {
+      console.error('Error removing from favorites:', error);
+      throw error;
+    }
+  }
+
+  async searchItem(query: string): Promise<any[]> {
+    try {
+      const foundItems = await this.itemModel.find({ name: { $regex: query, $options: 'i' } })
+        .select('name image price')
+        .exec();
+      return foundItems;
+    } catch (error) {
+      console.error('Error searching for items:', error);
       throw error;
     }
   }
