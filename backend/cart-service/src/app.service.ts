@@ -76,6 +76,11 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
       throw new Error('CartItem not found');
     }
     
+    // Check if the quantity is already 1
+    if (cart.cartItems[cartItemIndex].quantity === 1) {
+      // If quantity is already 1, do not decrement further
+      return cart;
+  }
     // Decrement the quantity of the cart item
     cart.cartItems[cartItemIndex].quantity--;
 
@@ -141,9 +146,22 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
     }
     cart.PromoCodeMultiplier=1-(discount.discountInPercent/100);
     cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
+    await cart.save();
       // Save the updated cart
-      return cart.save();
-  }
+      return { discount, cart };
+    }
+
+    async resetPromoCode(userId: string): Promise<any> { //working
+      const cart = await this.cartModel.findOne({ userId }).exec();
+      if (!cart) {
+        throw new Error('Cart not found');
+      }
+      cart.PromoCodeMultiplier=1;
+      cart.totalPrice=cart.PromoCodeMultiplier*cart.Subtotal;
+      await cart.save();
+        // Save the updated cart
+        return { cart };
+      }
 
 
 
@@ -182,8 +200,8 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
         },
       ],  
       mode: 'payment',
-      success_url: `http://localhost:3000/success.html`,
-      cancel_url: `http://localhost:3000/cancel.html`,
+      success_url: `http://localhost:3000/pages/home`,
+      cancel_url: `http://localhost:3000/pages/cart`,
     });
     
   }else{

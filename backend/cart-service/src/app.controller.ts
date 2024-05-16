@@ -15,7 +15,7 @@ import { CartItemDto } from './dto/cartItem.dto';
 import { CurrentUser } from './decorators/get-user-id.decorator';
 
 
-@Controller("cart-service")
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -86,6 +86,12 @@ export class AppController {
     @Body('promoCode') promoCode: string,
   ): Promise<any> {
     return this.appService.applyPromoCode(userId, promoCode);
+  }
+  @Put('resetPromoCode')//working
+  async resetPromoCode(
+    @CurrentUser('userId') userId: string ,
+  ): Promise<any> {
+    return this.appService.resetPromoCode(userId);
   }
   @Post('stripe')//working
   async stripe(@CurrentUser('userId') userId: string):Promise<any>{

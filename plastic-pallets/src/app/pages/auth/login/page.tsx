@@ -42,9 +42,7 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
-
         localStorage.setItem("token", data.accessToken);
-
         // Handle successful login here (e.g., redirect or store JWT)
       } else {
         throw new Error(data.message || "Failed to log in");
