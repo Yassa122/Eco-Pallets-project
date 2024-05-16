@@ -200,8 +200,8 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
         },
       ],  
       mode: 'payment',
-      success_url: `http://localhost:3000/success.html`,
-      cancel_url: `http://localhost:3000/cancel.html`,
+      success_url: `http://localhost:3000/pages/home`,
+      cancel_url: `http://localhost:3000/pages/cart`,
     });
     
   }else{

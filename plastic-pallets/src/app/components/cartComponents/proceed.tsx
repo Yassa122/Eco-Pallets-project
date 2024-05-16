@@ -69,9 +69,29 @@ const Proceed = ({ subtotal }) => {
     }
   };
 
-  const proceedToCheckout = () => {
+  const proceedToCheckout =  async () => {
     console.log('Proceeding to checkout');
-    // Add logic here to proceed to checkout
+    try {
+      const response = await fetch('http://localhost:7000/stripe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        console.log(data.url);
+        window.location.href = data.url; // Redirect to the provided URL
+        } else {
+      const data = await response.json();
+        console.error('Failed to apply stripe:', data.message);
+      }
+    } catch (error) {
+      console.error('Failed to apply stripe:', error);
+    }
   };
 
   return (
