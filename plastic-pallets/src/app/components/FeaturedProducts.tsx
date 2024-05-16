@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import product1 from '../pics/p4 Background Removed.png';
