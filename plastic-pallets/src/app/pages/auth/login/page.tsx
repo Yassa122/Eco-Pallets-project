@@ -43,7 +43,7 @@ export default function Login() {
         console.log("Login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; samesite=none`;
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
 
         // Handle successful login here (e.g., redirect or store JWT)
       } else {

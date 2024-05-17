@@ -138,7 +138,7 @@ export class IdentityService {
     // Optional: Send user details to other services via Kafka
     await this.kafkaService.sendMessage('user-logged-in', {
       userId: user.id.toString(),
-      userDetails: this.prepareUserData(user),
+      userDetails: this.prepareUserData(user), 
       token: accessToken,
     });
 

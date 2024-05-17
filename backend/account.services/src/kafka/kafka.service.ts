@@ -44,6 +44,8 @@ async sendAddToCart(topic: string, message: any): Promise<void> {
 }
 
 
+
+
   getConsumer(groupId: string): Consumer {
     return this.kafka.consumer({ groupId });
   }
