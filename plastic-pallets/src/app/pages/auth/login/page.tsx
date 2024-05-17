@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { FormEvent, useState } from "react";
-
+import Image from "next/image";
+import logo from "src/app/images/Logo/png/logo-white.png";
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
@@ -58,10 +59,11 @@ export default function Login() {
     setShowSubmissionMessage(false);
   };
   return (
-    <main className="w-full h-screen flex flex-col items-center justify-center px-4">
+    <main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
         {/* Create a grey container with padding, shadow, and rounded corners */}
         <div className="text-center">
+        <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4" />
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
               Log in to your account
@@ -69,7 +71,7 @@ export default function Login() {
             <p className="text-white">
               Don't have an account?{" "}
               <a
-                href="javascript:void(0)"
+                href="/pages/auth/signup"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Sign up
@@ -165,7 +167,7 @@ export default function Login() {
         </div>
         <div className="text-center">
           <a
-            href="javascript:void(0)"
+            href="/src/app/pages/auth/resetPassword/page.tsx"
             className="text-indigo-600 hover:text-indigo-500"
           >
             Forgot password?
