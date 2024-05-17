@@ -27,7 +27,6 @@ export default function Login() {
 
     try {
       const response = await fetch("http://localhost:8000/account/sign-in", {
-        // Change to match your backend URL and endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,19 +41,22 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
+        const token = data.accessToken;
+        localStorage.setItem("token", token);
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; samesite=none`;
+
         // Handle successful login here (e.g., redirect or store JWT)
       } else {
         throw new Error(data.message || "Failed to log in");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError(error.message || "Failed to log in.");
     }
   };
-  const handleBackToLogin = () => {
-    setShowSubmissionMessage(false); // This will trigger the animation back to the login form
-  };
 
+  const handleBackToLogin = () => {
+    setShowSubmissionMessage(false);
+  };
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
