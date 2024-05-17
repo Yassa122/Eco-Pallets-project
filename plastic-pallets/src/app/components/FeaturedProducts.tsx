@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import product1 from '../pics/p4 Background Removed.png';
@@ -80,7 +80,7 @@ const FeaturedProducts = () => {
 
   return (
     <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20px' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>  Products</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>Products</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {items.map((item) => (
           <div key={item.id} style={{ flex: '1 1 300px', border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#111111', color: '#fff', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
@@ -88,29 +88,26 @@ const FeaturedProducts = () => {
               <Image src={product1} layout="fill" objectFit="cover" />
             </div>
             <div style={{ textAlign: 'left', marginBottom: '10px' }}>
-              <h3 style={{ margin: '0', fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>{item.name}</h3>
-              <p style={{ margin: '0', color: '#888', fontSize: '1rem' }}>Price: {item.price}</p>
+              <h3 style={{ margin: '0 0 5px 0', fontSize: '1.8rem', fontWeight: '600', color: '#fff' }}>{item.name}</h3>
+              <p style={{ margin: '0', color: '#bbb', fontSize: '1.2rem' }}>Price: ${item.price}</p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <button onClick={() => addToCart(item.id)} style={{ margin: '5px 0', padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'white', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
-                <Image src={cart} alt="Add to Cart" width={20} height={20} style={{ marginRight: '5px' }} />
-                <span>+ to Cart</span>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
+              <button onClick={() => addToCart(item.id)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                + to Cart
               </button>
-              <button onClick={() => addToFavorites(item.id)} style={{ margin: '5px 0', padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'white', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
-                <Image src={heart} alt="Add to Favorites" width={20} height={20} style={{ marginRight: '5px' }} />
-                <span>+ to Favorites</span>
+              <button onClick={() => addToFavorites(item.id)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                + to Favorites
+              </button>
+              <button className="flex items-center gap-2 px-3 py-2 text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700" style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path fillRule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clipRule="evenodd" />
+                </svg>
+                Button
               </button>
             </div>
           </div>
         ))}
       </div>
-      {/* Your new button */}
-      <button className="flex items-center gap-2 px-5 py-3 text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-          <path fillRule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clipRule="evenodd" />
-        </svg>
-        Button
-      </button>
     </section>
   );
 };
