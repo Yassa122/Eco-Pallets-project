@@ -5,9 +5,8 @@ import { useStore } from "src/hooks/use-store";
 import { Footer } from "@/components/admin-panel/footer";
 import { Sidebar } from "@/components/admin-panel/sidebar";
 import { useSidebarToggle } from "src/hooks/use-sidebar-toggle";
-
 export default function DemoLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
