@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "stripe": "^15.5.0"
+    "stripe": "^15.5.0",
+    "typescript": "^5.4.5"
   }
 }
