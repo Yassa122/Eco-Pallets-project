@@ -1,0 +1,1 @@
+{"version":3,"file":"database.providers.js","sourceRoot":"","sources":["../../../src/product/database/database.providers.ts"],"names":[],"mappings":";;;AAAA,qCAAqC;AAExB,QAAA,iBAAiB,GAAG;IAC/B;QACE,OAAO,EAAE,qBAAqB;QAC9B,UAAU,EAAE,GAA6B,EAAE,CACzC,QAAQ,CAAC,OAAO,CAAC,mDAAmD,CAAC;KACxE;CACF,CAAC"}

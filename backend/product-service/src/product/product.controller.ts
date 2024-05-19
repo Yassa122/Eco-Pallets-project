@@ -13,9 +13,17 @@ import { Wishlist } from './interfaces/wishlist';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  //working   
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
+  }
+
+
+  //working
+  @Get()
+  async getAllProducts() {
+    return await this.productService.findAllProducts();
   }
 
   @Get(':id')

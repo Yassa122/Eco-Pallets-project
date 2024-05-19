@@ -33,6 +33,18 @@ export class KafkaService {
     });
 }
 
+async sendAddToCart(topic: string, message: any): Promise<void> {
+  console.log("Sending message:", message);
+  await this.producer.send({
+    topic: 'user-add-cart-events', // Update to the topic name subscribed to by the product-service
+      messages: [
+          { key: message.userId.toString(), value: JSON.stringify(message) }
+      ],
+  });
+}
+
+
+
 
   getConsumer(groupId: string): Consumer {
     return this.kafka.consumer({ groupId });

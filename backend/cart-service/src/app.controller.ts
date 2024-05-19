@@ -7,11 +7,13 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto';
 import { CartItemDto } from './dto/cartItem.dto';
 import { CurrentUser } from './decorators/get-user-id.decorator';
+
 
 @Controller()
 export class AppController {
@@ -84,6 +86,12 @@ export class AppController {
     @Body('promoCode') promoCode: string,
   ): Promise<any> {
     return this.appService.applyPromoCode(userId, promoCode);
+  }
+  @Put('resetPromoCode')//working
+  async resetPromoCode(
+    @CurrentUser('userId') userId: string ,
+  ): Promise<any> {
+    return this.appService.resetPromoCode(userId);
   }
   @Post('stripe')//working
   async stripe(@CurrentUser('userId') userId: string):Promise<any>{
