@@ -10,10 +10,10 @@ import { KafkaModule } from './kafka/kafka.module';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaService } from './kafka/kafka.service';
-import { ProfileService } from './profile/profile.service';
+// import { ProfileService } from './profile/profile.service';
 import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
 import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
-import { ProfileModule } from './profile/profile.module';
+// import { ProfileModule } from './profile/profile.module';
 import { UserInfoModule } from './user-info/user-info/user-info.module';
 
 @Module({
@@ -25,10 +25,9 @@ import { UserInfoModule } from './user-info/user-info/user-info.module';
     KafkaModule,
     ReviewsModule,
     WishlistModule,
-    ProfileModule,
     UserInfoModule
   ],
   controllers: [AppController],
-  providers: [AppService, IdentityService, JwtService,KafkaService,ProfileService],
+  providers: [AppService, IdentityService, JwtService,KafkaService],
 })
 export class AppModule {}
