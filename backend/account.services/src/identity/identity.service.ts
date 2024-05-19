@@ -105,28 +105,57 @@ export class IdentityService {
       ...userData,
     };
   }
+
   async login(
     loginDto: LoginDto,
   ): Promise<{ success: boolean; accessToken?: string }> {
-    this.logger.debug(`Attempting login for username ${loginDto.username}`);
     const user = await this.validateUser(loginDto);
     if (!user) {
       return { success: false };
     }
 
+    // Prepare the payload
     const payload = {
-      id: user.id, // Using MongoDB '_id' as the subject of the token
-      name: `${user.firstName} ${user.lastName}`,
+      id: user.id, // Unique identifier for the user
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber, // Optional field
+      company: user.company, // Optional field
+      shippingAddresses: user.shippingAddresses,
+      isEmailVerified: user.isEmailVerified, // Default is false, optional
+      passwordResetToken: user.passwordResetToken, // Optional for password resets
+      passwordResetExpires: user.passwordResetExpires, // Optional for password resets
     };
 
+    // Sign the JWT with the payload that now includes extended user data
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulike',
-      expiresIn: '1h',
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+      expiresIn: '1h', // Token expiration time
     });
 
-    this.logger.debug(`JWT issued for user ID ${user.id}`);
+    // Optional: Send user details to other services via Kafka
+    await this.kafkaService.sendMessage('user-logged-in', {
+      userId: user.id.toString(),
+      userDetails: this.prepareUserData(user),
+      token: accessToken,
+    });
+
     return { success: true, accessToken };
+  }
+
+  // Ensure that the prepareUserData method does not strip out data you now want to include in the JWT
+  private prepareUserData(user: any): any {
+    // Directly destructuring without converting to Mongoose document
+    const {
+      password,
+      passwordResetToken,
+      passwordResetExpires,
+      __v,
+      ...safeData
+    } = user;
+    return safeData;
   }
 
   async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {

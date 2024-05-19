@@ -11,9 +11,9 @@ import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaService } from './kafka/kafka.service';
 import { ProfileService } from './profile/profile.service';
+import { UserInfoService } from './user-info/user-info/user-info.service';
 import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
 import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
-
 @Module({
   imports: [
     KafkaModule,
@@ -21,10 +21,22 @@ import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
     IdentityModule,
     UsersModule,
     KafkaModule,
+  ],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    IdentityService,
+    JwtService,
+    KafkaService,
+    ProfileService,
+    UserInfoService,
+  ],
+    KafkaModule,
     ReviewsModule,
     WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService, IdentityService, JwtService,KafkaService,ProfileService],
+
 })
 export class AppModule {}
