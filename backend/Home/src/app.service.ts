@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateListingDto } from './dto/service.dto';
-import { AddToFavDto } from './dto/fav.dto'
-;
+import { AddToFavDto, AddToFavItemDto } from './dto/fav.dto';
+
 import { ObjectId } from 'mongodb';
 
 
@@ -14,6 +14,11 @@ export class AppService {
     @InjectModel('Favorite') private readonly favModel: Model<any>
   ) {}
 
+  async createFav(AddToFavDto: AddToFavDto, userId: string): Promise<AddToFavDto> { // working
+    const createdFav = new this.favModel(AddToFavDto);
+    createdFav.userId=userId;
+    return createdFav.save();
+  }
   async createListing(name: string, image: string, price: number): Promise<CreateListingDto> {
     try {
       const newListing = await this.itemModel.create({
@@ -54,24 +59,25 @@ export class AppService {
 //     }
 // }
 
-async addToFavorites(userId: string, cartItem: AddToFavDto): Promise<any> {
-  let favModel = await this.favModel.findOne({ userId }).exec();
+async addToFavorites(userId: string, favItem: AddToFavItemDto): Promise<any> {
+  const favModel = await this.favModel.findOne({ userId }).exec();
   
   if (!favModel) {
-    // If favorites not found, create a new favorites document
-    favModel = new this.favModel({
-      userId: userId,
-      name: cartItem.name,
-      image: cartItem.image,
-      price: cartItem.price,
-    });
-  } else {
-    // Update existing favorite item or add a new one
-    favModel.name = cartItem.name;
-    favModel.image = cartItem.image;
-    favModel.price = cartItem.price;
+    // ya gogo sheel el line el taht w handle logic enek te create fav model gdeda
+    throw new Error('FAVORITES not found');
   }
 
+// Check if the cartItem already exists in the cart
+const favModelItem = favModel.items.find(item => item.productId === favItem.productId);
+
+if (favModelItem) {
+  // If the cartItem already exists
+  throw new Error('Item already exists');
+} else {
+  // If the cartItem does not exist, add it to the cart 
+  favModel.items.push(favItem);
+}
+    
   // Save the updated favorites
   return favModel.save();
 }

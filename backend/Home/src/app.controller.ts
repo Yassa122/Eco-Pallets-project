@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateListingDto } from './dto/service.dto';
-import { AddToFavDto } from './dto/fav.dto';
+import { AddToFavDto, AddToFavItemDto } from './dto/fav.dto';
 import { CurrentUser } from 'src/decorators/get-user-id.decorator';
 
 
@@ -12,6 +12,13 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+  @Post('create-fav')//working
+  async createFav(
+    @Body() AddToFavDto: AddToFavDto,
+    @CurrentUser('userId') userId: string 
+  ): Promise<AddToFavDto> {
+    return this.appService.createFav(AddToFavDto, userId);
   }
 
   @Post('/create-listings')
@@ -27,7 +34,7 @@ export class AppController {
   @Post('addToFavorites')//working
   async addToCart(
     @CurrentUser('userId') userId: string ,
-    @Body() cartItem: AddToFavDto,
+    @Body() cartItem: AddToFavItemDto,
   ): Promise<any> {
     return this.appService.addToFavorites(userId, cartItem);
   }
