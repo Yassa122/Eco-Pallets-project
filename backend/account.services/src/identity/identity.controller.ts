@@ -4,7 +4,8 @@ import { MessagePattern } from '@nestjs/microservices';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ExistsAuthGuard } from './strategies/exists-auth.guard';
-import { GetUserId } from './decorators/get-user-id.decorator'; // Adjust the path based on your project structure
+import { CurrentUser } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
+
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 
@@ -35,7 +36,6 @@ export class IdentityController {
     const { id, ...rest } = command.user;
     return rest;
   }
-
   @UseGuards(JwtAuthGuard)
   @Put('update-password')
   async updatePassword(@CurrentUser() userId: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<{ success: boolean }> { 
@@ -44,5 +44,5 @@ export class IdentityController {
 
     return { success: result };
   }
-  
+ 
 }

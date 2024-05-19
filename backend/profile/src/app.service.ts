@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-import { Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-
-@Injectable()
-export class AppService {
-  // private readonly users: any[] =[
-  //   {
-  //     userId:'123',
-  //     stripeUserId:'34567'
-  //   },
-  //   {
-  //     userId:'13',
-  //     stripeUserId:'3567'
-  //   },
-  //   ];
-  getHello(): string {
-    return 'Hello World!';
-=======
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UserInfoService } from './user-info/user-info.service'; // Ensure the path is correct
 import { ShippingAddressDto } from 'src/dto/shipping-address.dto'; // Adjust path as necessary
@@ -114,14 +95,9 @@ export class AppService {
       );
       throw error;
     }
->>>>>>> main
   }
 
   // getUser(getUserRequest:GetUserRequest){
   //   return this.users.find((user)=>user.userId===getUserRequest.userId);
   // }
-  
 }
-
-
-

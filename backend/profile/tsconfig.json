@@ -6,7 +6,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true, // Ensures compatibility between CommonJS and ES modules
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
@@ -14,11 +13,18 @@
     "incremental": true,
     "skipLibCheck": true,
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> afc9ed8c873e7b7a8fd360f59ab772b4993d903a
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
+<<<<<<< HEAD
+  },
+  "include": ["src/**/*"]
+=======
   }
 =======
     "strict": true, // Enable all strict type-checking options
@@ -34,4 +40,5 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"] // Exclude node_modules and dist from the compilation process
 >>>>>>> main
+>>>>>>> afc9ed8c873e7b7a8fd360f59ab772b4993d903a
 }
