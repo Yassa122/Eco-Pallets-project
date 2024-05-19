@@ -1,19 +1,33 @@
-"use client";
-import Navbar from '../../components/navbar';
-import FeaturedProducts from '../../components/FeaturedProducts';
-import WelcomeHome from '../../components/welcomeHome'; // Corrected import and component name
+import Link from "next/link";
 
-const HomePage = () => {
+import PlaceholderContent from "@/components/demo/placeholder-content";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb";
+import "./global.css";
+export default function DashboardPage() {
   return (
-    <div>
-      {/* <Navbar /> */}
-      <WelcomeHome /> {/* Capitalized component name */}
-      <main>
-        <h1>Welcome to Our Store!</h1>
-        <FeaturedProducts />
-      </main>
-    </div>
+    <ContentLayout title="Dashboard">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <PlaceholderContent />
+    </ContentLayout>
   );
-};
-
-export default HomePage;
+}
