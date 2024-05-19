@@ -1,58 +1,65 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { FormEvent, useState } from "react";
-import { useMutation, gql } from "@apollo/client";
-import loginMutation from "@/app/graphql/user/login";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "", // Include password in your state
+    username: "",
+    password: "",
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value, // This will update the right part of the state based on the input name
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    if (!formData.email.trim() || !formData.password.trim()) {
-      setError("Both email and password are required.");
+    if (!formData.username.trim() || !formData.password.trim()) {
+      setError("Both username and password are required.");
       return;
     }
 
     try {
-      // Execute the login mutation
-      const response = await loginMutation({
-        email: formData.email,
-        password: formData.password,
+      const response = await fetch("http://localhost:8000/account/sign-in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
-      console.log("Login successful:", response);
-      // Assuming the response includes accessToken
-      localStorage.setItem("accessToken", response); // Store the token
-      console.log("Access token stored in local storage.");
-      setShowSubmissionMessage(true); // Optionally update UI state
-    } catch (error) {
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Login successful", data);
+        localStorage.setItem('auth_token', data.token); // Save token to localStorage
+        // Handle successful login here (e.g., redirect or store JWT)
+      } else {
+        throw new Error(data.message || "Failed to log in");
+      }
+    } catch (error: any) { // Explicitly type error as any
       console.error("Login error:", error);
-      setError("Failed to log in.");
+      setError(error.message || "Failed to log in.");
     }
   };
 
   const handleBackToLogin = () => {
-    setShowSubmissionMessage(false); // This will trigger the animation back to the login form
+    setShowSubmissionMessage(false);
   };
 
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
-        {/* Create a grey container with padding, shadow, and rounded corners */}
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
@@ -71,11 +78,11 @@ export default function Login() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="font-medium text-white">Email</label>
+            <label className="font-medium text-white">username</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="username"
+              name="username"
+              value={formData.username}
               onChange={handleInputChange}
               required
               className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
@@ -167,6 +174,7 @@ export default function Login() {
     </main>
   );
 }
-function setError(arg0: string) {
-  throw new Error("Function not implemented.");
+
+function setError(arg0: string): void {
+  console.error(arg0); // Implement a simple console error logging
 }

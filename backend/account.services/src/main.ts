@@ -1,30 +1,31 @@
-// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { KafkaModule } from './kafka/kafka/kafka.module'; // Import Kafka module
-
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 
 async function bootstrap() {
-  // Create and start an HTTP server
   const app = await NestFactory.create(AppModule);
-  await app.listen(8000, () => console.log('HTTP server is running on http://localhost:8000'));
-
-  // Create a microservice for Kafka
-  const kafkaApp = await NestFactory.createMicroservice<MicroserviceOptions>(KafkaModule, {
+  app.enableCors({
+    origin: 'http://localhost:3000', // Assuming your React app runs on localhost:3000
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    allowedHeaders: 'Content-Type,Accept,Authorization',
+    credentials: true, // This allows the server to send cookies
+  });
+  app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
       client: {
-        brokers: ['localhost:9092'],
+        brokers: ['localhost:9092'], // Kafka broker list
       },
       consumer: {
-        groupId: '2',
+        groupId: 'account-service-group', // Unique consumer group for this service
       },
     },
   });
-  kafkaApp.listen();
-  console.log('Kafka microservice is listening');
-}
 
+  await app.startAllMicroservices();
+  await app.listen(8000);
+}
 bootstrap();
+  
