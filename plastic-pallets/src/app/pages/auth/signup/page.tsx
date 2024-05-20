@@ -62,27 +62,27 @@ export default function SignupPage() {
     console.error(errorMessage);
   };
   return (
-<main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8">
-      <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
-        <div className="text-center">
-        <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4" />
-          <div className="mt-5 space-y-2">
-            <h3 className="text-white text-2xl font-bold sm:text-3xl">
-              Sign up for an account
-            </h3>
-            <p className="text-white">
-              Already have an account?{" "}
-              <a
-                href="/pages/auth/login"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Login
-              </a>
-            </p>
-          </div>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="flex space-x-4">
+<main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
+      <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
+    <div className="text-center">
+      <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4 rounded-lg" />
+      <div className="mt-5 space-y-2">
+        <h3 className="text-white text-2xl font-bold sm:text-3xl">
+          Sign up for an account
+        </h3>
+        <p className="text-gray-400">
+          Already have an account?{' '}
+          <a
+            href="/pages/auth/login"
+            className="font-medium text-teal-500 hover:text-teal-400"
+          >
+            Login
+          </a>
+        </p>
+      </div>
+    </div>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="flex space-x-4">
         <div className="flex-1">
           <label className="font-medium text-white">First Name</label>
           <input
@@ -91,7 +91,7 @@ export default function SignupPage() {
             value={formData.firstName}
             onChange={handleInputChange}
             required
-            className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
           />
         </div>
         <div className="flex-1">
@@ -102,66 +102,65 @@ export default function SignupPage() {
             value={formData.lastName}
             onChange={handleInputChange}
             required
-            className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
           />
         </div>
       </div>
-          <div>
-            <label className="font-medium text-white">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="font-medium text-white">Username</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="font-medium text-white">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-              className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full mt-4 px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
-          >
-            Sign up
-          </button>
-        </form>
-        <div className="relative">
-          <span className="block w-full h-px bg-gray-300"></span>
-          <p className="inline-block w-fit text-sm bg-dark-grey px-2 absolute -top-2 inset-x-0 mx-auto text-slate-50">
-            Or continue with
-          </p>
-        </div>
-        <div className="space-y-4 text-sm font-medium">
-          <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100">
+      <div>
+        <label className="font-medium text-white">Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          required
+          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+        />
+      </div>
+      <div>
+        <label className="font-medium text-white">Username</label>
+        <input
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={handleInputChange}
+          required
+          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+        />
+      </div>
+      <div>
+        <label className="font-medium text-white">Password</label>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
+          required
+          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full mt-4 px-4 py-2 text-white font-medium bg-teal-500 hover:bg-teal-400 active:bg-teal-600 rounded-lg duration-150"
+      >
+        Sign up
+      </button>
+    </form>
+    <div className="relative">
+      <span className="block w-full h-px bg-gray-700"></span>
+      <p className="inline-block w-fit text-sm bg-gray-800 px-2 absolute -top-2 inset-x-0 mx-auto text-gray-400">
+        Or continue with
+      </p>
+    </div>
+    <div className="space-y-4 text-sm font-medium">
+          <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border border-gray-700 rounded-lg hover:bg-gray-700 duration-150 active:bg-gray-600">
             <svg
               className="w-5 h-5"
               viewBox="0 0 48 48"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_17_40)">
+              <g clipPath="url(#clip0_17_40)">
                 <path
                   d="M47.532 24.5528C47.532 22.9214 47.3997 21.2811 47.1175 19.6761H24.48V28.9181H37.4434C36.9055 31.8988 35.177 34.5356 32.6461 36.2111V42.2078H40.3801C44.9217 38.0278 47.532 31.8547 47.532 24.5528Z"
                   fill="#4285F4"
@@ -187,7 +186,7 @@ export default function SignupPage() {
             </svg>
             Continue with Google
           </button>
-          <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100">
+          <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border border-gray-700 rounded-lg hover:bg-gray-700 duration-150 active:bg-gray-600">
             <svg
               className="w-5 h-5"
               viewBox="0 0 48 48"
@@ -202,17 +201,20 @@ export default function SignupPage() {
             Continue with Twitter
           </button>
         </div>
-        <div className="text-center">
-          <a
-            href="/src/app/pages/auth/resetPassword/page.tsx"
-            className="text-indigo-600 hover:text-indigo-500"
-          >
-            Forgot password?
-          </a>
-        </div>
-      </div>
-    </main>
+    <div className="text-center">
+      <a
+        href="/src/app/pages/auth/resetPassword/page.tsx"
+        className="text-teal-500 hover:text-teal-400"
+      >
+        Forgot password?
+      </a>
+    </div>
+  </div>
+</main>
+
+
   );
+
 }
 
 function setError(errorMessage: string) {
