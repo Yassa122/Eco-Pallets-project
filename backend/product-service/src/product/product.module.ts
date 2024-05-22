@@ -8,10 +8,13 @@ import { WishlistSchema } from './schemas/wishlist.schema';
 import { productProviders } from './database/product.providers';
 import { databaseProviders } from './database/database.providers';
 import { reviewProviders } from './database/review.providers';
+import { RentalSchema } from './schemas/rentals.schema'
+
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }, 
   { name: 'Review', schema: ReviewSchema }, {name: "Wishlist", schema: WishlistSchema},
+  {name: 'Rentals', schema: RentalSchema},
   ])], // Corrected schema name
   controllers: [ProductController],
   providers: [ProductService,...databaseProviders, ...productProviders],

@@ -4,7 +4,7 @@ import { CreateProductDto } from './product/dto/create-product.dto'; // Import C
 @Injectable()
 export class AppService {
   constructor(private readonly productService: ProductService,
-    private createProductDto: CreateProductDto
+    private createProductDto: CreateProductDto,
   ) {} // Inject ProductService
 
   getHello(): string {

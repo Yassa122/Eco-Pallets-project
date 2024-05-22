@@ -4,8 +4,8 @@ import { MessagePattern } from '@nestjs/microservices';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ExistsAuthGuard } from './strategies/exists-auth.guard';
-import { GetUserId } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
-
+import { GetUserId } from '../decorators/get-user-id.decorator'; 
+ 
 @Controller('identity')
 export class IdentityController {
   constructor(private identityService: IdentityService) {}
