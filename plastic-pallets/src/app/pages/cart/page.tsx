@@ -2,8 +2,8 @@
 
 import Navbar from "../../components/cartComponents/navbar";
 import PhasesComponent from "../../components/cartComponents/phases";
-import ShoppingCart from "@/app/components/cartComponents/cartItems";
-import Proceed from "@/app/components/cartComponents/proceed";
+import ShoppingCart from "../../components/cartComponents/cartItems";
+import Proceed from "../../components/cartComponents/proceed";
 import Image from "next/image";
 export default function Cart() {
   return (

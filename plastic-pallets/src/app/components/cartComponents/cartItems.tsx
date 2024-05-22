@@ -21,7 +21,14 @@ const ShoppingCart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      // Retrieve token from localStorage
+      const token = localStorage.getItem('token');  
+      // Check if token exists
+      if (!token) {
+        throw new Error("Token not found in localStorage");
+      }
+  
+      // Fetch cart items
       const response = await fetch("http://localhost:7000/cartItems", {
         method: "GET",
         headers: {
@@ -30,8 +37,10 @@ const ShoppingCart = () => {
         },
         credentials: "include", // This is needed to handle cookies if you're using them for authentication
       });
-
+  
       const data = await response.json();
+  
+      // Check response status
       if (response.ok) {
         console.log("Cart Items Fetched Successfully", data);
         setCartItems(data);
@@ -42,10 +51,11 @@ const ShoppingCart = () => {
       console.error("Fetching error:", error);
     }
   };
+  
 
   const removeItem = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:7000/removeCartItem", {
         method: 'DELETE',
         headers: {
@@ -71,7 +81,7 @@ const ShoppingCart = () => {
 
   const incrementQuantity = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:7000/addQuantity', {
         method: 'PUT',
         headers: {
@@ -102,7 +112,7 @@ const ShoppingCart = () => {
 
   const decrementQuantity = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:7000/subtractQuantity', {
         method: 'PUT',
         headers: {
