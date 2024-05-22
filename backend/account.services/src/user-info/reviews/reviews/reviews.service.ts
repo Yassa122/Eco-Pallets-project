@@ -27,7 +27,7 @@ export class ReviewsService {
     // Find reviews by user ID and populate product details
     const reviews = await this.reviewModel
       .find({ userId })
-      .populate('productId', 'name description') // Populate only specific product fields
+      .populate('productId', 'name description images') // Populate only specific product fields
       .exec();
   
     if (!reviews || reviews.length === 0) {
@@ -36,9 +36,11 @@ export class ReviewsService {
   
     // Map the review documents to the UserReviewsDto
     const userReviewsDto: UserReviewsDto[] = reviews.map((review) => ({
+      reviewId: review._id.toString(), // Add the review ID her
       productId: review.productId.toString(),
       productName: review.productId['name'], // Access the populated `name` field
-      productDescription: review.productId['description'], // Access the populated `description` field
+      productDescription: review.productId['description'],
+      productImages: review.productId['images'], 
       rating: review.rating,
       comment: review.comment,
       createdAt: review.createdAt,
@@ -91,13 +93,11 @@ export class ReviewsService {
   
 
   async updateReview(reviewId: string, updateReviewDto: UpdateReviewDto): Promise<Reviews> {
-    // Check if the review exists
     const existingReview = await this.reviewModel.findById(reviewId);
     if (!existingReview) {
       throw new NotFoundException(`Review with ID ${reviewId} not found.`);
     }
-
-    // Update the review data
+  
     const updatedReview = await this.reviewModel.findByIdAndUpdate(
       reviewId,
       updateReviewDto,
@@ -107,23 +107,19 @@ export class ReviewsService {
     if (!updatedReview) {
       throw new NotFoundException(`Review with ID ${reviewId} not found after update.`);
     }
-
-    // Update the review data in the product reviews array if necessary
+  
     const product = await this.productModel.findById(updatedReview.productId);
     if (product) {
-      const reviewIndex = product.reviews.findIndex((prodReview) => {
-        // Ensure the index lookup aligns with the IDs
-        return prodReview instanceof Types.ObjectId ? prodReview.equals(updatedReview._id) : prodReview._id.equals(updatedReview._id);
-      });
-
-      // Replace the old review data with the new one in the array
+      const reviewIndex = product.reviews.findIndex((prodReview) => 
+        prodReview instanceof Types.ObjectId ? prodReview.equals(updatedReview._id) : prodReview._id.equals(updatedReview._id)
+      );
+  
       if (reviewIndex >= 0) {
         product.reviews[reviewIndex] = updatedReview as unknown as Reviews;
         await product.save();
       }
     }
-
-    // Return the updated review as the expected type
+  
     return updatedReview as unknown as Reviews;
   }
 

@@ -6,7 +6,8 @@ import { Wishlist } from '../../interfaces/wishlist';
 import { Product } from '../../interfaces/product';
 import { AddProductWishlistDto } from '../../dto/add-to-wishlist.dto';
 import { RemoveProductWishlistDto } from 'src/user-info/dto/remove-from-wishlist.dto';
-import { UserSchema, User } from 'src/identity/schemas/user.schema';
+import { User } from 'src/identity/schemas/user.schema';
+
 @Injectable()
 export class WishlistService {
   constructor(
@@ -17,7 +18,7 @@ export class WishlistService {
 
   async findWishlistByUserId(userId: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOne({ userId })
-      .populate('products.productId', 'name description price images')
+      .populate('products.productId')
       .exec();
 
     if (!wishlist) {
@@ -32,20 +33,29 @@ export class WishlistService {
     if (!product) {
       throw new NotFoundException(`Product with ID ${productId} not found.`);
     }
-  
+
     let wishlist = await this.wishlistModel.findOne({ userId });
-  
+
     if (wishlist) {
       // Check if the product is already in the wishlist
       const productExists = wishlist.products.some((item) => item.productId.toString() === productId);
-  
+
       if (productExists) {
         throw new ConflictException(`Product with ID ${productId} is already in the wishlist.`);
       }
-  
+
       // Add the new product to the existing wishlist
       wishlist.products.push({
         productId: new Types.ObjectId(productId),
+        name: product.name,
+        description: product.description,
+        images: product.images,
+        price: product.price,
+        color: product.color,
+        size: product.size,
+        material: product.material,
+        availability: product.availability,
+        rentalOptions: product.rentalOptions,
         addedAt: undefined
       });
       await wishlist.save();
@@ -53,7 +63,18 @@ export class WishlistService {
       // Create a new wishlist if the user doesn't have one yet
       wishlist = new this.wishlistModel({
         userId,
-        products: [{ productId: new Types.ObjectId(productId) }]
+        products: [{
+          productId: new Types.ObjectId(productId),
+          name: product.name,
+          description: product.description,
+          images: product.images,
+          price: product.price,
+          color: product.color,
+          size: product.size,
+          material: product.material,
+          availability: product.availability,
+          rentalOptions: product.rentalOptions
+        }]
       });
       await wishlist.save();
 
@@ -63,7 +84,6 @@ export class WishlistService {
 
     return wishlist;
   }
-  
 
   async removeProductFromWishlist(userId: string, { productId }: RemoveProductWishlistDto): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOneAndUpdate(
@@ -126,7 +146,5 @@ export class WishlistService {
 
     // Return only the cart array
     return user.cart;
-}
-
-
+  }
 }

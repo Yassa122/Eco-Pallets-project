@@ -5,11 +5,7 @@ import React, { FormEvent, useState } from "react";
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
-<<<<<<< HEAD
     password: "",
-=======
-    password: "", // Include password in your state
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
@@ -36,11 +32,7 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-<<<<<<< HEAD
         credentials: "include",
-=======
-        credentials: "include", // This is needed to handle cookies if you're using them for authentication
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
@@ -50,26 +42,14 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
-<<<<<<< HEAD
         localStorage.setItem('auth_token', data.token); // Save token to localStorage
-=======
-        const token = data.accessToken;
-        localStorage.setItem("token", token);
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
         // Handle successful login here (e.g., redirect or store JWT)
       } else {
         throw new Error(data.message || "Failed to log in");
       }
-<<<<<<< HEAD
     } catch (error: any) { // Explicitly type error as any
       console.error("Login error:", error);
       setError(error.message || "Failed to log in.");
-=======
-    } catch (error) {
-      console.error("Login error:", error);
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
     }
   };
 
@@ -193,13 +173,7 @@ export default function Login() {
     </main>
   );
 }
-<<<<<<< HEAD
 
 function setError(arg0: string): void {
   console.error(arg0); // Implement a simple console error logging
 }
-=======
-function setError(arg0: string) {
-  throw new Error("Function not implemented.");
-}
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba

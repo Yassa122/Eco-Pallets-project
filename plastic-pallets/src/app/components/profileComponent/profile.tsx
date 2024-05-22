@@ -224,6 +224,12 @@ const Profile: React.FC = () => {
                     <i className="fa fa-address-book"></i> Shipping Addresses
                   </a>
                 </li>
+                <li className="reviews">
+                 <a href="http://localhost:3000/pages/profile/reviews" className="button-4">
+                  <i className="fa fa-star"></i> Reviews
+                 </a>
+                </li>
+
               </ul>
             </div>
           </div>
