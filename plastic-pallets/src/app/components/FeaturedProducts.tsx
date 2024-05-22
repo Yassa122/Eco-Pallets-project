@@ -1,6 +1,9 @@
+"use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import product1 from '../pics/Unknowncs.jpeg'
+import product1 from '../pics/p4 Background Removed.png';
+import cart from '../pics/cacart Background Removed.png';
+import heart from '../pics/heart .png';
 
 const FeaturedProducts = () => {
   const [items, setItems] = useState([]);
@@ -53,14 +56,17 @@ const FeaturedProducts = () => {
     }
   };
 
-  const addToFavorites = async (itemId) => {
+  const addToFavorites = async (item) => {
     try {
+      const token = localStorage.getItem('auth_token');
       const response = await fetch("http://localhost:5555/addToFavorites", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`, // Include Bearer token
         },
-        body: JSON.stringify({ itemId }),
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+        body: JSON.stringify({ item }),
       });
 
       const data = await response.json();
@@ -76,25 +82,36 @@ const FeaturedProducts = () => {
   };
 
   return (
-    <section style={{ color: 'white' }}>
-      <h2>Featured Products</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+    
+    <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>Products</h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {items.map((item) => (
-          <li key={item.id} style={{ marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
-            <div style={{ marginRight: '20px', flex: '0 0 auto' }}>
-              <Image src={product1} width={100} height={100} />
+          <div key={item.id} style={{ flex: '1 1 300px', border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#111111', color: '#fff', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
+            <div style={{ width: '150px', height: '150px', margin: '0 auto 20px', position: 'relative', overflow: 'hidden', borderRadius: '50%' }}>
+              <Image src={product1} layout="fill" objectFit="cover" />
             </div>
-            <div style={{ flex: '1 1 auto' }}>
-              <h3 style={{ margin: '0', marginBottom: '5px' }}>{item.name}</h3>
-              <p style={{ margin: '0', color: '#888' }}>Price: {item.price}</p>
+            <div style={{ textAlign: 'left', marginBottom: '10px' }}>
+              <h3 style={{ margin: '0 0 5px 0', fontSize: '1.8rem', fontWeight: '600', color: '#fff' }}>{item.name}</h3>
+              <p style={{ margin: '0', color: '#bbb', fontSize: '1.2rem' }}>Price: ${item.price}</p>
             </div>
-            <div style={{ flex: '0 0 auto' }}>
-              <button onClick={() => addToCart(item.id)} style={{ marginRight: '10px', padding: '8px 12px', border: 'none', backgroundColor: '#007bff', color: 'white', borderRadius: '5px', cursor: 'pointer' }}>Add to Cart</button>
-              <button onClick={() => addToFavorites(item.id)} style={{ padding: '8px 12px', border: 'none', backgroundColor: '#28a745', color: 'white', borderRadius: '5px', cursor: 'pointer' }}>Add to Favorites</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
+              <button onClick={() => addToCart(item.id)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                + to Cart
+              </button>
+              <button onClick={() => addToFavorites(item)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                + to Favorites
+              </button>
+              <button className="flex items-center gap-2 px-3 py-2 text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700" style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path fillRule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clipRule="evenodd" />
+                </svg>
+                Button
+              </button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </section>
   );
 };

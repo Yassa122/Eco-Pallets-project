@@ -51,6 +51,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Login error:", error);
+
     }
   };
 
