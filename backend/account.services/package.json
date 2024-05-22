@@ -42,7 +42,12 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
+<<<<<<< HEAD
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+=======
     "inherits": "^2.0.4",
+>>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
     "kafkajs": "^2.2.4",
     "mongoose": "^6.2.2",
     "passport": "^0.7.0",

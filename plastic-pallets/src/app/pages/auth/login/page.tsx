@@ -8,9 +8,11 @@ export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,6 +36,9 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         credentials: "include",
+
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
@@ -43,6 +48,7 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
+
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
@@ -51,6 +57,7 @@ export default function Login() {
       } else {
         throw new Error(data.message || "Failed to log in");
       }
+
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -63,6 +70,7 @@ export default function Login() {
   return (
     <main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
+
         <div className="text-center">
           <Image
             src={logo}
@@ -188,3 +196,12 @@ export default function Login() {
 function setError(arg0: string) {
   throw new Error("Function not implemented.");
 }
+
+
+function setError(arg0: string): void {
+  console.error(arg0); // Implement a simple console error logging
+}
+function setError(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+

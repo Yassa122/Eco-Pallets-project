@@ -4,7 +4,6 @@ import { Logger } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  // Create and start an HTTP server
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: 'http://localhost:3000', // Assuming your React app runs on localhost:3000

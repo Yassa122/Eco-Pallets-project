@@ -1,4 +1,5 @@
 import {Schema} from 'mongoose';
+import { ReviewSchema} from './review.schema';
 export const ProductSchema = new Schema({
     name: {
         type: String,
@@ -46,5 +47,9 @@ export const ProductSchema = new Schema({
         price: {
             type: Number
         }
-    }
+    },
+    reviews: {
+        type: [ReviewSchema],
+        default: []
+      }
 });

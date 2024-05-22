@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
@@ -160,26 +160,33 @@ export class IdentityService {
 
   async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
     const { oldPassword, newPassword } = updatePasswordDto;
-  
+
     // Find user by their ID
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found.`);
     }
-  
+
     // Verify old password
     const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isOldPasswordValid) {
       throw new UnauthorizedException('Old password is incorrect.');
     }
-  
+
+    // Check if the new password is the same as the old password
+    const isNewPasswordSame = await bcrypt.compare(newPassword, user.password);
+    if (isNewPasswordSame) {
+      throw new BadRequestException('The new password cannot be the same as the old password.');
+    }
+
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-  
+
     // Update user's password
     await this.userModel.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
-  
-    this.logger.debug(`Password updated successfully for user ID ${userId}`);
+
+    // Log password update
+    console.debug(`Password updated successfully for user ID ${userId}`);
     return true;
   }
   

@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Review, ReviewDoc } from '../../schemas/review.schema';
+import { Model, Types } from 'mongoose';
+import { ReviewSchema} from '../../schemas/review.schema';
+import { Reviews } from 'src/user-info/interfaces/reviews';
 import { CreateReviewDto } from '../../dto/create-review.dto';
 import { UpdateReviewDto } from 'src/user-info/dto/update-review.dto';
 import { CreateProductDto } from 'src/user-info/dto/create-product.dto';
@@ -12,7 +13,7 @@ import { UserReviewsDto } from 'src/user-info/dto/get-reviews.dto';
 
 @Injectable()
 export class ReviewsService {
-  constructor(@InjectModel('Review') private readonly reviewModel: Model<ReviewDoc>,
+  constructor(@InjectModel('Review') private readonly reviewModel: Model<Reviews>,
   @InjectModel('Product') private readonly productModel: Model<Product>,
   @InjectModel('User') private readonly userModel: Model<User>
 ) {}
@@ -47,52 +48,113 @@ export class ReviewsService {
     return userReviewsDto;
   }
 
-  // async findUserReviews(userId: string): Promise<ReviewDoc[]> {
-  //   const reviews = await this.reviewModel.find({ userId }).populate('productId').exec();
-  //   if (!reviews) {
-  //     throw new NotFoundException(`No reviews found for user with ID ${userId}.`);
-  //   }
-  //   return reviews;
-  // }
 
-  async addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<ReviewDoc> {
+  async addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<Reviews> {
+    // Find the product
     const product = await this.productModel.findById(productId);
     if (!product) {
       throw new NotFoundException(`Product with ID ${productId} not found.`);
     }
 
+    // Find the user
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found.`);
     }
 
+    // Check if the user has already reviewed this product
+    const existingReview = await this.reviewModel.findOne({ productId, userId });
+    if (existingReview) {
+      throw new BadRequestException('You have already reviewed this product.');
+    }
+
+    // Create a new review instance
     const review = new this.reviewModel({
       ...createReviewDto,
-      productId,
-      userId
+      productId: new Types.ObjectId(productId),
+      userId: new Types.ObjectId(userId)
     });
 
+    // Save the review
     const savedReview = await review.save();
 
-    // Add the review to the user's list of reviews
+    // Add the review to the user's reviews list
     user.reviews.push(savedReview._id);
     await user.save();
 
-    return savedReview;
+    // Add the review to the product's reviews list
+    product.reviews.push(savedReview as unknown as Reviews); // Use assertion to treat as Reviews
+    await product.save();
+
+    return savedReview as unknown as Reviews; // Return as Reviews
   }
   
 
-  async updateReview(reviewId: string, updateReviewDto: UpdateReviewDto): Promise<ReviewDoc> {
-    const updatedReview = await this.reviewModel.findByIdAndUpdate(reviewId, updateReviewDto, { new: true }).exec();
-    if (!updatedReview) {
+  async updateReview(reviewId: string, updateReviewDto: UpdateReviewDto): Promise<Reviews> {
+    // Check if the review exists
+    const existingReview = await this.reviewModel.findById(reviewId);
+    if (!existingReview) {
       throw new NotFoundException(`Review with ID ${reviewId} not found.`);
     }
 
-    return updatedReview;
+    // Update the review data
+    const updatedReview = await this.reviewModel.findByIdAndUpdate(
+      reviewId,
+      updateReviewDto,
+      { new: true }
+    ).exec();
+    
+    if (!updatedReview) {
+      throw new NotFoundException(`Review with ID ${reviewId} not found after update.`);
+    }
+
+    // Update the review data in the product reviews array if necessary
+    const product = await this.productModel.findById(updatedReview.productId);
+    if (product) {
+      const reviewIndex = product.reviews.findIndex((prodReview) => {
+        // Ensure the index lookup aligns with the IDs
+        return prodReview instanceof Types.ObjectId ? prodReview.equals(updatedReview._id) : prodReview._id.equals(updatedReview._id);
+      });
+
+      // Replace the old review data with the new one in the array
+      if (reviewIndex >= 0) {
+        product.reviews[reviewIndex] = updatedReview as unknown as Reviews;
+        await product.save();
+      }
+    }
+
+    // Return the updated review as the expected type
+    return updatedReview as unknown as Reviews;
   }
 
-  async deleteReview(reviewId: string): Promise<ReviewDoc> {
-    return this.reviewModel.findByIdAndDelete(reviewId).exec();
+  async deleteReview(reviewId: string): Promise<Reviews> {
+    // Find the review to get references to the user and product
+    const review = await this.reviewModel.findById(reviewId);
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${reviewId} not found.`);
+    }
+
+    // Delete the review
+    const deletedReview = await this.reviewModel.findByIdAndDelete(reviewId);
+    if (!deletedReview) {
+      throw new NotFoundException(`Review with ID ${reviewId} not found for deletion.`);
+    }
+
+    // Update the user: Remove the review from the user's list of reviews
+    const user = await this.userModel.findById(review.userId);
+    if (user) {
+      user.reviews = user.reviews.filter((reviewId) => !reviewId.equals(deletedReview._id));
+      await user.save();
+    }
+
+    // Update the product: Remove the review from the product's embedded reviews array
+    const product = await this.productModel.findById(review.productId);
+    if (product) {
+      product.reviews = product.reviews.filter((prodReview) => !prodReview._id.equals(deletedReview._id));
+      await product.save();
+    }
+
+    return deletedReview;
   }
   
 }

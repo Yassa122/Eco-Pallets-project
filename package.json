@@ -3,5 +3,6 @@
     "@nestjs/common": "^10.3.8",
     "stripe": "^15.5.0",
     "typescript": "^5.4.5"
+    "axios": "^1.6.8",
   }
 }
