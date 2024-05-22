@@ -55,14 +55,6 @@ export class AppController {
       return res.status(401).json({ message: 'Authentication failed' });
     }
   }
-<<<<<<< HEAD
-  // @UseGuards(JwtAuthGuard)
-  // @Get('profile')
-  // async getUser(@GetUserId() userId: string) {
-  //   // Using the custom decorator to extract the userId
-  //   return this.accountServices.getUser(userId);
-  // }
-=======
 
   //working
   @UseGuards(JwtAuthGuard)
@@ -78,19 +70,11 @@ export class AppController {
     return { message: 'User info sent to Kafka' };
   }
   
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
   // @Get(':id/send-info')
   // async handleSendUserInfo(@Param('id') id: string) {
   //   await this.accountServices.sendUserInfo(id);
   //   return { message: 'User info sent to Kafka' };
   // }
-<<<<<<< HEAD
-  // @UseGuards(JwtAuthGuard)
-  // @Put('profile/update')
-  // async updateUser(@GetUserId() userId: string, @Body() updateUserDto: UpdateUserProfileDto) {
-  //   return this.accountServices.updateUser(userId, updateUserDto);
-  // }
-=======
 
   //working
   @Put('profile/update')
@@ -105,7 +89,6 @@ export class AppController {
   getShippingAddresses(@CurrentUser('userId') userId: string) {
     return this.userInfoService.getShippingAddresses(userId);
   }
->>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
 
   //working
   @Post('user-info/add-address')
