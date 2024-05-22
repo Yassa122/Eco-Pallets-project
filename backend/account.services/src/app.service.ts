@@ -49,19 +49,19 @@ export class AppService implements OnModuleInit {
     return this.profileService.getUserProfileInfo(id);
   }
 
-  // async updateUser(
-  //   userId: string,
-  //   updateUserDto: UpdateUserProfileDto,
-  // ): Promise<User | null> {
-  //   return new Promise((resolve, reject) => {
-  //     this.profileService
-  //       .updateUserProfile(userId, updateUserDto)
-  //       .then((user) => {
-  //         resolve(user);
-  //       })
-  //       .catch((err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserProfileDto,
+  ): Promise<User | null> {
+    return new Promise((resolve, reject) => {
+      this.profileService
+        .updateUserProfile(userId, updateUserDto)
+        .then((user) => {
+          resolve(user);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
 }
