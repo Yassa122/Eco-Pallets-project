@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose';
 import { CreateCartDto } from './dto/cart.dto'; 
 import { CartItemDto } from './dto/cartItem.dto'; 
+import { makeOrderDto } from './dto/order.dto';
 
 
 const stripe = require('stripe')('sk_test_51PDlJnP0bLgNNnYQV2v1dxD0RysfZXXUJYZJnSTQ2fmMlBfA4yu1zH9khjbvZcyZLsovYZNSo9hXITRC0ZXKpYgH00dYznYGKg');
@@ -13,7 +14,8 @@ export class AppService {
   constructor(
     @InjectModel('Cart') private readonly cartModel: Model<any>,
     @InjectModel('CartItem') private readonly cartItemModel: Model<any>,
-    @InjectModel('PromoCode') private readonly promoCodeModel: Model<any>
+    @InjectModel('PromoCode') private readonly promoCodeModel: Model<any>,
+    @InjectModel('Order') private readonly ordersModel: Model<any>
 
 
   ) {}
@@ -200,8 +202,8 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
         },
       ],  
       mode: 'payment',
-      success_url: `http://localhost:3000/pages/home`,
-      cancel_url: `http://localhost:3000/pages/cart`,
+      success_url: `http://localhost:7000/pages/paymentSuccess?userId=${userId}`,
+      cancel_url: `http://localhost:7000/pages/cart`,
     });
     
   }else{
@@ -218,10 +220,41 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
         quantity: cartItem.quantity,
       })),
       mode: 'payment',
-      success_url: `http://localhost:3000/success.html`,
-      cancel_url: `http://localhost:3000/cancel.html`,
+      success_url: `http://localhost:7000/pages/paymentSuccess?userId=${userId}`,
+      cancel_url: `http://localhost:7000/pages/cart`,
     });
   }
+  // console.log(session.payment_status);
+ // Call makeOrder API here if payment is successful
     return session;
   }
+
+
+
+    async handleSuccessfulPayment(userId: string): Promise<any> {
+      // Fetch the user's cart based on the userId
+      const userCart = await this.cartModel.findOne({ userId });
+      if (!userCart) {
+          throw new Error('Cart not found');
+      }
+
+      // Extract necessary data from the cart items to create an order
+      const makeOrderDto: makeOrderDto = {
+          
+          totalPrice: userCart.totalPrice,
+          cartItems: userCart.cartItems,
+      };
+
+      // Call orders service to create the order
+      await this.makeOrder(userId, makeOrderDto);
+  }
+
+  async makeOrder(userId:string, makeOrderDto:makeOrderDto) {
+    const createdOrder = new this.ordersModel(makeOrderDto);
+    createdOrder.userId=userId;
+    return createdOrder.save();
+    }
+
 }
+
+
