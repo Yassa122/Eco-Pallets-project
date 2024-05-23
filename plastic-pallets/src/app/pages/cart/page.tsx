@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import "./global.css";
-import Cart from "@/components/cart/page"; // Adjust the import path as needed
+import Carts from "@/components/cart/page"; // Adjust the import path as needed
 import PlaceholderContent from "@/components/demo/placeholder-content"; // Adjust the import path as needed
 
 import Navbar from "../../components/cartComponents/navbar";
@@ -35,7 +35,7 @@ export default function Cart() {
         </BreadcrumbList>
       </Breadcrumb>
       <PlaceholderContent>
-        <Cart /> {/* Cart component is rendered inside PlaceholderContent */}
+        <Carts /> {/* Cart component is rendered inside PlaceholderContent */}
       </PlaceholderContent>
     </ContentLayout>
   );
