@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
     </form>
     <div className="text-center">
       <a
-        href="/pages/auth/login"
+        href="/pages/authentication/login"
         className="text-teal-500 hover:text-teal-400"
       >
         Remember your password? Login
