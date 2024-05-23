@@ -18,6 +18,7 @@ import { makeOrderDto } from './dto/order.dto';
 import { CartItemDto } from './dto/cartItem.dto';
 import { CurrentUser } from './decorators/get-user-id.decorator';
 import { Response, Request } from 'express'; // Import Response from express
+import { use } from 'passport';
 
 
 @Controller()
@@ -42,6 +43,7 @@ export class AppController {
          }
          // Get the cart items of the user based on the userId
          await this.appService.handleSuccessfulPayment(userId);
+         await this.appService.clearCart(userId);
         // await this.makeOrder(userId, makeOrderDto);
         res.redirect('http://localhost:3000/pages/home?success=true');
     } catch (error) {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Pallet1 from '../../images/cart/pallet1.png';
 import Proceed from './proceed';
 
 const ShoppingCart = () => {
@@ -146,12 +145,14 @@ const ShoppingCart = () => {
     setSubtotal(subbtotal);
   };
 
-  return (
-    <div>
-      <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
-        {cartItems.map((item, index) => (
+return (
+  <div>
+    <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
+      {cartItems.map((item, index) => {
+        const ProductImage = require(`../../images/cart/${item.productName.replace(/\s/g, '').toLowerCase()}.png`).default;
+        return (
           <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
-            <Image src={Pallet1} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }} />
+            <Image src={ProductImage} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }}/>
             <div>
               <p>{item.productName}</p>
               <p>Price: ${item.price}</p>
@@ -166,11 +167,13 @@ const ShoppingCart = () => {
               </button>
             </div>
           </div>
-        ))}
-      </div>
-      <Proceed subtotal={subtotal} />
+        );
+      })}
     </div>
-  );
+    <Proceed subtotal={subtotal} />
+  </div>
+);
+
 };
 
 export default ShoppingCart;

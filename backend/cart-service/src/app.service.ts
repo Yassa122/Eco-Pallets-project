@@ -255,6 +255,21 @@ async createCart(createCartDto: CreateCartDto, userId: string): Promise<CreateCa
     return createdOrder.save();
     }
 
+
+  async clearCart(userId: string): Promise<any> {
+      const cart = await this.cartModel.findOne({ userId }).exec();
+      if (!cart) {
+        throw new Error('Cart not found');
+      }
+  
+      cart.cartItems = []; // Remove all items from the cart
+      cart.totalPrice = 0; // Reset total price
+      cart.Subtotal=0;
+      cart.PromoCodeMultiplier = 1; // Reset promo code multiplier
+      await cart.save();
+      return { message: 'Cart cleared successfully' };
+  }
+
 }
 
 
