@@ -1,25 +1,27 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function Login() {
+  const router = useRouter(); // Use the useRouter hook
   const [formData, setFormData] = useState({
     username: "",
-    password: "",
+    password: "", // Include password in your state
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
-  const [error, setError] = useState<string | null>(null); // Add error state
+  const [error, setError] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: value, // This will update the right part of the state based on the input name
     }));
   };
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formData.username.trim() || !formData.password.trim()) {
       setError("Both username and password are required.");
@@ -32,7 +34,7 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
@@ -42,14 +44,16 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
-        localStorage.setItem('auth_token', data.token); // Save token to localStorage
-        // Handle successful login here (e.g., redirect or store JWT)
+        const token = data.accessToken;
+        localStorage.setItem("token", token);
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
+        router.push("/pages/home"); // Redirect to dashboard
       } else {
         throw new Error(data.message || "Failed to log in");
       }
-    } catch (error: any) { // Explicitly type error as any
+    } catch (error: any) {
       console.error("Login error:", error);
-      setError(error.message || "Failed to log in.");
+      setError(error.message || "Failed to log in");
     }
   };
 
@@ -60,6 +64,7 @@ export default function Login() {
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
+        {/* Create a grey container with padding, shadow, and rounded corners */}
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
@@ -68,7 +73,8 @@ export default function Login() {
             <p className="text-white">
               Don't have an account?{" "}
               <a
-                href="javascript:void(0)"
+                href="#"
+                onClick={(e) => { e.preventDefault(); /* Handle sign up */ }}
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Sign up
@@ -78,9 +84,9 @@ export default function Login() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="font-medium text-white">username</label>
+            <label className="font-medium text-white">Username</label>
             <input
-              type="username"
+              type="text" // Change the input type to "text" for the username
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -106,6 +112,11 @@ export default function Login() {
             Sign in
           </button>
         </form>
+        {error && (
+          <div className="text-red-500 text-center mt-4">
+            {error}
+          </div>
+        )}
 
         <div className="relative">
           <span className="block w-full h-px bg-gray-300"></span>
@@ -121,7 +132,7 @@ export default function Login() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_17_40)">
+              <g clipPath="url(#clip0_17_40)">
                 <path
                   d="M47.532 24.5528C47.532 22.9214 47.3997 21.2811 47.1175 19.6761H24.48V28.9181H37.4434C36.9055 31.8988 35.177 34.5356 32.6461 36.2111V42.2078H40.3801C44.9217 38.0278 47.532 31.8547 47.532 24.5528Z"
                   fill="#4285F4"
@@ -164,7 +175,8 @@ export default function Login() {
         </div>
         <div className="text-center">
           <a
-            href="javascript:void(0)"
+            href="#"
+            onClick={(e) => { e.preventDefault(); /* Handle forgot password */ }}
             className="text-indigo-600 hover:text-indigo-500"
           >
             Forgot password?
@@ -174,8 +186,3 @@ export default function Login() {
     </main>
   );
 }
-
-function setError(arg0: string): void {
-  console.error(arg0); // Implement a simple console error logging
-}
-

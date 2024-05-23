@@ -6,7 +6,14 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   // Create and start an HTTP server
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors({
+    origin: 'http://localhost:3000', // Assuming your React app runs on localhost:3000
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    allowedHeaders: 'Content-Type, Accept',
+    credentials: true, // This allows the server to send cookies
+  });
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
