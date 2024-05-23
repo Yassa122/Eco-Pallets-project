@@ -17,4 +17,7 @@ export declare class EmailController {
         name: string;
         email: string;
     }): Promise<void>;
+    sendResetMail(user: {
+        email: string;
+    }): Promise<void>;
 }

@@ -8,6 +8,9 @@ export declare class EmailService {
     sendVerificationEmail(user: {
         name: string;
         email: string;
-    }): Promise<void>;
+    }): Promise<string>;
     sendMail(to: string, subject: string, text: string): Promise<any>;
+    sendResetMail(user: {
+        email: string;
+    }): Promise<string>;
 }

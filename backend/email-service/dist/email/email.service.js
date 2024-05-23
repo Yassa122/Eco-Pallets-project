@@ -65,6 +65,7 @@ let EmailService = class EmailService {
                 },
             };
             await this.transporter.sendMail(mailOptions);
+            return ("mail sent successfully");
         }
         catch (error) {
             console.log(`Nodemailer error sending email to ${user.email}`, error);
@@ -78,6 +79,24 @@ let EmailService = class EmailService {
             text
         };
         return this.transporter.sendMail(mailOptions);
+    }
+    async sendResetMail(user) {
+        try {
+            const mailOptions = {
+                from: 'plasticpallets-software@outlook.com',
+                template: 'reset',
+                to: user.email,
+                subject: `Reset your password`,
+                context: {
+                    company: 'Plastic Pallets Software',
+                },
+            };
+            await this.transporter.sendMail(mailOptions);
+            return ("mail sent successfully");
+        }
+        catch (error) {
+            console.log(`Nodemailer error sending email to ${user.email}`, error);
+        }
     }
 };
 exports.EmailService = EmailService;

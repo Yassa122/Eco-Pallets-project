@@ -20,4 +20,8 @@ export class EmailController {
   async sendVerificationEmail(@Body() user: { name: string, email: string }) {
     await this.emailService.sendVerificationEmail(user);
   }
+  @Post('reset-password-mail')
+  async sendResetMail(@Body() user: {email: string }) {
+    await this.emailService.sendResetMail(user);
+  }
 }

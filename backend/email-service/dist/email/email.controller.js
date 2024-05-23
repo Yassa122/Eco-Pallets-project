@@ -30,6 +30,9 @@ let EmailController = class EmailController {
     async sendVerificationEmail(user) {
         await this.emailService.sendVerificationEmail(user);
     }
+    async sendResetMail(user) {
+        await this.emailService.sendResetMail(user);
+    }
 };
 exports.EmailController = EmailController;
 __decorate([
@@ -53,6 +56,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "sendVerificationEmail", null);
+__decorate([
+    (0, common_1.Post)('reset-password-mail'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EmailController.prototype, "sendResetMail", null);
 exports.EmailController = EmailController = __decorate([
     (0, common_1.Controller)('email'),
     __metadata("design:paramtypes", [email_service_1.EmailService])

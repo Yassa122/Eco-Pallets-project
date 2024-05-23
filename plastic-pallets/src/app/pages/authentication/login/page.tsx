@@ -2,7 +2,7 @@
 "use client";
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
-// import logo from "src/app/images/Logo/png/logo-white.png";
+import logo from "src/app/images/Logo/png/logo-white.png";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -71,13 +71,13 @@ export default function Login() {
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
 
         <div className="text-center">
-          {/* <Image
+          <Image
             src={logo}
             alt="Logo"
             width={150}
             height={50}
             className="mx-auto mb-4 rounded-lg"
-          /> */}
+          />
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
               Log in to your account
@@ -85,7 +85,7 @@ export default function Login() {
             <p className="text-gray-400">
               Don't have an account?{" "}
               <a
-                href="/pages/auth/signup"
+                href="/pages/authentication/signup"
                 className="font-medium text-teal-500 hover:text-teal-400"
               >
                 Sign up
@@ -181,8 +181,8 @@ export default function Login() {
         </div>
         <div className="text-center">
           <a
-            href="/src/app/pages/auth/resetPassword/page.tsx"
-            className="text-teal-500 hover:text-teal-400"
+                href="/pages/authentication/resetPassword"
+                className="text-teal-500 hover:text-teal-400"
           >
             Forgot password?
           </a>

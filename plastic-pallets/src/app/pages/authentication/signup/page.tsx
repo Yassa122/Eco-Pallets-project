@@ -2,7 +2,7 @@
 "use client";
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
-// import logo from "src/app/images/Logo/png/logo-white.png";
+import logo from "src/app/images/Logo/png/logo-white.png";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -23,8 +23,26 @@ export default function SignupPage() {
     }));
   };
 
+  const sendMail = async (name:string, email: string) => {
+    try{
+    const response = await fetch("http://localhost:8888/email/verification-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // This is needed to handle cookies if you're using them for authentication
+      body: JSON.stringify({name, email }), // Include the email in the request body
+    });
+
+  }catch (error) {
+    throw new Error("Failed to send mail: " + error);
+  }
+};
+
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    await sendMail(formData.firstName, formData.email);
     if (
       !formData.username.trim() ||
       !formData.password.trim() ||
@@ -65,7 +83,7 @@ export default function SignupPage() {
 <main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
     <div className="text-center">
-      {/* <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4 rounded-lg" /> */}
+      <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4 rounded-lg" />
       <div className="mt-5 space-y-2">
         <h3 className="text-white text-2xl font-bold sm:text-3xl">
           Sign up for an account
@@ -73,7 +91,7 @@ export default function SignupPage() {
         <p className="text-gray-400">
           Already have an account?{' '}
           <a
-            href="/pages/auth/login"
+            href="/pages/authentication/login"
             className="font-medium text-teal-500 hover:text-teal-400"
           >
             Login
@@ -203,7 +221,7 @@ export default function SignupPage() {
         </div>
     <div className="text-center">
       <a
-        href="/src/app/pages/auth/resetPassword/page.tsx"
+        href="/src/app/pages/authentication/resetPassword/page.tsx"
         className="text-teal-500 hover:text-teal-400"
       >
         Forgot password?

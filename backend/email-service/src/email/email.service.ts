@@ -57,6 +57,7 @@ export class EmailService {
         },
       };
       await this.transporter.sendMail(mailOptions);
+      return ("mail sent successfully");
     } catch (error) {
       console.log(`Nodemailer error sending email to ${user.email}`, error);
     }
@@ -70,5 +71,23 @@ export class EmailService {
     };
 
     return this.transporter.sendMail(mailOptions);
+  }
+
+  async sendResetMail(user: { email: string }){
+    try {
+      const mailOptions = {
+        from: 'plasticpallets-software@outlook.com',
+        template: 'reset',
+        to: user.email,
+        subject: `Reset your password`,
+        context: {
+          company: 'Plastic Pallets Software',
+        },
+      };
+      await this.transporter.sendMail(mailOptions);
+      return ("mail sent successfully");
+    } catch (error) {
+      console.log(`Nodemailer error sending email to ${user.email}`, error);
+    }
   }
 }

@@ -11,8 +11,28 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    await sendMail(email);
     // Your form submission logic here
   };
+
+  const sendMail = async (email:string) => {
+    try{
+    await fetch("http://localhost:8888/email/reset-password-mail", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+
+  }catch (error) {
+      throw new Error("Failed to send mail "+error);
+    }
+    
+  };
+  
+  
 
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
@@ -50,7 +70,7 @@ export default function ResetPasswordPage() {
 
         <div className="text-center">
           <a
-            href="/pages/auth/login"
+            href="/pages/authentication/login"
             className="text-indigo-600 hover:text-indigo-500"
           >
             Remember your password? Login
