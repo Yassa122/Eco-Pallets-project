@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Pallet1 from '../../images/cart/pallet1.png';
 import Proceed from './proceed';
 
 const ShoppingCart = () => {
@@ -21,7 +20,14 @@ const ShoppingCart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      // Retrieve token from localStorage
+      const token = localStorage.getItem('token');  
+      // Check if token exists
+      if (!token) {
+        throw new Error("Token not found in localStorage");
+      }
+  
+      // Fetch cart items
       const response = await fetch("http://localhost:7000/cartItems", {
         method: "GET",
         headers: {
@@ -30,8 +36,10 @@ const ShoppingCart = () => {
         },
         credentials: "include", // This is needed to handle cookies if you're using them for authentication
       });
-
+  
       const data = await response.json();
+  
+      // Check response status
       if (response.ok) {
         console.log("Cart Items Fetched Successfully", data);
         setCartItems(data);
@@ -42,10 +50,11 @@ const ShoppingCart = () => {
       console.error("Fetching error:", error);
     }
   };
+  
 
   const removeItem = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:7000/removeCartItem", {
         method: 'DELETE',
         headers: {
@@ -71,7 +80,7 @@ const ShoppingCart = () => {
 
   const incrementQuantity = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:7000/addQuantity', {
         method: 'PUT',
         headers: {
@@ -102,7 +111,7 @@ const ShoppingCart = () => {
 
   const decrementQuantity = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:7000/subtractQuantity', {
         method: 'PUT',
         headers: {
@@ -136,12 +145,14 @@ const ShoppingCart = () => {
     setSubtotal(subbtotal);
   };
 
-  return (
-    <div>
-      <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
-        {cartItems.map((item, index) => (
+return (
+  <div>
+    <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
+      {cartItems.map((item, index) => {
+        const ProductImage = require(`../../images/cart/${item.productName.replace(/\s/g, '').toLowerCase()}.png`).default;
+        return (
           <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
-            <Image src={Pallet1} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }} />
+            <Image src={ProductImage} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }}/>
             <div>
               <p>{item.productName}</p>
               <p>Price: ${item.price}</p>
@@ -156,11 +167,13 @@ const ShoppingCart = () => {
               </button>
             </div>
           </div>
-        ))}
-      </div>
-      <Proceed subtotal={subtotal} />
+        );
+      })}
     </div>
-  );
+    <Proceed subtotal={subtotal} />
+  </div>
+);
+
 };
 
 export default ShoppingCart;
