@@ -50,6 +50,9 @@ export class CreateIdentityDto {
   @IsOptional()
   passwordResetToken?: string;
 
-  @IsOptional() // Custom date validator could be applied if needed
+  @IsOptional()
   passwordResetExpires?: Date;
+
+  @IsString()
+  readonly role: string; // Add role field
 }

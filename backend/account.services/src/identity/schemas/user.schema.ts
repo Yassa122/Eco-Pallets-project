@@ -6,7 +6,7 @@ const ShippingAddressSchema = new Schema({
   address: { type: String, required: true },
   city: { type: String, required: true },
   postalCode: { type: String, required: true },
-  country: { type: String, required: true }
+  country: { type: String, required: true },
 });
 
 export interface ShippingAddress {
@@ -22,17 +22,18 @@ export const UserSchema = new Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: false },
+    email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phoneNumber: { type: String, optional: true },
-    company: { type: String, optional: true },
-    shippingAddresses: [ShippingAddressSchema],
-    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],  // References Order documents
-    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }], // Array to store references to Review documents
+    phoneNumber: { type: String },
+    company: { type: String },
+    shippingAddresses: [
+      { type: Schema.Types.ObjectId, ref: 'ShippingAddress' },
+    ],
     isEmailVerified: { type: Boolean, default: false },
-    passwordResetToken: { type: String, optional: true },
-    passwordResetExpires: { type: Date, optional: true },
+    passwordResetToken: { type: String },
+    passwordResetExpires: { type: Date },
+    role: { type: String, required: true }, // Add role field
   },
   {
     timestamps: true,
@@ -48,8 +49,8 @@ export interface User extends Document {
   phoneNumber?: string;
   company?: string;
   shippingAddresses: ShippingAddress[];
-  orders: Types.ObjectId[];  // Array of Order references
-  reviews: Types.ObjectId[];  // Array of Review references
+  orders: Types.ObjectId[]; // Array of Order references
+  reviews: Types.ObjectId[]; // Array of Review references
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
