@@ -1,8 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function Login() {
+  const router = useRouter(); // Use the useRouter hook
   const [formData, setFormData] = useState({
     username: "",
     password: "", // Include password in your state
@@ -44,20 +46,19 @@ export default function Login() {
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-
-        // Handle successful login here (e.g., redirect or store JWT)
+        router.push("/pages/home"); // Redirect to dashboard
       } else {
         throw new Error(data.message || "Failed to log in");
       }
     } catch (error) {
       console.error("Login error:", error);
-
     }
   };
 
   const handleBackToLogin = () => {
     setShowSubmissionMessage(false);
   };
+
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
@@ -80,9 +81,9 @@ export default function Login() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="font-medium text-white">username</label>
+            <label className="font-medium text-white">Username</label>
             <input
-              type="username"
+              type="text" // Change the input type to "text" for the username
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -123,7 +124,7 @@ export default function Login() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_17_40)">
+              <g clipPath="url(#clip0_17_40)">
                 <path
                   d="M47.532 24.5528C47.532 22.9214 47.3997 21.2811 47.1175 19.6761H24.48V28.9181H37.4434C36.9055 31.8988 35.177 34.5356 32.6461 36.2111V42.2078H40.3801C44.9217 38.0278 47.532 31.8547 47.532 24.5528Z"
                   fill="#4285F4"
@@ -176,6 +177,7 @@ export default function Login() {
     </main>
   );
 }
+
 function setError(arg0: string) {
   throw new Error("Function not implemented.");
 }
