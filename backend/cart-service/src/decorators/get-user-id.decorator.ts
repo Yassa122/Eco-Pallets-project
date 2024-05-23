@@ -18,7 +18,8 @@ export const CurrentUser = createParamDecorator(
       cookies.split('; ').map((c) => c.split('=')),
     );
     let token = cookieObject['auth_token']; // Update to look for 'auth_token'
-
+    
+    }
     if (!token) {
       token = cookieObject['accessToken']; // Update to look for 'auth_token'
     }
