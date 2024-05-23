@@ -1,20 +1,19 @@
-export class CartItemDto{
-    readonly cartId: String;
+export class CartItemDto {
     readonly productId: String;
-    readonly productName:String;
-    readonly quantity: Number; 
+    readonly productName: String;
+    readonly quantity: Number;
     readonly price: Number;
     readonly totalPrice?: Number;
-    
-    toString(){
+    readonly image?: String; // Add image attribute
+
+    toString() {
         return JSON.stringify({
-            cartId:this.cartId,
-            productId:this.productId,
-            productName:this.productName,
-            quantity:this.quantity,
-            price:this.price,
-            totalPrice:this.totalPrice
-        }
-        );
+            productId: this.productId,
+            productName: this.productName,
+            quantity: this.quantity,
+            price: this.price,
+            totalPrice: this.totalPrice,
+            image: this.image
+        });
     }
 }

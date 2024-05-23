@@ -6,6 +6,7 @@ const Proceed = ({ subtotal }) => {
   const [promoCodeMultiplier, setPromoCodeMultiplier] = useState(1);
   const [discountedTotal, setDiscountedTotal] = useState(subtotal);
   const [promoCodeStatus, setPromoCodeStatus] = useState('');
+  const [checkoutStatus, setCheckoutStatus] = useState('');
 
 
   useEffect(() => {
@@ -69,7 +70,7 @@ const Proceed = ({ subtotal }) => {
     }
   };
 
-  const proceedToCheckout =  async () => {
+  const proceedToCheckout = async () => {
     console.log('Proceeding to checkout');
     try {
       const response = await fetch('http://localhost:7000/stripe', {
@@ -79,20 +80,27 @@ const Proceed = ({ subtotal }) => {
         },
         credentials: 'include',
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log(data);
         console.log(data.url);
         window.location.href = data.url; // Redirect to the provided URL
-        } else {
-      const data = await response.json();
-        console.error('Failed to apply stripe:', data.message);
+      } else {
+        const data = await response.json();
+        console.error('Failed to proceed to checkout:', data.message);
+        // Display failure message to the user
+        // For example, set a state to display a message to the user
+        setCheckoutStatus('Failed to proceed to checkout. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to apply stripe:', error);
+      console.error('Failed to proceed to checkout:', error);
+      // Display failure message to the user
+      // For example, set a state to display a message to the user
+      setCheckoutStatus('Failed to proceed to checkout. Please try again.');
     }
   };
+  
 
   return (
     <div style={{ color: '#7F92B3', width: '49%',float: 'right', paddingTop: '4%' }} className='p-3'>
@@ -107,6 +115,7 @@ const Proceed = ({ subtotal }) => {
       {promoCode && (
         <button style={{ backgroundColor: 'red', color: 'black' , marginLeft: '10px', borderRadius:'2vh'}} onClick={removePromoCode} className='p-3'>Remove Promo Code</button>
       )}
+      {checkoutStatus && <p style={{ color: 'red' }}>{checkoutStatus}</p>}
     </div>
   );
 };

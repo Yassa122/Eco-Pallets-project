@@ -8,11 +8,17 @@ import {
   Put,
   Delete,
   UseGuards,
+  Res,
+  Req
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto';
+import { makeOrderDto } from './dto/order.dto';
+
 import { CartItemDto } from './dto/cartItem.dto';
 import { CurrentUser } from './decorators/get-user-id.decorator';
+import { Response, Request } from 'express'; // Import Response from express
+import { use } from 'passport';
 
 
 @Controller()
@@ -23,6 +29,32 @@ export class AppController {
   getHello(): string {//working
     return this.appService.getHello();
   }
+
+
+  @Get('pages/paymentSuccess') // Decorate the method correctly
+  async handleSuccess(@Res() res: Response, @Req() req: Request): Promise<any> {
+
+    try {
+         // Retrieve the userId from the query parameters
+         const userId = req.query.userId as string;
+
+         if (!userId) {
+             throw new Error('User ID not found in the request.');
+         }
+         // Get the cart items of the user based on the userId
+         await this.appService.handleSuccessfulPayment(userId);
+         await this.appService.clearCart(userId);
+        // await this.makeOrder(userId, makeOrderDto);
+        res.redirect('http://localhost:3000/pages/home?success=true');
+    } catch (error) {
+        console.error('Error placing order:', error);
+        res.status(500).send('Error placing order');
+    }
+}
+
+async makeOrder(userId: string, @Body() makeOrderDto: makeOrderDto): Promise<any> {
+    return this.appService.makeOrder(userId, makeOrderDto);
+}
 
   @Post('create-cart')//working
   async createCart(
@@ -54,7 +86,7 @@ export class AppController {
     return this.appService.addOneQuantity(userId, prodId);
   }
 
-  @Put('subtractQuantity/')//working
+  @Put('subtractQuantity')//working
   async subtractOneQuantity(
     @CurrentUser('userId') userId: string ,
     @Body('prodId') prodId: string ,

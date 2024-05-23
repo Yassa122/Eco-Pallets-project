@@ -12,7 +12,13 @@ import "./global.css";
 import Cart from "@/components/cart/page"; // Adjust the import path as needed
 import PlaceholderContent from "@/components/demo/placeholder-content"; // Adjust the import path as needed
 
-export default function DashboardPage() {
+import Navbar from "../../components/cartComponents/navbar";
+import PhasesComponent from "../../components/cartComponents/phases";
+import ShoppingCart from "../../components/cartComponents/cartItems";
+import Proceed from "../../components/cartComponents/proceed";
+import Image from "next/image";
+export default function Cart() {
+
   return (
     <ContentLayout title="Dashboard">
       <Breadcrumb>
