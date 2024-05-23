@@ -17,8 +17,12 @@ export const CurrentUser = createParamDecorator(
     const cookieObject = Object.fromEntries(
       cookies.split('; ').map((c) => c.split('=')),
     );
-    const token = cookieObject['auth_token']; // Update to look for 'auth_token'
+    let token = cookieObject['auth_token']; // Update to look for 'auth_token'
+    
+    if(!token){
+       token = cookieObject['accessToken']; 
 
+    }
     if (!token) {
       throw new UnauthorizedException('Access token is missing');
     }
