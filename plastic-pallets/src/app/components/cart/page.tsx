@@ -5,7 +5,7 @@ import PhasesComponent from "../cartComponents/phases";
 import ShoppingCart from "../cartComponents/cartItems";
 import Proceed from "../cartComponents/proceed";
 import Image from "next/image";
-export default function Cart() {
+export default function Carts() {
   return (
     <main>
       <Navbar />

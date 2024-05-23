@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Consumer, Kafka, Producer } from 'kafkajs';
 
 @Injectable()
-export class KafkaService {
-  
+export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka: Kafka;
   private producer: Producer;
 
@@ -26,25 +25,22 @@ export class KafkaService {
   async sendMessage(topic: string, message: any): Promise<void> {
     console.log("Sending message:", message);
     await this.producer.send({
-      topic: 'user-login-events', // Update to the topic name subscribed to by the product-service
-        messages: [
-            { key: message.userId.toString(), value: JSON.stringify(message) }
-        ],
-    });
-}
-
-async sendAddToCart(topic: string, message: any): Promise<void> {
-  console.log("Sending message:", message);
-  await this.producer.send({
-    topic: 'user-add-cart-events', // Update to the topic name subscribed to by the product-service
+      topic: topic, // Use the topic parameter passed to the function
       messages: [
-          { key: message.userId.toString(), value: JSON.stringify(message) }
+        { key: message.userId.toString(), value: JSON.stringify(message) },
       ],
-  });
-}
+    });
+  }
 
-
-
+  async sendAddToCart(topic: string, message: any): Promise<void> {
+    console.log("Sending message:", message);
+    await this.producer.send({
+      topic: topic, // Use the topic parameter passed to the function
+      messages: [
+        { key: message.userId.toString(), value: JSON.stringify(message) },
+      ],
+    });
+  }
 
   getConsumer(groupId: string): Consumer {
     return this.kafka.consumer({ groupId });
@@ -52,7 +48,7 @@ async sendAddToCart(topic: string, message: any): Promise<void> {
 
   async subscribeToTopic(consumer: Consumer, topic: string) {
     await consumer.connect();
-    await consumer.subscribe({ topic });
+    await consumer.subscribe({ topic, fromBeginning: true });
     return consumer;
   }
 

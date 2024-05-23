@@ -43,7 +43,7 @@ export class AppController {
          }
          // Get the cart items of the user based on the userId
          await this.appService.handleSuccessfulPayment(userId);
-         await this.appService.clearCart(userId);
+        //  await this.appService.clearCart(userId);
         // await this.makeOrder(userId, makeOrderDto);
         res.redirect('http://localhost:3000/pages/home?success=true');
     } catch (error) {

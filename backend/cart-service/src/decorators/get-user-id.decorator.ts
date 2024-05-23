@@ -19,12 +19,15 @@ export const CurrentUser = createParamDecorator(
     );
     let token = cookieObject['auth_token']; // Update to look for 'auth_token'
     
-    if(!token){
-       token = cookieObject['accessToken']; 
-
     }
     if (!token) {
-      throw new UnauthorizedException('Access token is missing');
+      token = cookieObject['accessToken']; // Update to look for 'auth_token'
+    }
+
+    if (!token) {
+      throw new UnauthorizedException(
+        'Token verification failed:  Token not found',
+      );
     }
 
     try {

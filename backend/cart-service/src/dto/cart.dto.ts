@@ -7,7 +7,7 @@ export class CreateCartDto {
      totalPrice: number; // Added attribute
      Subtotal: number; // Added attribute
      PromoCodeMultiplier: number; // Added attribute
-     PromoCode: string; // Added attribute
+     //PromoCode: string; // Added attribute
 
     toString(){
         return JSON.stringify({
@@ -16,7 +16,7 @@ export class CreateCartDto {
             totalPrice: this.totalPrice, // Include totalPrice in the output
             Subtotal: this.Subtotal, // Include Subtotal in the output
             PromoCodeMultiplier: this.PromoCodeMultiplier, // Include PromoCodeMultiplier in the output
-            PromoCode: this.PromoCode, // Include PromoCode in the output
+           // PromoCode: this.PromoCode, // Include PromoCode in the output
         });
     }
 }

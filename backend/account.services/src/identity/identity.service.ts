@@ -36,9 +36,14 @@ export class IdentityService {
     const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
     const user = await this.createUser(createIdentityDto, hashedPassword);
     this.logger.debug(`User ${user._id} registered successfully`);
+
+    // Send message to Kafka to create a cart for the new user
+    await this.kafkaService.sendMessage('user-registered', {
+      userId: user._id.toString(),
+    });
+
     return user;
   }
-
   private async userExists(username: string, email: string): Promise<boolean> {
     const user = await this.userModel
       .findOne({
