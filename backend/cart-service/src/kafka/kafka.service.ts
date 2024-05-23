@@ -1,13 +1,17 @@
-// src/kafka/kafka.consumer.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Consumer, Kafka } from 'kafkajs';
+import { Model } from 'mongoose';
+import { CreateCartDto } from '../dto/cart.dto';
 
 @Injectable()
 export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
   private kafkaClient: Kafka;
   private consumer: Consumer;
 
-  constructor() {
+  constructor(
+    @InjectModel('Cart') private readonly cartModel: Model<any>
+  ) {
     this.kafkaClient = new Kafka({
       clientId: 'cart-service',
       brokers: ['localhost:9092'], // Update brokers as necessary
@@ -26,7 +30,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 
     // Setup topic subscription and message handler here
     await this.consumer.subscribe({
-      topic: 'user-login-events',
+      topic: 'user-registered',
       fromBeginning: true,
     });
 
@@ -35,7 +39,18 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
         console.log({
           value: message.value.toString(),
         });
-        // Handle the incoming message
+        const { userId } = JSON.parse(message.value.toString());
+
+        // Create a new cart for the user
+        const createCartDto: CreateCartDto = {
+          userId, cartItems: [],
+          totalPrice: 0,
+          Subtotal: 0,
+          PromoCodeMultiplier: 0,
+        };
+        const createdCart = new this.cartModel(createCartDto);
+        await createdCart.save();
+        console.log(`Cart created for user ID ${userId}`);
       },
     });
   }
