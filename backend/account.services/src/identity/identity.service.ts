@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
@@ -143,7 +148,7 @@ export class IdentityService {
     // Optional: Send user details to other services via Kafka
     await this.kafkaService.sendMessage('user-logged-in', {
       userId: user.id.toString(),
-      userDetails: this.prepareUserData(user), 
+      userDetails: this.prepareUserData(user),
       token: accessToken,
     });
 
@@ -163,29 +168,52 @@ export class IdentityService {
     return safeData;
   }
 
-  async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+  async updatePassword(
+    userId: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
     const { oldPassword, newPassword } = updatePasswordDto;
-  
+
     // Find user by their ID
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found.`);
     }
-  
+
     // Verify old password
     const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isOldPasswordValid) {
       throw new UnauthorizedException('Old password is incorrect.');
     }
-  
+
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-  
+
     // Update user's password
-    await this.userModel.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
-  
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { password: hashedNewPassword } },
+    );
+
     this.logger.debug(`Password updated successfully for user ID ${userId}`);
     return true;
   }
-  
+
+  // Method to create a guest user token
+  async createGuestUser(): Promise<any> {
+    try {
+      const payload = { role: 'guest' };
+      this.logger.log('Creating JWT for guest user with payload:', payload);
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || 'default_secret',
+        expiresIn: '1h',
+      });
+      this.logger.log('JWT created successfully:', accessToken);
+      return { accessToken };
+    } catch (error) {
+      this.logger.error('Failed to create guest user', error.stack);
+      throw new Error('Failed to create guest user');
+    }
+  }
+
 }

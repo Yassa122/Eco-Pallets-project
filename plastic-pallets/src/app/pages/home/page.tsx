@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from 'next/navigation';
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import HomeComponents from "@/components/HomeComponents";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,8 +47,9 @@ export default function DashboardPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <PlaceholderContent>
+        < HomeComponents/> {/* Cart component is rendered inside PlaceholderContent */}
+      </PlaceholderContent>      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </ContentLayout>
   );
 }

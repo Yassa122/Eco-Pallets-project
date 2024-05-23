@@ -10,8 +10,9 @@ import { UserInfoService } from './user-info/user-info/user-info.service';
 import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
 import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
 import { KafkaService } from './kafka/kafka.service';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { IdentityService } from './identity/identity.service';
+
 @Module({
   imports: [
     KafkaModule,
@@ -20,6 +21,10 @@ import { IdentityService } from './identity/identity.service';
     UsersModule,
     ReviewsModule,
     WishlistModule, // Correct the name if it is different
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -28,7 +33,7 @@ import { IdentityService } from './identity/identity.service';
     UserInfoService,
     KafkaService,
     JwtService,
-    IdentityService
+    IdentityService,
   ],
 })
 export class AppModule {}
