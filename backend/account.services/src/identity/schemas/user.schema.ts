@@ -35,7 +35,7 @@ export const UserSchema = new Schema(
     isEmailVerified: { type: Boolean, default: false },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
-    role: { type: String, default: 'user' },
+    role: { type: String, default: "user" }, // Add role field
   },
   {
     timestamps: true,
