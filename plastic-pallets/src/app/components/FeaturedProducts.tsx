@@ -20,6 +20,7 @@ const FeaturedProducts = () => {
                 credentials: "include",
             });
 
+
             const data = await response.json();
             if (response.ok) {
                 console.log("Items Fetched Successfully", data);
