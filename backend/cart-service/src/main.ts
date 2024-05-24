@@ -3,22 +3,6 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-<<<<<<< HEAD
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-    transport: Transport.KAFKA,
-    options:{
-      client:{
-        brokers: ['localhost:9092']
-      },
-      consumer:{
-        groupId:'product-cart',
-      }
-
-    }
-  }
-  );
-   app.listen();
-=======
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: 'http://localhost:3000', // Assuming your React app runs on localhost:3000
@@ -42,7 +26,6 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.listen(7000);
->>>>>>> origin/main
 }
 bootstrap();
   

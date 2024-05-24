@@ -42,7 +42,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    await sendMail(formData.firstName, formData.email);
+    // await sendMail(formData.firstName, formData.email);
     if (
       !formData.username.trim() ||
       !formData.password.trim() ||
@@ -54,7 +54,48 @@ export default function SignupPage() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8000/account/sign-up", {
+      const token = localStorage.getItem('token');
+      let flag=false;
+      let _id;
+      let payload;
+      if (token) {
+         payload = JSON.parse(atob(token.split('.')[1]));
+        const userRole = payload.role;
+        if (userRole === 'guest') {
+            flag = true;
+            _id=payload.id;
+        }
+
+
+        
+      }
+      if (flag==true){
+        const mergedData = { ...formData, _id };
+        console.log(mergedData);
+        //cal GUestRegisterAPi with the guestUserId as a param
+        console.log("flag is trueeee");
+        const response = await fetch("http://localhost:8000/account/guest-sign-up", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(mergedData),
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Signup successful", data);
+          setShowSubmissionMessage(true);
+        } else {
+          throw new Error(data.message || "Failed to process the request");
+        }
+
+        return;
+
+      }
+
+        const response = await fetch("http://localhost:8000/account/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -6,8 +6,11 @@ import {
   MinLength,
   IsNotEmpty,
 } from 'class-validator';
+import mongoose from 'mongoose';
 
 export class CreateIdentityDto {
+
+
   @IsString()
   @IsNotEmpty()
   readonly firstName: string;

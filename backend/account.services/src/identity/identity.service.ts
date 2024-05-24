@@ -17,6 +17,9 @@ import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.excep
 import { KafkaService } from '../kafka/kafka.service';
 import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { CreateGuestIdentityDto } from './dto/guest.identity.dto';
+
 @Injectable()
 export class IdentityService {
   private readonly logger = new Logger(IdentityService.name);
@@ -51,6 +54,34 @@ export class IdentityService {
 
     return user;
   }
+
+  async guestRegister(createGuestIdentityDto: CreateGuestIdentityDto): Promise<User> {
+    this.logger.debug('Attempting to register a GUEST user');
+
+    if (
+      await this.userExists(createGuestIdentityDto.username, createGuestIdentityDto.email)
+    ) {
+      this.logger.warn(
+        `Registration failed: User already exists with username ${createGuestIdentityDto.username} or email ${createGuestIdentityDto.email}`,
+      );
+      throw new UserAlreadyExistsException();
+    }
+    console.log(createGuestIdentityDto._id);
+    const hashedPassword = await bcrypt.hash(createGuestIdentityDto.password, 10);
+    const user = await this.createUserFromGuest(createGuestIdentityDto,  hashedPassword);
+    this.logger.debug(`User ${user._id} registered successfully`);
+
+
+    // now we dont create a cart as it is already made when he started as a guest
+    // // Send message to Kafka to create a cart for the new user
+    // await this.kafkaService.sendMessage('user-registered', {
+    //   userId: user._id.toString(),
+    // });
+
+    return user.save();
+  }
+
+
   private async userExists(username: string, email: string): Promise<boolean> {
     const user = await this.userModel
       .findOne({
@@ -58,6 +89,18 @@ export class IdentityService {
       })
       .exec();
     return !!user;
+  }
+
+  private async createUserFromGuest(
+    dto: CreateGuestIdentityDto,
+    hashedPassword: string,
+  ): Promise<User> {
+    const newUser = new this.userModel({
+      ...dto,
+      password: hashedPassword,
+      isEmailVerified: false,
+    });
+    return newUser.save();
   }
 
   private async createUser(
@@ -212,13 +255,18 @@ export class IdentityService {
   // Method to create a guest user token
   async createGuestUser(): Promise<any> {
     try {
-      const payload = { role: 'guest' };
+      const uniqueGuestId = new mongoose.Types.ObjectId();
+      const payload = { role: 'guest', id: uniqueGuestId };
       this.logger.log('Creating JWT for guest user with payload:', payload);
       const accessToken = this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET || 'default_secret',
         expiresIn: '1h',
       });
       this.logger.log('JWT created successfully:', accessToken);
+      await this.kafkaService.sendMessage('user-registered', {
+        userId: uniqueGuestId.toString(),
+      });
+  
       return { accessToken };
     } catch (error) {
       this.logger.error('Failed to create guest user', error.stack);
