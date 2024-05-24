@@ -4,14 +4,9 @@ import { MessagePattern } from '@nestjs/microservices';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ExistsAuthGuard } from './strategies/exists-auth.guard';
-<<<<<<< HEAD
-import { GetUserId } from '../decorators/get-user-id.decorator'; 
- 
-=======
 import { CurrentUser } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
->>>>>>> origin/main
 @Controller('identity')
 export class IdentityController {
   constructor(private identityService: IdentityService) {}
