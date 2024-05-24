@@ -8,6 +8,11 @@ exports.WishlistSchema = new mongoose_1.Schema({
         ref: 'Product',
         required: false
     },
+    userId: {
+        type: mongoose_1.Types.ObjectId,
+        ref: 'User',
+        required: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

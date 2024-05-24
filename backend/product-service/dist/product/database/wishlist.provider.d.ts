@@ -35,9 +35,25 @@ export declare const wishlistProviders: {
             createFromHexString?: {};
             isValid?: {};
         };
+        userId?: {
+            prototype?: import("mongoose").Types.ObjectId;
+            cacheHexString?: unknown;
+            generate?: {};
+            createFromTime?: {};
+            createFromHexString?: {};
+            isValid?: {};
+        };
     }, {}, {}, {}, import("mongoose").Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
         createdAt: Date;
         productId?: {
+            prototype?: import("mongoose").Types.ObjectId;
+            cacheHexString?: unknown;
+            generate?: {};
+            createFromTime?: {};
+            createFromHexString?: {};
+            isValid?: {};
+        };
+        userId?: {
             prototype?: import("mongoose").Types.ObjectId;
             cacheHexString?: unknown;
             generate?: {};

@@ -33,4 +33,12 @@ export declare const WishlistSchema: Schema<any, import("mongoose").Model<any, a
         createFromHexString?: {};
         isValid?: {};
     };
+    userId?: {
+        prototype?: Types.ObjectId;
+        cacheHexString?: unknown;
+        generate?: {};
+        createFromTime?: {};
+        createFromHexString?: {};
+        isValid?: {};
+    };
 }>;

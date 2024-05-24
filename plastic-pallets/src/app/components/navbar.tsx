@@ -3,11 +3,7 @@ import NextLink from "next/link";
 
 const Navbar: React.FC = () => {
   return (
-<<<<<<< HEAD
     <nav className="bg-transparent dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-black dark:border-gray-600 backdrop-blur-md">
-=======
-    <nav className="bg-transparent fixed w-full z-20 top-0 start-0 border-b border-transparent backdrop-blur-md">
->>>>>>> origin/main
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a
           href="https://flowbite.com/"
@@ -71,11 +67,7 @@ const Navbar: React.FC = () => {
             <li>
               <a
                 href="#"
-<<<<<<< HEAD
                 className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:text-blue-500"
-=======
-                className="block py-2 px-3 text-white  md:bg-transparent md:hover:text-white md:p-0 md:dark:text-blue-500"
->>>>>>> origin/main
                 aria-current="page"
               >
                 Home

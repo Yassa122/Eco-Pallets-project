@@ -9,40 +9,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.KafkaConsumerService = void 0;
+exports.KafkaService = void 0;
 const common_1 = require("@nestjs/common");
 const kafkajs_1 = require("kafkajs");
-let KafkaConsumerService = class KafkaConsumerService {
+let KafkaService = class KafkaService {
     constructor() {
-        this.kafkaClient = new kafkajs_1.Kafka({
-            clientId: 'product-service',
+        this.kafka = new kafkajs_1.Kafka({
+            clientId: 'app-client',
             brokers: ['localhost:9092'],
         });
-        this.consumer = this.kafkaClient.consumer({
-            groupId: 'product-service-group',
-        });
+        this.producer = this.kafka.producer();
     }
     async onModuleInit() {
-        await this.consumer.connect();
-        await this.consumer.subscribe({
-            topic: 'user-login-events',
-            fromBeginning: true,
+        await this.producer.connect();
+    }
+    async onModuleDestroy() {
+        await this.producer.disconnect();
+    }
+    async sendMessage(topic, message) {
+        console.log('Sending message:', message);
+        await this.producer.send({
+            topic: topic,
+            messages: [
+                { key: message.userId.toString(), value: JSON.stringify(message) },
+            ],
         });
-        await this.consumer.run({
+    }
+    getConsumer(groupId) {
+        return this.kafka.consumer({ groupId });
+    }
+    async subscribeToTopic(consumer, topic) {
+        await consumer.connect();
+        await consumer.subscribe({ topic, fromBeginning: true });
+        return consumer;
+    }
+    async runConsumer(consumer, callback) {
+        await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
-                const user = JSON.parse(message.value.toString());
-                console.log(`User logged in: ${user.userId}`);
-                console.log(`Received message: ${message.value.toString()}`);
+                callback(topic, partition, message);
             },
         });
     }
-    async onModuleDestroy() {
-        await this.consumer.disconnect();
-    }
 };
-exports.KafkaConsumerService = KafkaConsumerService;
-exports.KafkaConsumerService = KafkaConsumerService = __decorate([
+exports.KafkaService = KafkaService;
+exports.KafkaService = KafkaService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [])
-], KafkaConsumerService);
+], KafkaService);
 //# sourceMappingURL=kafka.service.js.map

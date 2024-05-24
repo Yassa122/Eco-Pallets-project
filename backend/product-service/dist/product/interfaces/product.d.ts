@@ -23,6 +23,12 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Document } from 'mongoose';
+interface RentalOptions {
+    available: boolean;
+    duration?: number;
+    price?: number;
+    deposit?: number;
+}
 export interface Product extends Document {
     name: string;
     description: string;
@@ -32,10 +38,6 @@ export interface Product extends Document {
     size: string;
     material: string;
     availability: boolean;
-    specifications: string[];
-    rentalOptions: {
-        available: boolean;
-        duration?: number;
-        price?: number;
-    };
+    rentalOptions: RentalOptions;
 }
+export {};

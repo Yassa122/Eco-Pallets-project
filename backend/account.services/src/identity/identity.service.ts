@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   Injectable,
@@ -191,9 +190,10 @@ export class IdentityService {
     // Check if the new password is the same as the old password
     const isNewPasswordSame = await bcrypt.compare(newPassword, user.password);
     if (isNewPasswordSame) {
-      throw new BadRequestException('The new password cannot be the same as the old password.');
+      throw new BadRequestException(
+        'The new password cannot be the same as the old password.',
+      );
     }
-
 
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
@@ -225,5 +225,38 @@ export class IdentityService {
       throw new Error('Failed to create guest user');
     }
   }
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      this.logger.warn(
+        `Password reset request failed: No user found with email ${email}`,
+      );
+      throw new NotFoundException('User not found');
+    }
 
+    const resetToken = this.jwtService.sign(
+      { id: user._id },
+      {
+        secret:
+          process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+        expiresIn: '1h', // Token expiration time
+      },
+    );
+
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    await this.kafkaService.sendMessage('password-reset-request', {
+      userId: user._id.toString(),
+      email: user.email,
+      resetUrl,
+    });
+
+    this.logger.debug(
+      `Password reset token generated and message sent to Kafka for ${user.email}`,
+    );
+  }
 }
