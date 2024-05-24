@@ -63,4 +63,5 @@ export interface User extends Document {
 }
 
 const UserModel = mongoose.model<User>('User', UserSchema);
+
 export default UserModel;
