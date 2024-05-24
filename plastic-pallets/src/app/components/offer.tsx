@@ -65,7 +65,7 @@ const Offers = () => {
 
     return (
         <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20px', paddingTop: '70px', backgroundColor: '#000' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2.5rem', letterSpacing: '2px', fontFamily: 'Georgia, serif' }}>Discover Our Offers</h2>
+            <h2 className="slogan" style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>Discover Our Offers</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
                 {items.map((item) => (
                     <div key={item.id} style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
