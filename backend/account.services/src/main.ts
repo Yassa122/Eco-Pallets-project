@@ -1,17 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module'; // Adjust the path if necessary
-import { Logger } from '@nestjs/common';
+import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { join } from 'path';
 
 async function bootstrap() {
-  // Create and start an HTTP server
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule); // Correctly type the app
   app.enableCors({
     origin: 'http://localhost:3000', // Assuming your React app runs on localhost:3000
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type,Accept,Authorization',
     credentials: true, // This allows the server to send cookies
   });
   app.connectMicroservice<MicroserviceOptions>({
@@ -25,16 +26,12 @@ async function bootstrap() {
       },
     },
   });
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
   await app.startAllMicroservices();
   await app.listen(8000);
-  Logger.log(
-    'Account Service is running on http://localhost:8000',
-    'Bootstrap',
-  );
 }
-
-bootstrap().catch((err) => {
-  Logger.error('Error starting server', err, 'Bootstrap');
-  process.exit(1);
-});
+bootstrap();
+  

@@ -1,0 +1,1 @@
+{"version":3,"file":"wishlist.provider.js","sourceRoot":"","sources":["../../../src/product/database/wishlist.provider.ts"],"names":[],"mappings":";;;AACA,gEAA4D;AAE/C,QAAA,iBAAiB,GAAG;IAC/B;QACE,OAAO,EAAE,gBAAgB;QACzB,UAAU,EAAE,CAAC,UAAsB,EAAE,EAAE,CACrC,UAAU,CAAC,KAAK,CAAC,UAAU,EAAE,gCAAc,CAAC;QAC9C,MAAM,EAAE,CAAC,qBAAqB,CAAC;KAChC;CACF,CAAC"}

@@ -31,6 +31,7 @@ export class ProductService {
     return createdProduct.save();
   }
 
+<<<<<<< HEAD
   // async viewProductDetails(id: string): Promise<Product> {
   //   try {
   //     console.log(`Finding product with ID: ${id}`);
@@ -48,6 +49,33 @@ export class ProductService {
     const products = this.productModel.find().exec();
     console.log("fetch", products)
     return(products);
+=======
+async findAllProducts(): Promise<Product[]> {
+    try {
+      const products = await this.productModel.find().exec();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No products found');
+      }
+      return products;
+    } catch (error) {
+      console.error('Error retrieving all products', error);
+      throw error;
+    }
+  }
+
+  async findById(id: string): Promise<Product> {
+    try {
+      console.log(`Finding product with ID: ${id}`);
+      const product = await this.productModel.findById(id).exec();
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+      return product;
+    } catch (error) {
+      console.error(`Error finding product with ID: ${id}`, error.stack);
+      throw error;
+    }
+>>>>>>> origin/main
   }
   
   async getProductById(id: string): Promise<Product> {

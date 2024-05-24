@@ -1,10 +1,8 @@
 import * as mongoose from 'mongoose';
+import { ItemSchema } from './items.schema';
 
 export const favschema = new mongoose.Schema({
-  id: Number,
-  name: String,
-  image: String,
-  price: Number,
+  userId: { type: String, required: true },
+  items: { type: [ItemSchema], default: [] },
+  id:  {type: String},
 });
-
-

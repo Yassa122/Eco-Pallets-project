@@ -1,6 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
 import { CreateIdentityDto } from './dto/create.identity.dto';
 import { LoginDto } from './dto/login.dto';
@@ -9,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
 import { KafkaService } from '../kafka/kafka.service';
 import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 @Injectable()
 export class IdentityService {
   private readonly logger = new Logger(IdentityService.name);
@@ -35,9 +42,14 @@ export class IdentityService {
     const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
     const user = await this.createUser(createIdentityDto, hashedPassword);
     this.logger.debug(`User ${user._id} registered successfully`);
+
+    // Send message to Kafka to create a cart for the new user
+    await this.kafkaService.sendMessage('user-registered', {
+      userId: user._id.toString(),
+    });
+
     return user;
   }
-
   private async userExists(username: string, email: string): Promise<boolean> {
     const user = await this.userModel
       .findOne({
@@ -130,7 +142,7 @@ export class IdentityService {
 
     // Sign the JWT with the payload that now includes extended user data
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || 'your-secret-key',
+      secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
       expiresIn: '1h', // Token expiration time
     });
 
@@ -156,4 +168,61 @@ export class IdentityService {
     } = user;
     return safeData;
   }
+
+  async updatePassword(
+    userId: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
+    const { oldPassword, newPassword } = updatePasswordDto;
+
+    // Find user by their ID
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+
+    // Verify old password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordValid) {
+      throw new UnauthorizedException('Old password is incorrect.');
+    }
+
+    // Check if the new password is the same as the old password
+    const isNewPasswordSame = await bcrypt.compare(newPassword, user.password);
+    if (isNewPasswordSame) {
+      throw new BadRequestException('The new password cannot be the same as the old password.');
+    }
+
+
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password
+
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { password: hashedNewPassword } },
+    );
+
+    this.logger.debug(`Password updated successfully for user ID ${userId}`);
+    return true;
+  }
+
+  // Method to create a guest user token
+  async createGuestUser(): Promise<any> {
+    try {
+      const payload = { role: 'guest' };
+      this.logger.log('Creating JWT for guest user with payload:', payload);
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || 'default_secret',
+        expiresIn: '1h',
+      });
+      this.logger.log('JWT created successfully:', accessToken);
+      return { accessToken };
+    } catch (error) {
+      this.logger.error('Failed to create guest user', error.stack);
+      throw new Error('Failed to create guest user');
+    }
+  }
+
 }

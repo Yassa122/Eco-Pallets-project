@@ -1,26 +1,41 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
+<<<<<<< HEAD
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter
+=======
+import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Correct import for useRouter
+>>>>>>> origin/main
 
 export default function Login() {
   const router = useRouter(); // Use the useRouter hook
   const [formData, setFormData] = useState({
     username: "",
+<<<<<<< HEAD
     password: "", // Include password in your state
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
   const [error, setError] = useState("");
+=======
+    password: "",
+  });
+
+  const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Add error state
+
+>>>>>>> origin/main
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value, // This will update the right part of the state based on the input name
+      [name]: value,
     }));
   };
 
+<<<<<<< HEAD
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formData.username.trim() || !formData.password.trim()) {
@@ -30,25 +45,44 @@ export default function Login() {
 
     try {
       const response = await fetch("http://localhost:8000/account/sign-in", {
+=======
+  const handleGuestLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/account/guest", {
+>>>>>>> origin/main
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+<<<<<<< HEAD
         credentials: "include", // This is needed to handle cookies if you're using them for authentication
+=======
+        credentials: "include",
+>>>>>>> origin/main
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
         }),
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
       });
 
       const data = await response.json();
       if (response.ok) {
+<<<<<<< HEAD
         console.log("Login successful", data);
+=======
+
+        console.log("Guest login successful", data);
+>>>>>>> origin/main
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
         router.push("/pages/home"); // Redirect to dashboard
       } else {
+<<<<<<< HEAD
         throw new Error(data.message || "Failed to log in");
       }
     } catch (error: any) {
@@ -59,12 +93,44 @@ export default function Login() {
 
   const handleBackToLogin = () => {
     setShowSubmissionMessage(false);
+=======
+        throw new Error(data.message || "Failed to log in as guest");
+      }
+
+    } catch (error) {
+      console.error("Guest login error:", error);
+    }
+  };
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    try {
+      const response = await fetch("http://localhost:8000/account/guest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Guest login successful", data);
+        const token = data.accessToken;
+        localStorage.setItem("token", token);
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
+        router.push("/pages/home");
+      } else {
+        throw new Error(data.message || "Failed to log in as guest");
+      }
+    } catch (error) {
+      console.error("Guest login error:", error);
+    }
+>>>>>>> origin/main
   };
 
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
-        {/* Create a grey container with padding, shadow, and rounded corners */}
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
@@ -84,9 +150,15 @@ export default function Login() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
+<<<<<<< HEAD
             <label className="font-medium text-white">Username</label>
             <input
               type="text" // Change the input type to "text" for the username
+=======
+            <label className="font-medium text-white">username</label>
+            <input
+              type="username"
+>>>>>>> origin/main
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -186,3 +258,11 @@ export default function Login() {
     </main>
   );
 }
+<<<<<<< HEAD
+=======
+
+
+function setError(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+>>>>>>> origin/main

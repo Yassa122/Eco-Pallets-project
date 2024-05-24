@@ -7,84 +7,130 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
+  Res,
+  Req
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateCartDto } from './dto/cart.dto';
+import { makeOrderDto } from './dto/order.dto';
+
 import { CartItemDto } from './dto/cartItem.dto';
+import { CurrentUser } from './decorators/get-user-id.decorator';
+import { Response, Request } from 'express'; // Import Response from express
+import { use } from 'passport';
+
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
+  getHello(): string {//working
     return this.appService.getHello();
   }
 
-  @Post('create-cart')
+
+  @Get('pages/paymentSuccess') // Decorate the method correctly
+  async handleSuccess(@Res() res: Response, @Req() req: Request): Promise<any> {
+
+    try {
+         // Retrieve the userId from the query parameters
+         const userId = req.query.userId as string;
+
+         if (!userId) {
+             throw new Error('User ID not found in the request.');
+         }
+         // Get the cart items of the user based on the userId
+         await this.appService.handleSuccessfulPayment(userId);
+        //  await this.appService.clearCart(userId);
+        // await this.makeOrder(userId, makeOrderDto);
+        res.redirect('http://localhost:3000/pages/home?success=true');
+    } catch (error) {
+        console.error('Error placing order:', error);
+        res.status(500).send('Error placing order');
+    }
+}
+
+async makeOrder(userId: string, @Body() makeOrderDto: makeOrderDto): Promise<any> {
+    return this.appService.makeOrder(userId, makeOrderDto);
+}
+
+  @Post('create-cart')//working
   async createCart(
     @Body() createCartDto: CreateCartDto,
+    @CurrentUser('userId') userId: string 
   ): Promise<CreateCartDto> {
-    return this.appService.createCart(createCartDto);
+    return this.appService.createCart(createCartDto, userId);
   }
-  @Get('carts')
+  @Get('AllCarts')//working
   async getAllCarts() {
     return this.appService.getAllCarts();
   }
 
-  @Get('carts/:userId')
-  async getCartsByUserId(@Param('userId') userId: string) {
+  @Get('MyCart')//working
+  async getCartsByUserId(@CurrentUser('userId') userId: string) {
     return this.appService.getCartsByUserId(userId);
   }
 
-  @Get('cartItems/:userId')
-  async getCartItemsByUserId(@Param('userId') userId: string) {
+  @Get('cartItems')//working
+  async getCartItemsByUserId(@CurrentUser('userId') userId: string) {
     return this.appService.getCartItemsByUserId(userId);
   }
 
-  @Put('addQuantity/:userId')
+  @Put('addQuantity')//working
   async addOneQuantity(
-    @Param('userId') userId: string,
-    @Body() cartItemIdObj: { cartItemId: string },
+    @CurrentUser('userId') userId: string ,
+    @Body('prodId') prodId: string ,
   ) {
-    return this.appService.addOneQuantity(userId, cartItemIdObj);
+    return this.appService.addOneQuantity(userId, prodId);
   }
 
-  @Put('subtractQuantity/:userId')
+  @Put('subtractQuantity')//working
   async subtractOneQuantity(
-    @Param('userId') userId: string,
-    @Body() cartItemIdObj: { cartItemId: string },
+    @CurrentUser('userId') userId: string ,
+    @Body('prodId') prodId: string ,
   ) {
-    return this.appService.subtractOneQuantity(userId, cartItemIdObj);
+    return this.appService.subtractOneQuantity(userId, prodId);
   }
-  @Delete('removeCartItem/:userId')
+  @Delete('removeCartItem')//working
   async removeCartItem(
-    @Param('userId') userId: string,
-    @Body() cartItemIdObj: { cartItemId: string },
+    @CurrentUser('userId') userId: string ,
+    @Body('prodId') prodId: string ,
   ): Promise<any> {
-    return this.appService.removeCartItem(userId, cartItemIdObj);
+    return this.appService.removeCartItem(userId, prodId);
   }
-  @Post('createCartItem')
+  @Post('createCartItem')//working
   async createCartItem(@Body() cartItem: CartItemDto): Promise<CartItemDto> {
     return this.appService.createCartItem(cartItem);
   }
-  @Post('addToCart/:userId')
+  @Post('addToCart')//working
   async addToCart(
-    @Param('userId') userId: string,
+    @CurrentUser('userId') userId: string ,
     @Body() cartItem: CartItemDto,
   ): Promise<any> {
     return this.appService.addToCart(userId, cartItem);
   }
 
-  @Put('applyPromoCode/:userId')
+  @Put('applyPromoCode')//working
   async applyPromoCode(
-    @Param('userId') userId: string,
+    @CurrentUser('userId') userId: string ,
     @Body('promoCode') promoCode: string,
   ): Promise<any> {
     return this.appService.applyPromoCode(userId, promoCode);
   }
-  @Post('stripe/:userId')
-  async stripe(@Param('userId') userId:string):Promise<any>{
+  @Put('resetPromoCode')//working
+  async resetPromoCode(
+    @CurrentUser('userId') userId: string ,
+  ): Promise<any> {
+    return this.appService.resetPromoCode(userId);
+  }
+  @Post('stripe')//working
+  async stripe(@CurrentUser('userId') userId: string):Promise<any>{
     return this.appService.createStripe(userId);
   }
+  @Get('orderhistory')
+ async getOrderHistory(@CurrentUser('userId') userId: string) {
+  return this.appService.getOrderHistory(userId);
+}
 }
