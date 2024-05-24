@@ -24,6 +24,7 @@ const FeaturedProducts = () => {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(items);
         console.log("Items Fetched Successfully", data);
         setItems(data);
       } else {
@@ -34,20 +35,31 @@ const FeaturedProducts = () => {
     }
   };
 
-  const addToCart = async (itemId) => {
+  const addToCart = async (item) => {
     try {
+      const token = localStorage.getItem('auth_token');
+      const body = {
+        productId: item.productId, // Adjust based on the actual structure of item._id
+        productName: item.name,
+        quantity: 1,
+        price: item.price,
+        image: item.image
+      };
+      console.log(body);
+
       const response = await fetch("http://localhost:7000/addToCart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ itemId }),
+        credentials: "include",
+        body: JSON.stringify(body),
       });
 
       const data = await response.json();
       if (response.ok) {
         console.log("Item added to cart:", data);
-        // You might want to update the UI here, like showing a message
       } else {
         throw new Error(data.message || "Failed to add item to cart");
       }
@@ -63,16 +75,15 @@ const FeaturedProducts = () => {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`, // Include Bearer token
+          "Authorization": `Bearer ${token}`,
         },
-        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+        credentials: "include",
         body: JSON.stringify({ item }),
       });
 
       const data = await response.json();
       if (response.ok) {
         console.log("Item added to favorites:", data);
-        // You might want to update the UI here, like showing a message
       } else {
         throw new Error(data.message || "Failed to add item to favorites");
       }
@@ -82,12 +93,11 @@ const FeaturedProducts = () => {
   };
 
   return (
-    
     <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>Products</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {items.map((item) => (
-          <div key={item.id} style={{ flex: '1 1 300px', border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#111111', color: '#fff', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
+          <div key={item._id.$oid} style={{ flex: '1 1 300px', border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#111111', color: '#fff', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
             <div style={{ width: '150px', height: '150px', margin: '0 auto 20px', position: 'relative', overflow: 'hidden', borderRadius: '50%' }}>
               <Image src={product1} layout="fill" objectFit="cover" />
             </div>
@@ -96,7 +106,7 @@ const FeaturedProducts = () => {
               <p style={{ margin: '0', color: '#bbb', fontSize: '1.2rem' }}>Price: ${item.price}</p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
-              <button onClick={() => addToCart(item.id)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
+              <button onClick={() => addToCart(item)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
                 + to Cart
               </button>
               <button onClick={() => addToFavorites(item)} style={{ padding: '5px 10px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '0.7rem' }}>
