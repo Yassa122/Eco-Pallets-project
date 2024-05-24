@@ -1,7 +1,25 @@
-import { Document } from 'mongoose';
+// interfaces/wishlist.ts
+import { Types } from 'mongoose';
 
-export interface Wishlist extends Document {
-  productId: string;
-  userId: string;
-  createdAt: Date;
+export interface WishlistProduct {
+  productId: Types.ObjectId;
+  name: string;
+  description: string;
+  images: string[];
+  price: number;
+  color: string;
+  size: string;
+  material: string;
+  availability: boolean;
+  rentalOptions: {
+    available: boolean;
+    duration?: number;
+    price?: number;
+  };
+  addedAt?: Date;
+}
+
+export interface Wishlist {
+  userId: Types.ObjectId;
+  products: WishlistProduct[];
 }
