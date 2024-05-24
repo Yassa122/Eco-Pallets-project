@@ -44,6 +44,7 @@ export class AppController {
   async getAllItems() {
     return await this.appService.getAllItems();
   }
+  
 
   @Delete('favorites/:id')
   async removeFromFavorites(@Param('id') id: string): Promise<void> {

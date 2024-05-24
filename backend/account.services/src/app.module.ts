@@ -5,13 +5,17 @@ import { IdentityModule } from './identity/identity.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './identity/users/users.module';
 import { KafkaModule } from './kafka/kafka.module';
-import { ProfileService } from './profile/profile.service';
-import { UserInfoService } from './user-info/user-info/user-info.service';
+import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
+import { ClientKafka } from '@nestjs/microservices';
+import { KafkaService } from './kafka/kafka.service';
+ //import { ProfileService } from './profile/profile.service';
 import { ReviewsModule } from './user-info/reviews/reviews/reviews.module';
 import { WishlistModule } from './user-info/wishlist/wishlist/wishlist.module';
-import { KafkaService } from './kafka/kafka.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+// import { ProfileModule } from './profile/profile.module';
+import { UserInfoModule } from './user-info/user-info/user-info.module';
 import { IdentityService } from './identity/identity.service';
+import { UserInfoService } from './user-info/user-info/user-info.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -20,6 +24,7 @@ import { IdentityService } from './identity/identity.service';
     IdentityModule,
     UsersModule,
     ReviewsModule,
+
     WishlistModule, // Correct the name if it is different
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
@@ -29,7 +34,6 @@ import { IdentityService } from './identity/identity.service';
   controllers: [AppController],
   providers: [
     AppService,
-    ProfileService,
     UserInfoService,
     KafkaService,
     JwtService,

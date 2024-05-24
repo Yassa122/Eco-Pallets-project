@@ -1,4 +1,6 @@
 node_modules
+<<<<<<< HEAD
+=======
 node_modules
 node_modules
 node_modules
@@ -10,3 +12,8 @@ node_modules
 node_modules
 node_modules
 node_modules
+<<<<<<< HEAD
+>>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
+=======
+>>>>>>> e77d17d9dcf178cad4213d23c10cc322e58c1aba
+>>>>>>> origin/main
