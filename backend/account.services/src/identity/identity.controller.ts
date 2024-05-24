@@ -7,6 +7,7 @@ import { ExistsAuthGuard } from './strategies/exists-auth.guard';
 import { CurrentUser } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
 
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import mongoose from 'mongoose';
 
 @Controller('identity')
 export class IdentityController {
@@ -22,6 +23,12 @@ export class IdentityController {
   async register(command) {
     console.log(command);
     return this.identityService.register(command.data);
+  }
+
+  @MessagePattern('guestRegister')
+  async guestRegister(command) {
+    console.log(command);
+    return this.identityService.guestRegister(command.data);
   }
   @UseGuards(LocalAuthGuard)
   @MessagePattern('login')

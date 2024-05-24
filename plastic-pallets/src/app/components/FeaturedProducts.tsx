@@ -37,7 +37,8 @@ const FeaturedProducts = () => {
 
   const addToCart = async (item) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
+      console.log(token);
       const body = {
         productId: item.productId, // Adjust based on the actual structure of item._id
         productName: item.name,
