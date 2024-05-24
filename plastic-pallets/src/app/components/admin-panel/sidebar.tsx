@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { useStore } from "../../../hooks/use-store";
 import { Button } from "@/components/ui/button";
@@ -30,17 +29,16 @@ export function Sidebar() {
           asChild
         >
           <Link href="/dashboard" className="flex items-center gap-2">
-            <PanelsTopLeft className="w-6 h-6 mr-1" />
-            <h1
+            <img
+              src="plastic-pallets/src/app/images/cart/pallet1.png"
+              alt="Brand Logo"
               className={cn(
-                "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
+                "w-[50px] h-auto transition-[transform,opacity,display] ease-in-out duration-300",
                 sidebar?.isOpen === false
                   ? "-translate-x-96 opacity-0 hidden"
                   : "translate-x-0 opacity-100"
               )}
-            >
-              Brand
-            </h1>
+            />
           </Link>
         </Button>
         <Menu isOpen={sidebar?.isOpen} />

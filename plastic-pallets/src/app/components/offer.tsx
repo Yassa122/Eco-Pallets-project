@@ -144,11 +144,11 @@ const Offers = () => {
                             <p style={{ margin: '0', color: '#bbb', fontSize: '1.4rem', marginBottom: '10px', fontFamily: 'Georgia, serif' }}>Rating: <span style={{ fontSize: '1.6rem', color: getRatingColor(item.rating), fontFamily: 'Georgia, serif' }}>{item.rating}</span></p>
                             <p style={{ margin: '0', color: '#bbb', fontSize: '1.4rem', marginBottom: '10px', fontFamily: 'Georgia, serif' }}>Valid until: <span style={{ fontSize: '1.6rem', color: '#fff', fontFamily: 'Georgia, serif' }}>{item.validityPeriod}</span></p>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <button onClick={() => addToCart(item)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                                <button onClick={() => addToCart(item)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#38b2ac', color: '#fff', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                                     Add to Cart
                                 </button>
                                 <div>
-                                    <button onClick={() => addToFavorites(item)} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                                    <button onClick={() => addToFavorites(item)} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#38b2ac', color: '#fff', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                                         Add to Wishlist
                                     </button>
                                 </div>
@@ -158,28 +158,28 @@ const Offers = () => {
                 ))}
             </div>
             {popupMessage && (
-    <div className="popup" style={{
-        display: 'block',
-        position: 'fixed',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        padding: '20px',
-        maxWidth: '400px',
-        backgroundColor: '#ffffff',
-        color: '#333333',
-        border: '1px solid #cccccc',
-        borderRadius: '8px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        zIndex: 1000,
-        animation: 'fade-in 0.5s ease-out'
-    }}>
-        {popupMessage}
-    </div>
-)}
-
+                <div className="popup" style={{
+                    display: 'block',
+                    position: 'fixed',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    padding: '20px',
+                    maxWidth: '400px',
+                    backgroundColor: '#ffffff',
+                    color: '#333333',
+                    border: '1px solid #cccccc',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    zIndex: 1000,
+                    animation: 'fade-in 0.5s ease-out'
+                }}>
+                    {popupMessage}
+                </div>
+            )}
         </section>
     );
 };
 
 export default Offers;
+

@@ -3,22 +3,16 @@ import {
   Users,
   Settings,
   Bookmark,
-  SquarePen,
-  LayoutGrid
+  ShoppingCart, // Import the ShoppingCart icon
+  LayoutGrid,
+  Heart
 } from "lucide-react";
-
-type Submenu = {
-  href: string;
-  label: string;
-  active: boolean;
-};
 
 type Menu = {
   href: string;
   label: string;
   active: boolean;
   icon: any;
-  submenus: Submenu[];
 };
 
 type Group = {
@@ -35,8 +29,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
-          submenus: []
+          icon: LayoutGrid
         }
       ]
     },
@@ -44,36 +37,22 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts",
-              active: pathname === "/posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post",
-              active: pathname === "/posts/new"
-            }
-          ]
+          href: "/cart",
+          label: "Cart",
+          active: pathname.includes("/cart"),
+          icon: ShoppingCart // Change the icon to ShoppingCart
         },
         {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: Bookmark,
-          submenus: []
+          href: "/favorites",
+          label: "Favorites",
+          active: pathname.includes("/favorites"),
+          icon: Heart
         },
         {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag,
-          submenus: []
+          href: "/wishlist",
+          label: "Wishlist",
+          active: pathname.includes("/wishlist"),
+          icon: Bookmark
         }
       ]
     },
@@ -84,15 +63,13 @@ export function getMenuList(pathname: string): Group[] {
           href: "/users",
           label: "Users",
           active: pathname.includes("/users"),
-          icon: Users,
-          submenus: []
+          icon: Users
         },
         {
           href: "/account",
           label: "Account",
           active: pathname.includes("/account"),
-          icon: Settings,
-          submenus: []
+          icon: Settings
         }
       ]
     }
