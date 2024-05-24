@@ -271,6 +271,21 @@ export class AppService {
     const createdOrder = new this.ordersModel(makeOrderDto);
     createdOrder.userId = userId;
     return createdOrder.save();
+
+  }
+
+  async clearCart(userId: string): Promise<any> {
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+
+    cart.cartItems = []; // Remove all items from the cart
+    cart.totalPrice = 0; // Reset total price
+    cart.Subtotal = 0;
+    cart.PromoCodeMultiplier = 1; // Reset promo code multiplier
+    await cart.save();
+    return { message: 'Cart cleared successfully' };
   }
 
   async clearCart(userId: string): Promise<any> {

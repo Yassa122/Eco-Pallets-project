@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User } from './interfaces/user';
@@ -36,9 +42,14 @@ export class IdentityService {
     const hashedPassword = await bcrypt.hash(createIdentityDto.password, 10);
     const user = await this.createUser(createIdentityDto, hashedPassword);
     this.logger.debug(`User ${user._id} registered successfully`);
+
+    // Send message to Kafka to create a cart for the new user
+    await this.kafkaService.sendMessage('user-registered', {
+      userId: user._id.toString(),
+    });
+
     return user;
   }
-
   private async userExists(username: string, email: string): Promise<boolean> {
     const user = await this.userModel
       .findOne({
@@ -138,7 +149,7 @@ export class IdentityService {
     // Optional: Send user details to other services via Kafka
     await this.kafkaService.sendMessage('user-logged-in', {
       userId: user.id.toString(),
-      userDetails: this.prepareUserData(user), 
+      userDetails: this.prepareUserData(user),
       token: accessToken,
     });
 
@@ -158,7 +169,10 @@ export class IdentityService {
     return safeData;
   }
 
-  async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+  async updatePassword(
+    userId: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
     const { oldPassword, newPassword } = updatePasswordDto;
 
     // Find user by their ID
@@ -179,15 +193,36 @@ export class IdentityService {
       throw new BadRequestException('The new password cannot be the same as the old password.');
     }
 
+
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     // Update user's password
-    await this.userModel.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
 
-    // Log password update
-    console.debug(`Password updated successfully for user ID ${userId}`);
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { password: hashedNewPassword } },
+    );
+
+    this.logger.debug(`Password updated successfully for user ID ${userId}`);
     return true;
   }
-  
+
+  // Method to create a guest user token
+  async createGuestUser(): Promise<any> {
+    try {
+      const payload = { role: 'guest' };
+      this.logger.log('Creating JWT for guest user with payload:', payload);
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || 'default_secret',
+        expiresIn: '1h',
+      });
+      this.logger.log('JWT created successfully:', accessToken);
+      return { accessToken };
+    } catch (error) {
+      this.logger.error('Failed to create guest user', error.stack);
+      throw new Error('Failed to create guest user');
+    }
+  }
+
 }
