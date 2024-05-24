@@ -1,13 +1,12 @@
 "use client";
-
+import Image from "next/image";
 import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { useStore } from "../../../hooks/use-store";
-import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/admin-panel/menu";
 import { useSidebarToggle } from "../../../hooks/use-sidebar-toggle";
 import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
+import logo from "src/app/images/Logo/png/logo-white.png";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebarToggle, (state) => state);
@@ -20,29 +19,21 @@ export function Sidebar() {
       )}
     >
       <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
-      <div className="relative h-full flex flex-col px-3 py-4 overflow-y-auto shadow-md dark:to-gray-200">
-        <Button
-          className={cn(
-            "transition-transform ease-in-out duration-300 mb-1",
-            sidebar?.isOpen === false ? "translate-x-1" : "translate-x-0"
-          )}
-          variant="link"
-          asChild
-        >
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <PanelsTopLeft className="w-6 h-6 mr-1" />
-            <h1
-              className={cn(
-                "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
-                sidebar?.isOpen === false
-                  ? "-translate-x-96 opacity-0 hidden"
-                  : "translate-x-0 opacity-100"
-              )}
-            >
-              Brand
-            </h1>
-          </Link>
-        </Button>
+      <div className="relative h-full flex flex-col items-center justify-center px-0 py-4 overflow-y-auto shadow-md dark:to-gray-200">
+        <Link href="/dashboard" passHref>
+          <Image
+            src={logo}
+            alt="Brand Logo"
+            width={80} // Increased width
+            height={80} // Increased height
+            className={cn(
+              "w-[80px] h-auto transition-[transform,opacity,display] ease-in-out duration-300",
+              sidebar?.isOpen === false
+                ? "-translate-x-96 opacity-0 hidden"
+                : "translate-x-0 opacity-100"
+            )}
+          />
+        </Link>
         <Menu isOpen={sidebar?.isOpen} />
       </div>
     </aside>

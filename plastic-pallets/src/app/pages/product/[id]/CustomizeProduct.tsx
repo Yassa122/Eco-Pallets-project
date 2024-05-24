@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import { useRouter } from 'next/router'; // Changed from 'next/navigation' to 'next/router'
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import './style.css';
 
 interface CustomizationDto {
   color: string;
@@ -30,7 +30,8 @@ const CustomizeProduct: React.FC<CustomizeProductProps> = ({ _id, onClose }) => 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}/customize`, {
+
+      const response = await fetch(`http://localhost:8080/product/${_id}/customize`, { // Wrapped URL in backticks
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +39,8 @@ const CustomizeProduct: React.FC<CustomizeProductProps> = ({ _id, onClose }) => 
         body: JSON.stringify(customization),
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+
+        throw new Error(`HTTP error! Status: ${response.status}`); // Wrapped message in backticks
       }
       onClose();
     } catch (error) {
@@ -60,7 +62,8 @@ const CustomizeProduct: React.FC<CustomizeProductProps> = ({ _id, onClose }) => 
                 {['Red', 'Blue', 'Green'].map((color) => (
                   <div
                     key={color}
-                    className={`color-swatch ${color.toLowerCase()}`}
+
+                    className={`color-swatch ${color.toLowerCase()}`} // Wrapped class names in backticks
                     style={{
                       backgroundColor: color.toLowerCase(),
                       width: '30px',
