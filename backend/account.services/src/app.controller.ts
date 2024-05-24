@@ -59,6 +59,7 @@ export class AppController {
     }
   }
 
+
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getUser(@CurrentUser() userId: string) {

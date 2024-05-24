@@ -6,10 +6,11 @@ import { WishlistController } from './wishlist.controller';
 import { WishlistService } from './wishlist.service';
 import { ProductSchema } from '../../schemas/product.schema';
 import { JwtStrategy } from 'src/identity/strategies/jwt.strategy';
+import { UserSchema } from 'src/identity/schemas/user.schema';
 
 @Module({
   imports: [
-    // Register the wishlist schema
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'Wishlist', schema: WishlistSchema }]),
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
   ],
