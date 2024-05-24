@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import product1 from '../../images/product1.jpg';
-import heart from '../../images/heart.svg';
+"use client";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import product1 from '../pics/p2 Background Removed.png'; // Update with actual item images if available
+import cart from '../pics/cacart Background Removed.png';
+import heart from '../pics/favs Background Removed.png';
 
-const FeaturedProducts: React.FC = () => {
-  const [items, setItems] = useState<any[]>([]);
+const FeaturedProducts = () => {
+  const [items, setItems] = useState([]);
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     fetchItems();
@@ -16,25 +16,90 @@ const FeaturedProducts: React.FC = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch('/api/products');
+      const response = await fetch("http://localhost:5555/items", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
       const data = await response.json();
-      setItems(data);
+      if (response.ok) {
+        const itemsWithRandomRating = data.map(item => ({
+          ...item,
+          rating: (Math.random() * (5 - 1) + 1).toFixed(1)
+        }));
+        setItems(itemsWithRandomRating);
+        console.log("Items Fetched Successfully", itemsWithRandomRating);
+      } else {
+        throw new Error(data.message || "Failed to fetch Items");
+      }
     } catch (error) {
-      console.error("Error fetching items:", error);
+      console.error("Fetching error:", error);
     }
   };
 
-  const addToCart = async (item: any) => {
-    // Handle add to cart logic
-    showPopupMessage(`${item.name} added to cart!`);
+  const addToCart = async (item) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const body = {
+        productId: item.productId, // Ensure this matches your item structure
+        productName: item.name,
+        quantity: 1,
+        price: item.price,
+        image: item.image
+      };
+      console.log(body);
+
+      const response = await fetch("http://localhost:7001/addToCart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        showPopupMessage("Added to cart");
+      } else {
+        showPopupMessage("Failed to add to cart");
+      }
+    } catch (error) {
+      showPopupMessage("Failed to add to cart");
+      console.error("Add to cart error:", error);
+    }
   };
 
-  const addToFavorites = async (item: any) => {
-    // Handle add to favorites logic
-    showPopupMessage(`${item.name} added to favorites!`);
+  const addToFavorites = async (item) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch("http://localhost:5555/addToFavorites", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ item }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        showPopupMessage("Added to favorites");
+      } else {
+        showPopupMessage("Item already exists in favorites");
+      }
+    } catch (error) {
+      showPopupMessage("Failed to add to favorites");
+      console.error("Add to favorites error:", error);
+    }
   };
 
-  const showPopupMessage = (message: string) => {
+  const showPopupMessage = (message) => {
     setPopupMessage(message);
     setShowPopup(true);
     setTimeout(() => {
@@ -42,7 +107,7 @@ const FeaturedProducts: React.FC = () => {
     }, 2000); // Hide the popup after 2 seconds
   };
 
-  const getRatingColor = (rating: string) => {
+  const getRatingColor = (rating) => {
     const parsedRating = parseFloat(rating);
     if (parsedRating < 2.5) {
       return 'red';
@@ -53,10 +118,6 @@ const FeaturedProducts: React.FC = () => {
     }
   };
 
-  const handleProductClick = (id: string) => {
-    router.push(`/product/${id}`);
-  };
-
   return (
     <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20px', paddingTop: '70px', backgroundColor: '#000' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2.5rem', letterSpacing: '2px', fontFamily: 'Georgia, serif' }}>
@@ -64,15 +125,11 @@ const FeaturedProducts: React.FC = () => {
       </h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
         {items.map((item) => (
-          <div 
-            key={item.id} 
-            style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-            onClick={() => handleProductClick(item.id)} 
-          >
+          <div key={item.id} style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <div style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '250px' }}>
               <Image src={product1} layout="responsive" width={300} height={300} objectFit="cover" alt={item.name} />
               <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2 }}>
-                <button onClick={(e) => {e.stopPropagation(); addToFavorites(item);}} className="btn">
+                <button onClick={() => addToFavorites(item)} className="btn">
                   <Image src={heart} alt="Add to Favorites" width={30} height={30} />
                 </button>
               </div>
@@ -88,11 +145,11 @@ const FeaturedProducts: React.FC = () => {
                 Rating: <span style={{ fontSize: '1.6rem', color: getRatingColor(item.rating), fontFamily: 'Georgia, serif' }}>{item.rating}</span>
               </p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button onClick={(e) => {e.stopPropagation(); addToCart(item);}} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                <button onClick={() => addToCart(item)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                   Add to Cart
                 </button>
                 <div>
-                  <button onClick={(e) => {e.stopPropagation(); addToFavorites(item);}} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                  <button onClick={() => addToFavorites(item)} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                     Add to Wishlist
                   </button>
                 </div>
