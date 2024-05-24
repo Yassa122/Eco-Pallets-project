@@ -1,7 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import {ShippingAddressSchema} from '../../user-info/schemas/shipping-address.schema'
-import { ShippingAddress } from 'src/user-info/interfaces/shipping-address';
-
+import { ShippingAddress as ImportedShippingAddress } from 'src/user-info/interfaces/shipping-address';
 
 // ShippingAddressSchema remains unchanged
 const ShippingAddressSchema = new Schema({
@@ -12,7 +10,7 @@ const ShippingAddressSchema = new Schema({
   country: { type: String, required: true },
 });
 
-export interface ShippingAddress {
+export interface LocalShippingAddress {
   label: string;
   address: string;
   city: string;
@@ -28,18 +26,16 @@ export const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phoneNumber: { type: String, optional: true },
-    company: { type: String, optional: true },
+    phoneNumber: { type: String },
+    company: { type: String },
     shippingAddresses: [ShippingAddressSchema],
-    // orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],  // References Order documents
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
-    wishlist: { type: Schema.Types.ObjectId, ref: 'Wishlist', optional: true },
+    wishlist: { type: Schema.Types.ObjectId, ref: 'Wishlist' },
     cart: [{ type: Types.ObjectId, ref: 'Product' }], 
-
     isEmailVerified: { type: Boolean, default: false },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
-    role: { type: String, required: true }, // Add role field
+    role: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -55,8 +51,7 @@ export interface User extends Document {
   password: string;
   phoneNumber?: string;
   company?: string;
-  shippingAddresses: ShippingAddress[];
-  // orders: Types.ObjectId[];  
+  shippingAddresses: ImportedShippingAddress[];
   reviews: Types.ObjectId[];  
   wishlist?: Types.ObjectId;
   cart: Types.ObjectId[];
@@ -64,4 +59,8 @@ export interface User extends Document {
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
+  role: string;
 }
+
+const UserModel = mongoose.model<User>('User', UserSchema);
+export default UserModel;
