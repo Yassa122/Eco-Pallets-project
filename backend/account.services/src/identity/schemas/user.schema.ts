@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { ShippingAddress as ImportedShippingAddress } from 'src/user-info/interfaces/shipping-address';
 
 // ShippingAddressSchema remains unchanged
 const ShippingAddressSchema = new Schema({
@@ -9,7 +10,7 @@ const ShippingAddressSchema = new Schema({
   country: { type: String, required: true },
 });
 
-export interface ShippingAddress {
+export interface LocalShippingAddress {
   label: string;
   address: string;
   city: string;
@@ -27,9 +28,10 @@ export const UserSchema = new Schema(
     password: { type: String, required: true },
     phoneNumber: { type: String },
     company: { type: String },
-    shippingAddresses: [
-      { type: Schema.Types.ObjectId, ref: 'ShippingAddress' },
-    ],
+    shippingAddresses: [ShippingAddressSchema],
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    wishlist: { type: Schema.Types.ObjectId, ref: 'Wishlist' },
+    cart: [{ type: Types.ObjectId, ref: 'Product' }], 
     isEmailVerified: { type: Boolean, default: false },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
@@ -41,6 +43,7 @@ export const UserSchema = new Schema(
 );
 
 export interface User extends Document {
+  _id: Types.ObjectId; 
   firstName: string;
   lastName: string;
   email: string;
@@ -48,10 +51,17 @@ export interface User extends Document {
   password: string;
   phoneNumber?: string;
   company?: string;
-  shippingAddresses: ShippingAddress[];
-  orders: Types.ObjectId[]; // Array of Order references
-  reviews: Types.ObjectId[]; // Array of Review references
+  shippingAddresses: ImportedShippingAddress[];
+  reviews: Types.ObjectId[];  
+  wishlist?: Types.ObjectId;
+  cart: Types.ObjectId[];
+
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
+  role: string;
 }
+
+const UserModel = mongoose.model<User>('User', UserSchema);
+
+export default UserModel;

@@ -6,6 +6,11 @@ export const WishlistSchema = new Schema({
         ref: 'Product',
         required: false
     },
+    userId:{
+        type: Types.ObjectId,
+        ref: 'User',
+        required: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

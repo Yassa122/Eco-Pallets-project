@@ -7,7 +7,7 @@ import { CreateIdentityDto } from './identity/dto/create.identity.dto';
 import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
 import { IdentityService } from './identity/identity.service';
 import { JwtService } from '@nestjs/jwt';
-import { ProfileService } from './profile/profile.service';
+
 import { UserInfoService } from './user-info/user-info/user-info.service';
 import { LoginDto } from './identity/dto/login.dto';
 import { CreateGuestIdentityDto } from './identity/dto/guest.identity.dto';
@@ -20,7 +20,7 @@ export class AppService implements OnModuleInit {
     @InjectModel('User') private userModel: Model<User>,
     private identityService: IdentityService,
     private jwtService: JwtService,
-    private profileService: ProfileService,
+
     private userInfoService: UserInfoService,
     @Inject('ACCOUNT_SERVICE_KAFKA') private kafkaClient: ClientKafka,
   ) {}
@@ -54,7 +54,7 @@ export class AppService implements OnModuleInit {
   }
 
   async getUser(id: string): Promise<User | null> {
-    return this.profileService.getUserProfileInfo(id);
+    return this.userInfoService.getUserData(id);
   }
 
   async updateUser(
@@ -62,8 +62,8 @@ export class AppService implements OnModuleInit {
     updateUserDto: UpdateUserProfileDto,
   ): Promise<User | null> {
     return new Promise((resolve, reject) => {
-      this.profileService
-        .updateUserProfile(userId, updateUserDto)
+      this.userInfoService
+        .updateUserData(userId, updateUserDto)
         .then((user) => {
           resolve(user);
         })

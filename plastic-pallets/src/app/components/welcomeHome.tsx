@@ -17,7 +17,7 @@ const WelcomeHome = () => {
       <div className="logo" style={{ marginBottom: '20px' }}>
       </div>
       <div className="slogan" style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '30px' }}>
-        Welcome to Our World of Quality Plastic Pallets
+        Welcome to Our World of Quality  Pallets
       </div>
       <div className="authorized" style={{ fontSize: '20px', marginBottom: '20px' }}>
         <span style={{ color: "cyan", fontWeight: 'bold' }}>100%</span> Authorized

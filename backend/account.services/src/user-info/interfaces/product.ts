@@ -1,4 +1,6 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { Reviews} from '../interfaces/reviews'
+
 export interface Product extends Document {
     name: string;
     description: string;
@@ -14,4 +16,5 @@ export interface Product extends Document {
       duration?: number;
       price?: number;
     };
+    reviews: Reviews[]; 
   }

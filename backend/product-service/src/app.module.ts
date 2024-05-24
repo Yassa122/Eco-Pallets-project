@@ -4,16 +4,18 @@ import { AppService } from './app.service';
 import { ProductModule } from './product/product.module';
 import { MongooseModule } from '@nestjs/mongoose'; // Import MongooseModule
 import { ProductService } from './product/product.service'; // Import ProductService
+import { ProductController } from './product/product.controller';
 import { CreateProductDto } from './product/dto/create-product.dto';
-import { KafkaConsumerService } from './kafka/kafka.service';
-import { ProductKafkaModule } from './kafka/kafka.module';
+import { ProductSchema } from './product/schemas/product.schema';
+
 @Module({
   imports: [
     ProductModule,
     MongooseModule.forRoot(
       'mongodb://127.0.0.1:27017/plastic-pallets-products',
     ),
-    ProductKafkaModule,
+    MongooseModule.forFeature([{ name: "Product", schema: ProductSchema }]),
+
   ],
 
   controllers: [AppController],
@@ -21,7 +23,7 @@ import { ProductKafkaModule } from './kafka/kafka.module';
     AppService,
     ProductService,
     CreateProductDto,
-    KafkaConsumerService,
+    ProductController,
   ],
 })
 export class AppModule {}

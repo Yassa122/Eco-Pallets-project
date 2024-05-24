@@ -33,7 +33,8 @@ export default function Login() {
         console.log("Guest login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
+        document.cookie =
+          "auth_token=${token}; path=/; max-age=86400; secure; samesite=strict";
         router.push("/pages/home"); // Redirect to dashboard
       } else {
         throw new Error(data.message || "Failed to log in as guest");
@@ -43,28 +44,34 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent default form submission
     try {
-      const response = await fetch("http://localhost:8000/account/guest", {
+      const response = await fetch("http://localhost:8000/account/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
-  
+
       const data = await response.json();
       if (response.ok) {
-        console.log("Guest login successful", data);
+        console.log("Login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-        router.push("/pages/home");
+        document.cookie =
+          "auth_token=${token}; path=/; max-age=86400; secure; samesite=strict";
+        router.push("/pages/home"); // Redirect to home page
       } else {
-        throw new Error(data.message || "Failed to log in as guest");
+        throw new Error(data.message || "Failed to log in");
       }
     } catch (error) {
-      console.error("Guest login error:", error);
+      console.error("Login error:", error);
     }
   };
 
