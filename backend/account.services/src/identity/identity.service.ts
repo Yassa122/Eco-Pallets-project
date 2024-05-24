@@ -1,5 +1,6 @@
 
 import {
+  BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
