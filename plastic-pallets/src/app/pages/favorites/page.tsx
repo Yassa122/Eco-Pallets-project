@@ -31,7 +31,7 @@ const MyFavorites: React.FC = () => {
           throw new Error('No access token found');
         }
 
-        const response = await fetch('http://localhost:8000/items', {
+        const response = await fetch('http://localhost:5555/items', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
