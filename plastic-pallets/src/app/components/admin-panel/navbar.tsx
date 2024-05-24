@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin-panel/user-nav";
