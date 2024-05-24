@@ -1,3 +1,4 @@
+
 import {
   Injectable,
   Logger,
@@ -186,10 +187,18 @@ export class IdentityService {
       throw new UnauthorizedException('Old password is incorrect.');
     }
 
+    // Check if the new password is the same as the old password
+    const isNewPasswordSame = await bcrypt.compare(newPassword, user.password);
+    if (isNewPasswordSame) {
+      throw new BadRequestException('The new password cannot be the same as the old password.');
+    }
+
+
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     // Update user's password
+
     await this.userModel.updateOne(
       { _id: userId },
       { $set: { password: hashedNewPassword } },

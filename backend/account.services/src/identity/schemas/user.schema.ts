@@ -1,4 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import {ShippingAddressSchema} from '../../user-info/schemas/shipping-address.schema'
+import { ShippingAddress } from 'src/user-info/interfaces/shipping-address';
+
 
 // ShippingAddressSchema remains unchanged
 const ShippingAddressSchema = new Schema({
@@ -25,11 +28,14 @@ export const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phoneNumber: { type: String },
-    company: { type: String },
-    shippingAddresses: [
-      { type: Schema.Types.ObjectId, ref: 'ShippingAddress' },
-    ],
+    phoneNumber: { type: String, optional: true },
+    company: { type: String, optional: true },
+    shippingAddresses: [ShippingAddressSchema],
+    // orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],  // References Order documents
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    wishlist: { type: Schema.Types.ObjectId, ref: 'Wishlist', optional: true },
+    cart: [{ type: Types.ObjectId, ref: 'Product' }], 
+
     isEmailVerified: { type: Boolean, default: false },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
@@ -41,6 +47,7 @@ export const UserSchema = new Schema(
 );
 
 export interface User extends Document {
+  _id: Types.ObjectId; 
   firstName: string;
   lastName: string;
   email: string;
@@ -49,8 +56,11 @@ export interface User extends Document {
   phoneNumber?: string;
   company?: string;
   shippingAddresses: ShippingAddress[];
-  orders: Types.ObjectId[]; // Array of Order references
-  reviews: Types.ObjectId[]; // Array of Review references
+  // orders: Types.ObjectId[];  
+  reviews: Types.ObjectId[];  
+  wishlist?: Types.ObjectId;
+  cart: Types.ObjectId[];
+
   isEmailVerified?: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;

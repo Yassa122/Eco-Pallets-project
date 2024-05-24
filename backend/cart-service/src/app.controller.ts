@@ -129,4 +129,8 @@ async makeOrder(userId: string, @Body() makeOrderDto: makeOrderDto): Promise<any
   async stripe(@CurrentUser('userId') userId: string):Promise<any>{
     return this.appService.createStripe(userId);
   }
+  @Get('orderhistory')
+ async getOrderHistory(@CurrentUser('userId') userId: string) {
+  return this.appService.getOrderHistory(userId);
+}
 }

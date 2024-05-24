@@ -7,14 +7,18 @@ export default function Login() {
   const router = useRouter(); // Use the useRouter hook
   const [formData, setFormData] = useState({
     username: "",
-    password: "", // Include password in your state
+    password: "",
   });
+
+  const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Add error state
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value, // This will update the right part of the state based on the input name
+      [name]: value,
     }));
   };
 
@@ -25,11 +29,17 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+        credentials: "include",
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+
       });
 
       const data = await response.json();
       if (response.ok) {
+
         console.log("Guest login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
@@ -38,6 +48,7 @@ export default function Login() {
       } else {
         throw new Error(data.message || "Failed to log in as guest");
       }
+
     } catch (error) {
       console.error("Guest login error:", error);
     }
@@ -71,7 +82,6 @@ export default function Login() {
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-dark-grey shadow-lg rounded-lg p-8">
-        {/* Create a grey container with padding, shadow, and rounded corners */}
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-white text-2xl font-bold sm:text-3xl">
@@ -145,6 +155,7 @@ export default function Login() {
     </main>
   );
 }
+
 
 function setError(arg0: string) {
   throw new Error("Function not implemented.");

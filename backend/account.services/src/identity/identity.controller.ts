@@ -5,7 +5,6 @@ import { LocalAuthGuard } from './strategies/local-auth.guard';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ExistsAuthGuard } from './strategies/exists-auth.guard';
 import { CurrentUser } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
-
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('identity')
@@ -37,8 +36,7 @@ export class IdentityController {
   }
   @UseGuards(JwtAuthGuard)
   @Put('update-password')
-  async updatePassword(@Req() req, @Body() updatePasswordDto: UpdatePasswordDto): Promise<{ success: boolean }> {
-    const userId = req.user.id; // Extracted from the validated JWT
+  async updatePassword(@CurrentUser() userId: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<{ success: boolean }> { 
 
     const result = await this.identityService.updatePassword(userId, updatePasswordDto);
 
