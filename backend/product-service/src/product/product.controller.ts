@@ -56,11 +56,22 @@ export class ProductController {
   }
 
   @Post(':id/wishlist')
-  async addToWishlist(@Param('id') productId: string, @Body() createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
+  async addToWishlist(@Param('id') productId: string, @CurrentUser('userId') userId: string, @Body() createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
     return this.productService.addToWishlist({
       ...createWishlistDto,
       productId,
+      userId
     });
+  }
+  @Get('/getwishlist')
+  async getWishlistByUser(@CurrentUser() userId: string): Promise<Wishlist[]> {
+    console.log(userId);
+    try {
+      return await this.productService.getWishlistByUser(userId);
+    } catch (error) {
+      console.error('Error retrieving wishlist:', error);
+      throw new NotFoundException('Failed to retrieve wishlist');
+    }
   }
 
   @Delete(':id/wishlist')

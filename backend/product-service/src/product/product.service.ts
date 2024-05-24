@@ -94,6 +94,9 @@ export class ProductService {
     const newWishlistItem = new this.wishlistModel(createWishlistDto);
     return newWishlistItem.save();
   }
+  async getWishlistByUser(userId: string): Promise<Wishlist[]> {
+    return this.wishlistModel.find({ userId }).populate('productId').exec();
+  }
   async removeFromWishlist(productId: string): Promise<Wishlist | null> {
     return this.wishlistModel.findOneAndDelete({ productId }).exec();
   }
