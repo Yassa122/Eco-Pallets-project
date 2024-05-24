@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import product1 from '../pics/metall Background Removed 2.png';
+import product1 from '../pics/metal1 Background Removed.png';
 import HeartIcon from '../pics/favs Background Removed.png';
 
 const Offers = () => {
