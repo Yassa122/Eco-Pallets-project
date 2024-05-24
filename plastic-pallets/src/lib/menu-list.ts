@@ -3,9 +3,11 @@ import {
   Users,
   Settings,
   Bookmark,
-  ShoppingCart, // Import the ShoppingCart icon
+  ShoppingCart,
   LayoutGrid,
-  Heart
+  Heart,
+  LogIn,
+  LogOut
 } from "lucide-react";
 
 type Menu = {
@@ -40,7 +42,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "/cart",
           label: "Cart",
           active: pathname.includes("/cart"),
-          icon: ShoppingCart // Change the icon to ShoppingCart
+          icon: ShoppingCart
         },
         {
           href: "/favorites",
@@ -70,6 +72,24 @@ export function getMenuList(pathname: string): Group[] {
           label: "Account",
           active: pathname.includes("/account"),
           icon: Settings
+        }
+      ]
+    },
+    // Add login and logout menus
+    {
+      groupLabel: "Account",
+      menus: [
+        {
+          href: "/login",
+          label: "Login",
+          active: pathname.includes("/login"),
+          icon: LogIn
+        },
+        {
+          href: "/logout",
+          label: "Logout",
+          active: pathname.includes("/logout"),
+          icon: LogOut
         }
       ]
     }
