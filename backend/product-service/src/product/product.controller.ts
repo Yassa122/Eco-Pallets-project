@@ -1,14 +1,17 @@
 // product.controller.ts
-
-import { Controller, Post, Body, Get, Param, Query, Delete, Req, UnauthorizedException, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, Delete, Put, NotFoundException } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateReviewDto } from './dto/create.review.dto';
 import { CreateWishlistDto } from './dto/wishlist.dto';
 import { CustomizationDto } from './dto/customization.dto';
+import { RentProductDto } from './dto/rent-product.dto';
 import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+
+
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -18,53 +21,87 @@ export class ProductController {
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
   }
-
-
-  //working
-  @Get()
-  async getAllProducts() {
-    return await this.productService.findAllProducts();
+  @Get('/getAllProducts')
+  async getAllProducts(): Promise<CreateProductDto[]> {
+    try {
+      const products = await this.productService.getAllProducts();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No products found');
+      }
+      return products;
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch products: ' + (error as Error).message);
+    }
+  }
+  @Get('/productdetails/:id')
+  async getProductById(@Param('id') id: string): Promise<Product> {
+    return this.productService.getProductById(id);
+  }
+  
+  @Post(':productId/addreview')
+  async addReview(@Param('productId') productId: string, @CurrentUser('userId') userId: string,
+   @Body() createReviewDto: CreateReviewDto) {
+    return this.productService.addReview(productId, userId,
+     createReviewDto);
   }
 
-  @Get(':id')
-  async viewProductDetails(@Param('_id') id: string): Promise<Product> {
-    console.log(id); // Logging the id parameter
-    return this.productService.findById(id);
-  }
-  @Post(':id/addreview')
-  async addReview(@Param('_id') productId: string,@Query('userId') userId: string,@Body() createReviewDto: CreateReviewDto) {
-    return this.productService.addReview(productId, userId,createReviewDto);
-  }
   @Get(':id/reviews')
-  async viewReviews(@Param('_id') productId: string): Promise<Review[]> {
-    return this.productService.viewReviews(productId);
+  async getProductReviews(@Param('id') productId: string): Promise<Review[]> {
+    console.log(productId)
+    return this.productService.getProductReviews(productId);
   }
+
   @Delete('reviews/:id/:userId')
-async deleteReview(
-  @Param('_id') id: string,
-  @Param('userId') userId: string
-): Promise<void> {
-  return this.productService.deleteReview(id, userId);
-} 
+  async deleteReview(@Param('id') id: string, @Param('userId') userId: string): Promise<void> {
+    return this.productService.deleteReview(id, userId);
+  }
+
   @Post(':id/wishlist')
-  async addToWishlist(@Param('_id') productId: string,@Body() createWishlistDto: CreateWishlistDto,): Promise<Wishlist> {
+  async addToWishlist(@Param('id') productId: string, @CurrentUser('userId') userId: string, @Body() createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
     return this.productService.addToWishlist({
       ...createWishlistDto,
-      productId, 
+      productId,
+      userId
     });
   }
+  @Get('/MyWishlist')
+  async getWishlistByUser(@CurrentUser('userId') userId: string): Promise<Wishlist[]> {
+    try {
+      console.log('User ID:', userId); // Add this line
+      return await this.productService.getWishlistByUser(userId);
+    } catch (error) {
+      console.error('Error retrieving wishlist:', error);
+      throw new NotFoundException('Failed to retrieve wishlist');
+    }
+  }
+  
+
   @Delete(':id/wishlist')
-  async removeFromWishlist(@Param('_id') productId: string): Promise<Wishlist | null> {
+  async removeFromWishlist(@Param('id') productId: string): Promise<Wishlist | null> {
     return this.productService.removeFromWishlist(productId);
   }
-@Put(':productId/customize') 
-async customizeProduct(@Param('productId') productId: string, @Body() customizationDto: CustomizationDto,) {
-  return this.productService.customizeProduct(productId, customizationDto);
-}
 
+  @Put(':productId/customize')
+  async customizeProduct(@Param('productId') productId: string, @Body() customizationDto: CustomizationDto) {
+    return this.productService.customizeProduct(productId, customizationDto);
+  }
 
-
-
-  
+@Post(':productId/rent')
+async rentProduct(@Param('productId') productId: string, @Body() rentProductDto: RentProductDto) {
+  try {
+    const rentalDetails = await this.productService.rentProduct(
+      productId,
+      rentProductDto,
+    );
+    return { success: true, rentalDetails };
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      throw error; // Let Nest handle the NotFoundException
+    } else {
+      throw new NotFoundException('Failed to rent product: ' + error.message);
+    }
+  }
 }
  
+
+}

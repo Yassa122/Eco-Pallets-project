@@ -9,21 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateReviewDto = void 0;
+exports.RentProductDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateReviewDto {
+class RentProductDto {
 }
-exports.CreateReviewDto = CreateReviewDto;
+exports.RentProductDto = RentProductDto;
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Date)
+], RentProductDto.prototype, "rentalStart", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Date)
+], RentProductDto.prototype, "rentalEnd", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
-    (0, class_validator_1.Max)(5),
     __metadata("design:type", Number)
-], CreateReviewDto.prototype, "rating", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateReviewDto.prototype, "comment", void 0);
-//# sourceMappingURL=create.review.dto.js.map
+], RentProductDto.prototype, "deposit", void 0);
+//# sourceMappingURL=rent-product.dto.js.map

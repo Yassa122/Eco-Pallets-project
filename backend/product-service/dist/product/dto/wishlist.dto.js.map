@@ -1,1 +1,1 @@
-{"version":3,"file":"wishlist.dto.js","sourceRoot":"","sources":["../../../src/product/dto/wishlist.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAwD;AAExD,MAAa,iBAAiB;CAI7B;AAJD,8CAIC;AADC;IAFC,IAAA,4BAAU,GAAE;IACZ,IAAA,2BAAS,GAAE;;oDACM"}
+{"version":3,"file":"wishlist.dto.js","sourceRoot":"","sources":["../../../src/product/dto/wishlist.dto.ts"],"names":[],"mappings":";;;AAEA,MAAa,iBAAiB;CAG7B;AAHD,8CAGC"}

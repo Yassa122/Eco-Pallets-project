@@ -1,12 +1,14 @@
-"use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import product1 from '../pics/p4 Background Removed.png'; // Update with actual item images if available
-import cart from '../pics/cacart Background Removed.png';
-import heart from '../pics/favs Background Removed.png';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import product1 from '../../images/product1.jpg';
+import heart from '../../images/heart.svg';
 
-const FeaturedProducts = () => {
-  const [items, setItems] = useState([]);
+const FeaturedProducts: React.FC = () => {
+  const [items, setItems] = useState<any[]>([]);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchItems();
@@ -14,88 +16,33 @@ const FeaturedProducts = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:5555/items", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
+      const response = await fetch('/api/products');
       const data = await response.json();
-      if (response.ok) {
-        const itemsWithRandomRating = data.map(item => ({
-          ...item,
-          rating: (Math.random() * (5 - 1) + 1).toFixed(1)
-        }));
-        setItems(itemsWithRandomRating);
-        console.log("Items Fetched Successfully", itemsWithRandomRating);
-      } else {
-        throw new Error(data.message || "Failed to fetch Items");
-      }
+      setItems(data);
     } catch (error) {
-      console.error("Fetching error:", error);
+      console.error("Error fetching items:", error);
     }
   };
 
-  const addToCart = async (item) => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      const body = {
-        productId: item.productId, // Ensure this matches your item structure
-        productName: item.name,
-        quantity: 1,
-        price: item.price,
-        image: item.image
-      };
-      console.log(body);
-
-      const response = await fetch("http://localhost:7001/addToCart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        credentials: "include",
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Item added to cart:", data);
-      } else {
-        throw new Error(data.message || "Failed to add item to cart");
-      }
-    } catch (error) {
-      console.error("Add to cart error:", error);
-    }
+  const addToCart = async (item: any) => {
+    // Handle add to cart logic
+    showPopupMessage(`${item.name} added to cart!`);
   };
 
-  const addToFavorites = async (item) => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch("http://localhost:5555/addToFavorites", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify({ item }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Item added to favorites:", data);
-      } else {
-        throw new Error(data.message || "Failed to add item to favorites");
-      }
-    } catch (error) {
-      console.error("Add to favorites error:", error);
-    }
+  const addToFavorites = async (item: any) => {
+    // Handle add to favorites logic
+    showPopupMessage(`${item.name} added to favorites!`);
   };
 
-  const getRatingColor = (rating) => {
+  const showPopupMessage = (message: string) => {
+    setPopupMessage(message);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000); // Hide the popup after 2 seconds
+  };
+
+  const getRatingColor = (rating: string) => {
     const parsedRating = parseFloat(rating);
     if (parsedRating < 2.5) {
       return 'red';
@@ -106,18 +53,26 @@ const FeaturedProducts = () => {
     }
   };
 
+  const handleProductClick = (id: string) => {
+    router.push(`/product/${id}`);
+  };
+
   return (
     <section style={{ color: '#fff', fontFamily: 'Arial, sans-serif', padding: '20px', paddingTop: '70px', backgroundColor: '#000' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2.5rem', letterSpacing: '2px', fontFamily: 'Georgia, serif' }}>
-        Discover Our Plastic Collection
+        Discover Our Featured Collection
       </h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
         {items.map((item) => (
-          <div key={item.id} style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+          <div 
+            key={item.id} 
+            style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
+            onClick={() => handleProductClick(item.id)} 
+          >
             <div style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '250px' }}>
               <Image src={product1} layout="responsive" width={300} height={300} objectFit="cover" alt={item.name} />
               <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2 }}>
-                <button onClick={() => addToFavorites(item)} className="btn">
+                <button onClick={(e) => {e.stopPropagation(); addToFavorites(item);}} className="btn">
                   <Image src={heart} alt="Add to Favorites" width={30} height={30} />
                 </button>
               </div>
@@ -133,11 +88,11 @@ const FeaturedProducts = () => {
                 Rating: <span style={{ fontSize: '1.6rem', color: getRatingColor(item.rating), fontFamily: 'Georgia, serif' }}>{item.rating}</span>
               </p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button onClick={() => addToCart(item)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                <button onClick={(e) => {e.stopPropagation(); addToCart(item);}} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                   Add to Cart
                 </button>
                 <div>
-                  <button onClick={() => addToFavorites(item)} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                  <button onClick={(e) => {e.stopPropagation(); addToFavorites(item);}} className="btn" style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                     Add to Wishlist
                   </button>
                 </div>
@@ -146,6 +101,24 @@ const FeaturedProducts = () => {
           </div>
         ))}
       </div>
+
+      {showPopup && (
+        <div className="popup" style={{
+          display: showPopup ? 'block' : 'none',
+          position: 'fixed',
+          left: '50%',
+          top: '20%',
+          transform: 'translate(-50%, -50%)',
+          padding: '20px',
+          backgroundColor: '#fff',
+          color: '#000',
+          border: '1px solid #ccc',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000
+        }}>
+          {popupMessage}
+        </div>
+      )}
     </section>
   );
 };

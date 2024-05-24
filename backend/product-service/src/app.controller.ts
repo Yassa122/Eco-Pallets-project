@@ -9,10 +9,10 @@ export class AppController {
     private readonly productService: ProductService,
   ) {}
 
-  @Get()
-  async getAllProducts() {
-    return await this.productService.findAllProducts();
-  }
+  // @Get()
+  // async getAllProducts() {
+  //   return await this.productService.findAllProducts();
+  // }
 
   @Post('create-product')
   async create(@Body() reqBody: any) {

@@ -21,20 +21,11 @@ let AppController = class AppController {
         this.appService = appService;
         this.productService = productService;
     }
-    async getAllProducts() {
-        return await this.productService.findAllProducts();
-    }
     async create(reqBody) {
         return this.appService.create(reqBody);
     }
 };
 exports.AppController = AppController;
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AppController.prototype, "getAllProducts", null);
 __decorate([
     (0, common_1.Post)('create-product'),
     __param(0, (0, common_1.Body)()),

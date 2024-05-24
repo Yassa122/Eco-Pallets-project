@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import product1 from '../pics/metal1 Background Removed.png';
@@ -6,6 +5,7 @@ import HeartIcon from '../pics/favs Background Removed.png';
 
 const Offers = () => {
     const [items, setItems] = useState([]);
+    const [popupMessage, setPopupMessage] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -41,17 +41,73 @@ const Offers = () => {
         }
     };
 
-    const addToFavorites = (item) => {
-        // Implement addToFavorites functionality
-        console.log("Added item to favorites:", item);
+    const addToFavorites = async (item) => {
+        try {
+            const token = localStorage.getItem('auth_token');
+            const response = await fetch("http://localhost:5555/addToFavorites", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
+                },
+                credentials: "include",
+                body: JSON.stringify({ item }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                showPopupMessage("Added to favorites");
+            } else if (response.status === 409) { // 409 status code indicates item already exists
+                showPopupMessage("Item already exists in favorites");
+            } else {
+                throw new Error(data.message || "Item already exists in favorites");
+            }
+        } catch (error) {
+            showPopupMessage("Item already exists in favorites");
+            console.error("Add to favorites error:", error);
+        }
     };
 
-    const addToCart = (item) => {
-        // Implement addToCart functionality
-        console.log("Added item to cart:", item);
+    const addToCart = async (item) => {
+        try {
+            const token = localStorage.getItem('auth_token');
+            const body = {
+                productId: item.productId, // Ensure this matches your item structure
+                productName: item.name,
+                quantity: 1,
+                price: item.price,
+                image: item.image
+            };
+            console.log(body);
+
+            const response = await fetch("http://localhost:7001/addToCart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                credentials: "include",
+                body: JSON.stringify(body),
+            });
+
+            if (response.ok) {
+                showPopupMessage("Added to cart");
+            } else {
+                throw new Error("Failed to add item to cart");
+            }
+        } catch (error) {
+            showPopupMessage("Failed to add to cart");
+            console.error("Add to cart error:", error);
+        }
     };
 
-    // Function to determine rating color based on rating value
+    const showPopupMessage = (message) => {
+        setPopupMessage(message);
+        setTimeout(() => {
+            setPopupMessage(null);
+        }, 3000); // Hide the message after 3 seconds
+    };
+
     const getRatingColor = (rating) => {
         const parsedRating = parseFloat(rating);
         if (parsedRating < 2.5) {
@@ -88,7 +144,7 @@ const Offers = () => {
                             <p style={{ margin: '0', color: '#bbb', fontSize: '1.4rem', marginBottom: '10px', fontFamily: 'Georgia, serif' }}>Rating: <span style={{ fontSize: '1.6rem', color: getRatingColor(item.rating), fontFamily: 'Georgia, serif' }}>{item.rating}</span></p>
                             <p style={{ margin: '0', color: '#bbb', fontSize: '1.4rem', marginBottom: '10px', fontFamily: 'Georgia, serif' }}>Valid until: <span style={{ fontSize: '1.6rem', color: '#fff', fontFamily: 'Georgia, serif' }}>{item.validityPeriod}</span></p>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <button onClick={() => addToCart(item.id)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
+                                <button onClick={() => addToCart(item)} style={{ padding: '10px 20px', border: 'none', backgroundColor: '#00bcd4', color: 'cyan', borderRadius: '5px', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', transition: 'background-color 0.3s' }}>
                                     Add to Cart
                                 </button>
                                 <div>
@@ -101,6 +157,27 @@ const Offers = () => {
                     </div>
                 ))}
             </div>
+            {popupMessage && (
+    <div className="popup" style={{
+        display: 'block',
+        position: 'fixed',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '20px',
+        maxWidth: '400px',
+        backgroundColor: '#ffffff',
+        color: '#333333',
+        border: '1px solid #cccccc',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        zIndex: 1000,
+        animation: 'fade-in 0.5s ease-out'
+    }}>
+        {popupMessage}
+    </div>
+)}
+
         </section>
     );
 };
