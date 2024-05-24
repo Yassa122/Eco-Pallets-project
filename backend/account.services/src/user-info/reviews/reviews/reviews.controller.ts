@@ -1,42 +1,35 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards, HttpException, HttpStatus, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { ReviewsService } from '../reviews/reviews.service';
-import { CreateReviewDto} from '../../dto/create-review.dto';
+import { CreateReviewDto } from '../../dto/create-review.dto';
 import { UpdateReviewDto } from 'src/user-info/dto/update-review.dto';
 import { CreateProductDto } from 'src/user-info/dto/create-product.dto';
 import { JwtAuthGuard } from 'src/identity/strategies/jwt-auth.guard';
 import { UserReviewsDto } from 'src/user-info/dto/get-reviews.dto';
-
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { join } from 'path';
+import { mkdir, writeFile } from 'fs/promises'; // Correct import
+import { FilesInterceptor, AnyFilesInterceptor as NestAnyFilesInterceptor } from '@nestjs/platform-express'; // Rename import
+import { Express } from 'express';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewService: ReviewsService) {}
 
-  @Post('create-prod')
-  async createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.reviewService.createProduct(createProductDto);
+
+  @Get('user-reviews')
+  @UseGuards(JwtAuthGuard)
+  async getUserReviews(@CurrentUser() userId: string): Promise<UserReviewsDto[]> {
+    return this.reviewService.findUserReviews(userId);
   }
 
-  @Get('user-reviews/:userId')
-  @UseGuards(JwtAuthGuard)
-  async getUserReviews(@Param('userId') userId: string): Promise<UserReviewsDto[]> {
-  return this.reviewService.findUserReviews(userId);
-}
-
-  // @Get('myreviews')
-  // @UseGuards(JwtAuthGuard)  // Ensure that this route is protected and that req.user is populated
-  // async getUserReviews(@Request() req): Promise<any> {
-  //   return await this.reviewService.findUserReviews(req.user._id.toString());
-  // }
-
-  @Post('addreview/:id')
-async addReview(
-  @Param('id') productId: string,
-  @Query('userId') userId: string,
-  @Body() createReviewDto: CreateReviewDto
-) {
-  return this.reviewService.addReview(productId, userId, createReviewDto);
-}
-
+  @Post('add-review/:id')
+  async addReview(
+    @Param('id') productId: string,
+    @CurrentUser() userId: string,
+    @Body() createReviewDto: CreateReviewDto
+  ) {
+    return this.reviewService.addReview(productId, userId, createReviewDto);
+  }
 
   @Put('update-review/:id')
   updateReview(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto): Promise<any> {

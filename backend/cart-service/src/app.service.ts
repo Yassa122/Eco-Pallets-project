@@ -145,7 +145,7 @@ export class AppService {
 
     // Check if the cartItem already exists in the cart
     const existingCartItem = cart.cartItems.find(
-      (item) => item.productId === cartItem.productId,
+      (item) => item.productId == cartItem.productId,
     );
 
     if (existingCartItem) {
@@ -271,6 +271,7 @@ export class AppService {
     const createdOrder = new this.ordersModel(makeOrderDto);
     createdOrder.userId = userId;
     return createdOrder.save();
+
   }
 
   async clearCart(userId: string): Promise<any> {
@@ -286,4 +287,28 @@ export class AppService {
     await cart.save();
     return { message: 'Cart cleared successfully' };
   }
+
+  // async clearCart(userId: string): Promise<any> {
+  //   const cart = await this.cartModel.findOne({ userId }).exec();
+  //   if (!cart) {
+  //     throw new Error('Cart not found');
+  //   }
+
+  //   cart.cartItems = []; // Remove all items from the cart
+  //   cart.totalPrice = 0; // Reset total price
+  //   cart.Subtotal = 0;
+  //   cart.PromoCodeMultiplier = 1; 
+  //   cart.status = 'pending'
+  //   await cart.save();
+  //   return { message: 'Cart cleared successfully' };
+  // }
+  
+  async getOrderHistory(userId: string) {
+    const orders = await this.ordersModel.find({ userId }).exec();
+    if (!orders) {
+      throw new Error('No orders found');
+    }
+    return orders;
+  }
+  
 }

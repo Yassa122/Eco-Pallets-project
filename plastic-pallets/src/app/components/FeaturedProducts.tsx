@@ -50,6 +50,7 @@ const FeaturedProducts = () => {
         image: item.image,
       };
 
+
       const response = await fetch("http://localhost:7000/addToCart", {
         method: "POST",
         headers: {
@@ -63,6 +64,7 @@ const FeaturedProducts = () => {
       if (response.ok) {
         showPopupMessage("Added to cart");
       } else {
+
         showPopupMessage(" added to cart");
       }
     } catch (error) {
@@ -176,6 +178,7 @@ const FeaturedProducts = () => {
                   <Image src={heart} alt="Add to Favorites" width={30} height={30} />
                 </button>
               </div>
+
             </div>
             <div style={{ padding: "20px" }}>
               <h3

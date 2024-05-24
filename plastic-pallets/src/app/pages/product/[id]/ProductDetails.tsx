@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router'; // Changed from 'next/navigation' to 'next/router'
+import { useRouter } from 'next/navigation';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
 import Image from "next/image";
@@ -57,7 +58,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/productdetails/${_id}`);
+      const response = await fetch(`http://localhost:8080/product/${_id}`);
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

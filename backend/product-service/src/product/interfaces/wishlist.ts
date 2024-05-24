@@ -1,6 +1,7 @@
 // interfaces/wishlist.ts
 import { Types } from 'mongoose';
 
+
 export interface WishlistProduct {
   productId: Types.ObjectId;
   name: string;

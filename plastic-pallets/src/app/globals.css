@@ -16,18 +16,16 @@
   }
 }
 
-body {
-  ::selection {
-    color: #6dffde;
-    background: #0b1e21;
-  }
+html, body {
+  height: 100%;
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background-start-rgb));
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: rgb(var(--background-start-rgb));
 }
 
 @layer utilities {

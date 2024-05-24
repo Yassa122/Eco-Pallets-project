@@ -33,6 +33,7 @@ export default function Login() {
         console.log("Guest login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
+
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
         router.push("/pages/home"); // Redirect to dashboard
       } else {
@@ -63,6 +64,7 @@ export default function Login() {
         console.log("Login successful", data);
         const token = data.accessToken;
         localStorage.setItem("token", token);
+
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
         router.push("/pages/home"); // Redirect to home page
       } else {
