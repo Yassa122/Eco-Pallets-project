@@ -36,8 +36,7 @@ export declare const productProviders: {
         availability: boolean;
         rentalOptions?: {
             available: boolean;
-            duration?: number;
-            price?: number;
+            deposit?: number;
         };
     }, {}, {}, {}, import("mongoose").Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
         price: number;
@@ -50,8 +49,7 @@ export declare const productProviders: {
         availability: boolean;
         rentalOptions?: {
             available: boolean;
-            duration?: number;
-            price?: number;
+            deposit?: number;
         };
     }>>;
     inject: string[];

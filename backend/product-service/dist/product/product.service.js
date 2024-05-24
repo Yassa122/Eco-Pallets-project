@@ -26,19 +26,6 @@ let ProductService = class ProductService {
         const createdProduct = new this.productModel(createProductDto);
         return createdProduct.save();
     }
-    async findAllProducts() {
-        try {
-            const products = await this.productModel.find().exec();
-            if (!products || products.length === 0) {
-                throw new common_1.NotFoundException('No products found');
-            }
-            return products;
-        }
-        catch (error) {
-            console.error('Error retrieving all products', error);
-            throw error;
-        }
-    }
     async findById(id) {
         try {
             console.log(`Finding product with ID: ${id}`);
@@ -75,12 +62,67 @@ let ProductService = class ProductService {
         }
         await this.reviewModel.findByIdAndDelete(id).exec();
     }
-    async addToWishlist(createWishlistDto) {
-        const newWishlistItem = new this.wishlistModel(createWishlistDto);
-        return newWishlistItem.save();
+    async findWishlistByUserId(userId) {
+        const wishlist = await this.wishlistModel.findOne({ userId })
+            .populate('products.productId')
+            .exec();
+        if (!wishlist) {
+            throw new common_1.NotFoundException(`Wishlist for user with ID ${userId} not found.`);
+        }
+        return wishlist;
     }
-    async removeFromWishlist(productId) {
-        return this.wishlistModel.findOneAndDelete({ productId }).exec();
+    async addProductToWishlist(userId, { productId }) {
+        const product = await this.productModel.findById(productId);
+        if (!product) {
+            throw new common_1.NotFoundException(`Product with ID ${productId} not found.`);
+        }
+        let wishlist = await this.wishlistModel.findOne({ userId });
+        if (wishlist) {
+            const productExists = wishlist.products.some((item) => item.productId.toString() === productId);
+            if (productExists) {
+                throw new common_1.ConflictException(`Product with ID ${productId} is already in the wishlist.`);
+            }
+            wishlist.products.push({
+                productId: new mongoose_2.Types.ObjectId(productId),
+                name: product.name,
+                description: product.description,
+                images: product.images,
+                price: product.price,
+                color: product.color,
+                size: product.size,
+                material: product.material,
+                availability: product.availability,
+                rentalOptions: product.rentalOptions,
+                addedAt: undefined
+            });
+            await wishlist.save();
+        }
+        else {
+            wishlist = new this.wishlistModel({
+                userId,
+                products: [{
+                        productId: new mongoose_2.Types.ObjectId(productId),
+                        name: product.name,
+                        description: product.description,
+                        images: product.images,
+                        price: product.price,
+                        color: product.color,
+                        size: product.size,
+                        material: product.material,
+                        availability: product.availability,
+                        rentalOptions: product.rentalOptions
+                    }]
+            });
+            await wishlist.save();
+        }
+        return wishlist;
+    }
+    async removeProductFromWishlist(userId, { productId }) {
+        const wishlist = await this.wishlistModel.findOneAndUpdate({ userId }, { $pull: { products: { productId } } }, { new: true });
+        if (!wishlist) {
+            throw new common_1.NotFoundException(`Wishlist for user with ID ${userId} not found.`);
+        }
+        return wishlist;
     }
     async customizeProduct(productId, customizationDto) {
         const product = await this.productModel.findById(productId).exec();

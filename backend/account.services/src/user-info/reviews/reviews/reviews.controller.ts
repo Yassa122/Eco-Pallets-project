@@ -10,6 +10,7 @@ import { join } from 'path';
 import { mkdir, writeFile } from 'fs/promises'; // Correct import
 import { FilesInterceptor, AnyFilesInterceptor as NestAnyFilesInterceptor } from '@nestjs/platform-express'; // Rename import
 import { Express } from 'express';
+import { Product } from 'src/user-info/interfaces/product';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -36,6 +37,11 @@ export class ReviewsController {
 
     return this.reviewService.createProduct(createProductDto);
   }
+  @Get('products')
+async getAllProducts(): Promise<Product[]> {
+  return this.reviewService.getAllProducts();
+}
+
 
   @Get('user-reviews')
   @UseGuards(JwtAuthGuard)

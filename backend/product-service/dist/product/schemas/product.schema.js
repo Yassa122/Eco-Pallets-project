@@ -43,11 +43,9 @@ exports.ProductSchema = new mongoose_1.Schema({
             type: Boolean,
             default: false
         },
-        duration: {
-            type: Number
-        },
-        price: {
-            type: Number
+        deposit: {
+            type: Number,
+            require: false,
         }
     }
 });

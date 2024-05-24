@@ -28,20 +28,21 @@ import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateReviewDto } from './dto/create.review.dto';
-import { CreateWishlistDto } from './dto/wishlist.dto';
 import { CustomizationDto } from './dto/customization.dto';
+import { ProductWishlistDto } from './dto/product-wishlist.dto';
 export declare class ProductService {
     private readonly productModel;
     private readonly reviewModel;
     private readonly wishlistModel;
+    [x: string]: any;
     constructor(productModel: Model<Product>, reviewModel: Model<Review>, wishlistModel: Model<Wishlist>);
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
-    findAllProducts(): Promise<Product[]>;
     findById(id: string): Promise<Product>;
     addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<Review>;
     viewReviews(productId: string): Promise<Review[]>;
     deleteReview(id: string, userId: string): Promise<void>;
-    addToWishlist(createWishlistDto: CreateWishlistDto): Promise<Wishlist>;
-    removeFromWishlist(productId: string): Promise<Wishlist | null>;
+    findWishlistByUserId(userId: string): Promise<Wishlist>;
+    addProductToWishlist(userId: string, { productId }: ProductWishlistDto): Promise<Wishlist>;
+    removeProductFromWishlist(userId: string, { productId }: ProductWishlistDto): Promise<Wishlist>;
     customizeProduct(productId: string, customizationDto: CustomizationDto): Promise<Product>;
 }

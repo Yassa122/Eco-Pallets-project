@@ -28,76 +28,77 @@ export class WishlistService {
     return wishlist;
   }
 
-  async addProductToWishlist(userId: string, { productId }: AddProductWishlistDto): Promise<Wishlist> {
-    const product = await this.productModel.findById(productId);
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found.`);
-    }
+  // async addProductToWishlist(userId: string, { productId }: AddProductWishlistDto): Promise<Wishlist> {
+  //   const product = await this.productModel.findById(productId);
+  //   if (!product) {
+  //     throw new NotFoundException(`Product with ID ${productId} not found.`);
+  //   }
 
-    let wishlist = await this.wishlistModel.findOne({ userId });
+  //   let wishlist = await this.wishlistModel.findOne({ userId });
 
-    if (wishlist) {
-      // Check if the product is already in the wishlist
-      const productExists = wishlist.products.some((item) => item.productId.toString() === productId);
+  //   if (wishlist) {
+  //     // Check if the product is already in the wishlist
+  //     const productExists = wishlist.products.some((item) => item.productId.toString() === productId);
 
-      if (productExists) {
-        throw new ConflictException(`Product with ID ${productId} is already in the wishlist.`);
-      }
+  //     if (productExists) {
+  //       throw new ConflictException(`Product with ID ${productId} is already in the wishlist.`);
+  //     }
 
-      // Add the new product to the existing wishlist
-      wishlist.products.push({
-        productId: new Types.ObjectId(productId),
-        name: product.name,
-        description: product.description,
-        images: product.images,
-        price: product.price,
-        color: product.color,
-        size: product.size,
-        material: product.material,
-        availability: product.availability,
-        rentalOptions: product.rentalOptions,
-        addedAt: undefined
-      });
-      await wishlist.save();
-    } else {
-      // Create a new wishlist if the user doesn't have one yet
-      wishlist = new this.wishlistModel({
-        userId,
-        products: [{
-          productId: new Types.ObjectId(productId),
-          name: product.name,
-          description: product.description,
-          images: product.images,
-          price: product.price,
-          color: product.color,
-          size: product.size,
-          material: product.material,
-          availability: product.availability,
-          rentalOptions: product.rentalOptions
-        }]
-      });
-      await wishlist.save();
+  //     // Add the new product to the existing wishlist
+  //     wishlist.products.push({
+  //       productId: new Types.ObjectId(productId),
+  //       name: product.name,
+  //       description: product.description,
+  //       images: product.images,
+  //       price: product.price,
+  //       color: product.color,
+  //       size: product.size,
+  //       material: product.material,
+  //       availability: product.availability,
+  //       rentalOptions: product.rentalOptions,
+  //       addedAt: undefined
+  //     });
+  //     await wishlist.save();
+  //   } else {
+  //     // Create a new wishlist if the user doesn't have one yet
+  //     wishlist = new this.wishlistModel({
+  //       userId,
+  //       products: [{
+  //         productId: new Types.ObjectId(productId),
+  //         name: product.name,
+  //         description: product.description,
+  //         images: product.images,
+  //         price: product.price,
+  //         color: product.color,
+  //         size: product.size,
+  //         material: product.material,
+  //         availability: product.availability,
+  //         rentalOptions: product.rentalOptions
+  //       }]
+  //     });
+  //     await wishlist.save();
 
-      // Link this wishlist to the user
-      await this.userModel.findByIdAndUpdate(userId, { $set: { wishlist: wishlist._id } });
-    }
+  //     // Link this wishlist to the user
+  //     await this.userModel.findByIdAndUpdate(userId, { $set: { wishlist: wishlist._id } });
+  //   }
 
-    return wishlist;
-  }
+  //   return wishlist;
+  // }
 
   async removeProductFromWishlist(userId: string, { productId }: RemoveProductWishlistDto): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOneAndUpdate(
       { userId },
-      { $pull: { products: { productId: new Types.ObjectId(productId) } } },
+      { $pull: { products: { productId } } }, // Remove the conversion to new String(productId)
       { new: true }
     );
-
+  
     if (!wishlist) {
       throw new NotFoundException(`Wishlist for user with ID ${userId} not found.`);
     }
-
+  
     return wishlist;
   }
+  
 
   async addItemToCartFromWishlist(userId: string, productId: string): Promise<Types.ObjectId[]> {
     console.log("Received UserId:", userId); // Debug log

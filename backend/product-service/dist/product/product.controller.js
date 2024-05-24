@@ -17,17 +17,15 @@ const common_1 = require("@nestjs/common");
 const product_service_1 = require("./product.service");
 const create_product_dto_1 = require("./dto/create-product.dto");
 const create_review_dto_1 = require("./dto/create.review.dto");
-const wishlist_dto_1 = require("./dto/wishlist.dto");
 const customization_dto_1 = require("./dto/customization.dto");
+const current_user_decorator_1 = require("../decorators/current-user.decorator");
+const product_wishlist_dto_1 = require("./dto/product-wishlist.dto");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
     }
     async createProduct(createProductDto) {
         return this.productService.createProduct(createProductDto);
-    }
-    async getAllProducts() {
-        return await this.productService.findAllProducts();
     }
     async viewProductDetails(id) {
         console.log(id);
@@ -42,14 +40,14 @@ let ProductController = class ProductController {
     async deleteReview(id, userId) {
         return this.productService.deleteReview(id, userId);
     }
-    async addToWishlist(productId, createWishlistDto) {
-        return this.productService.addToWishlist({
-            ...createWishlistDto,
-            productId,
-        });
+    getWishlist(userId) {
+        return this.productService.findWishlistByUserId(userId);
     }
-    async removeFromWishlist(productId) {
-        return this.productService.removeFromWishlist(productId);
+    addProduct(addProductDto, userId) {
+        return this.productService.addProductToWishlist(userId, addProductDto);
+    }
+    removeProduct(removeProductDto, userId) {
+        return this.productService.removeProductFromWishlist(userId, removeProductDto);
     }
     async customizeProduct(productId, customizationDto) {
         return this.productService.customizeProduct(productId, customizationDto);
@@ -64,13 +62,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "createProduct", null);
 __decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], ProductController.prototype, "getAllProducts", null);
-__decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)('/getProductById/:id'),
     __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -101,20 +93,28 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "deleteReview", null);
 __decorate([
-    (0, common_1.Post)(':id/wishlist'),
-    __param(0, (0, common_1.Param)('_id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, wishlist_dto_1.CreateWishlistDto]),
-    __metadata("design:returntype", Promise)
-], ProductController.prototype, "addToWishlist", null);
-__decorate([
-    (0, common_1.Delete)(':id/wishlist'),
-    __param(0, (0, common_1.Param)('_id')),
+    (0, common_1.Get)('my-wishlist'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], ProductController.prototype, "removeFromWishlist", null);
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "getWishlist", null);
+__decorate([
+    (0, common_1.Post)('add-to-wishlist'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [product_wishlist_dto_1.ProductWishlistDto, String]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "addProduct", null);
+__decorate([
+    (0, common_1.Delete)('remove-from-wishlist'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [product_wishlist_dto_1.ProductWishlistDto, String]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "removeProduct", null);
 __decorate([
     (0, common_1.Put)(':productId/customize'),
     __param(0, (0, common_1.Param)('productId')),

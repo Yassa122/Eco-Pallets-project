@@ -34,7 +34,6 @@ export declare const ProductSchema: Schema<any, import("mongoose").Model<any, an
     availability: boolean;
     rentalOptions?: {
         available: boolean;
-        duration?: number;
-        price?: number;
+        deposit?: number;
     };
 }>;

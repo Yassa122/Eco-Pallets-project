@@ -9,9 +9,13 @@ import { CustomizationDto } from './dto/customization.dto';
 import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { ProductWishlistDto } from './dto/product-wishlist.dto';
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {
+    
+  }
 
   //working   
   @Post()
@@ -19,14 +23,13 @@ export class ProductController {
     return this.productService.createProduct(createProductDto);
   }
 
-
   //working
-  @Get()
-  async getAllProducts() {
-    return await this.productService.findAllProducts();
-  }
+  // @Get()
+  // async getAllProducts() {
+  //   return await this.productService.findAllProducts();
+  // }
 
-  @Get(':id')
+  @Get('/getProductById/:id')
   async viewProductDetails(@Param('_id') id: string): Promise<Product> {
     console.log(id); // Logging the id parameter
     return this.productService.findById(id);
@@ -46,17 +49,29 @@ async deleteReview(
 ): Promise<void> {
   return this.productService.deleteReview(id, userId);
 } 
-  @Post(':id/wishlist')
-  async addToWishlist(@Param('_id') productId: string,@Body() createWishlistDto: CreateWishlistDto,): Promise<Wishlist> {
-    return this.productService.addToWishlist({
-      ...createWishlistDto,
-      productId, 
-    });
+  // @Post(':id/wishlist')
+  // async addToWishlist(@Param('_id') productId: string,@Body() createWishlistDto: CreateWishlistDto,): Promise<Wishlist> {
+  //   return this.productService.addToWishlist({
+  //     ...createWishlistDto,
+  //     productId, 
+  //   });
+  // }
+  @Get('my-wishlist')
+  getWishlist(@CurrentUser() userId: string) {
+    return this.productService.findWishlistByUserId(userId);
   }
-  @Delete(':id/wishlist')
-  async removeFromWishlist(@Param('_id') productId: string): Promise<Wishlist | null> {
-    return this.productService.removeFromWishlist(productId);
+
+  @Post('add-to-wishlist')
+  addProduct(@Body() addProductDto: ProductWishlistDto, @CurrentUser() userId: string) {
+    return this.productService.addProductToWishlist(userId, addProductDto);
   }
+
+@Delete('remove-from-wishlist')
+removeProduct(@Body() removeProductDto: ProductWishlistDto, @CurrentUser() userId: string) {
+  return this.productService.removeProductFromWishlist(userId, removeProductDto);
+}
+
+
 @Put(':productId/customize') 
 async customizeProduct(@Param('productId') productId: string, @Body() customizationDto: CustomizationDto,) {
   return this.productService.customizeProduct(productId, customizationDto);

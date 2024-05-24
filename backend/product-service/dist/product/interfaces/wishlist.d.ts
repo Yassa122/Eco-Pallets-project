@@ -22,8 +22,25 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document } from 'mongoose';
-export interface Wishlist extends Document {
-    productId: string;
-    createdAt: Date;
+import { Types } from 'mongoose';
+export interface WishlistProduct {
+    productId: Types.ObjectId;
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    color: string;
+    size: string;
+    material: string;
+    availability: boolean;
+    rentalOptions: {
+        available: boolean;
+        duration?: number;
+        price?: number;
+    };
+    addedAt?: Date;
+}
+export interface Wishlist {
+    userId: Types.ObjectId;
+    products: WishlistProduct[];
 }

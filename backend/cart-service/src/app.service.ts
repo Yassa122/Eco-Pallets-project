@@ -136,6 +136,14 @@ export class AppService {
     return createdCartItem.save();
   }
 
+  async getCartItems(userId: string): Promise<any> {
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+    return cart.cartItems;
+  }
+
   async addToCart(userId: string, cartItem: CartItemDto): Promise<any> {
     //working
     const cart = await this.cartModel.findOne({ userId }).exec();
@@ -287,7 +295,7 @@ export class AppService {
     await cart.save();
     return { message: 'Cart cleared successfully' };
   }
-  
+
   async getOrderHistory(userId: string) {
     const orders = await this.ordersModel.find({ userId }).exec();
     if (!orders) {
