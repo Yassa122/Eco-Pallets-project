@@ -11,7 +11,7 @@ import Offers from '../components/offer'; // Corrected import and component name
 const HomeComponents = () => {
     return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <WelcomeHome /> {/* Capitalized component name */}
       <main>
         {/* <h1>Welcome to Our Store!</h1> */}
