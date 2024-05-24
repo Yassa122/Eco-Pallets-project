@@ -1,4 +1,3 @@
-"use client"
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import product1 from '../pics/p2 Background Removed.png';
@@ -38,14 +37,30 @@ const FeaturedProducts = () => {
         }
     };
 
-    const addToFavorites = (item) => {
-        // Implement addToFavorites functionality
-        console.log("Added item to favorites:", item);
-    };
+    const addToFavorites = async (item) => {
+        try {
+            const response = await fetch("http://localhost:5555/addToFavorites", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: item.name,
+                    image: item.image, // Assuming you have an image URL for each item
+                    price: item.price,
+                    productId: item.productId,
+                }),
+            });
 
-    const addToCart = (item) => {
-        // Implement addToCart functionality
-        console.log("Added item to cart:", item);
+            const data = await response.json();
+            if (response.ok) {
+                console.log("Added item to favorites:", data);
+            } else {
+                throw new Error(data.message || "Failed to add item to favorites");
+            }
+        } catch (error) {
+            console.error("Add to favorites error:", error);
+        }
     };
 
     // Function to determine rating color based on rating value
