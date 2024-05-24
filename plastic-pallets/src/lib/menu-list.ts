@@ -39,21 +39,21 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "/cart",
+          href: "http://localhost:3000/pages/cart",
           label: "Cart",
           active: pathname.includes("/cart"),
           icon: ShoppingCart
         },
         {
-          href: "/favorites",
+          href: "http://localhost:3000/pages/wishlist",
           label: "Favorites",
-          active: pathname.includes("/favorites"),
+          active: pathname.includes("/favorites") || pathname.includes("/wishlist"),
           icon: Heart
         },
         {
-          href: "/wishlist",
+          href: "http://localhost:3000/pages/wishlist",
           label: "Wishlist",
-          active: pathname.includes("/wishlist"),
+          active: pathname.includes("/wishlist") || pathname.includes("/favorites"),
           icon: Bookmark
         }
       ]
@@ -75,7 +75,6 @@ export function getMenuList(pathname: string): Group[] {
         }
       ]
     },
-    // Add login and logout menus
     {
       groupLabel: "Account",
       menus: [

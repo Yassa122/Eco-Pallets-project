@@ -1,6 +1,7 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Import the Image component from Next.js
-import Pallet1 from '../../../images/cart/pallet1.png'; // Corrected path
+import Pallet1 from '../../pics/p3 Background Removed.png'; // Corrected path
 
 interface Product {
   productId: string;
@@ -36,7 +37,7 @@ const MyWishlist: React.FC = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Corrected Authorization header
+            'Authorization': `Bearer ${token}`,
           },
           credentials: 'include',
         });
@@ -79,7 +80,7 @@ const MyWishlist: React.FC = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Corrected Authorization header
+          'Authorization': `Bearer ${token}`
         },
         credentials: 'include',
         body: JSON.stringify({ productId }), // Include productId in the request body
@@ -111,30 +112,31 @@ const MyWishlist: React.FC = () => {
       const token = localStorage.getItem('accessToken');
       const body = {
         productId,
-        quantity: 1,
       };
+      console.log(body);
 
-      const response = await fetch('http://localhost:7000/addToCart', {
-        method: 'POST',
+      const response = await fetch("http://localhost:7000/addToCart", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Corrected Authorization header
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(body),
       });
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Item added to cart:', data);
+        console.log("Item added to cart:", data);
         handleDeleteProduct(productId);
       } else {
-        throw new Error(data.message || 'Failed to add item to cart');
+        throw new Error(data.message || "Failed to add item to cart");
       }
     } catch (error) {
-      console.error('Add to cart error:', error);
+      console.error("Add to cart error:", error);
     }
   };
+
 
   if (loading) {
     return <p>Loading...</p>;
@@ -150,7 +152,8 @@ const MyWishlist: React.FC = () => {
       {showDeleteMessage && <p className="delete-message">Product deleted from wishlist</p>}
       <ul className="wishlist-list">
         {wishlist.products.map((product, index) => (
-          <li key={product.productId} className="wishlist-item">
+          <li key={product.productId
+          } className="wishlist-item">
             <div className="wishlist-item-header">
               <button
                 className="meatball-button"
@@ -160,12 +163,13 @@ const MyWishlist: React.FC = () => {
               </button>
               {openMenus[index] && (
                 <div className="meatball-menu">
-                  <button className="delete-button" onClick={() => handleDeleteProduct(product.productId)}>Delete</button>
+                  <button className="delete-button" onClick={() => handleDeleteProduct(product.productId
+                  )}>Delete</button>
                 </div>
               )}
             </div>
             <div className="product-image">
-              <Image src={Pallet1} alt={product.name} width={150} height={150} />
+              <Image src={Pallet1} alt={product.name} />
             </div>
             <div className="product-details">
               <h2>{product.name}</h2>

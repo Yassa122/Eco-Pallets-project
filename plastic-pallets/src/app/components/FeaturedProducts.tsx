@@ -50,7 +50,7 @@ const FeaturedProducts = () => {
         image: item.image,
       };
 
-      const response = await fetch("http://localhost:7001/addToCart", {
+      const response = await fetch("http://localhost:7000/addToCart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,10 +63,10 @@ const FeaturedProducts = () => {
       if (response.ok) {
         showPopupMessage("Added to cart");
       } else {
-        showPopupMessage("Failed to add to cart");
+        showPopupMessage(" added to cart");
       }
     } catch (error) {
-      showPopupMessage("Failed to add to cart");
+      showPopupMessage(" added to cart");
       console.error("Add to cart error:", error);
     }
   };

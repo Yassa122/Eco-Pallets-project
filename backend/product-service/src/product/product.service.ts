@@ -105,7 +105,7 @@ export class ProductService {
 
     if (wishlist) {
       // Check if the product is already in the wishlist
-      const productExists = wishlist.products.some((item) => item.productId.toString() === productId);
+      const productExists = wishlist.products.find((item) => item.productId.toString() === productId);
 
       if (productExists) {
         throw new ConflictException('Product with ID ${productId} is already in the wishlist.');

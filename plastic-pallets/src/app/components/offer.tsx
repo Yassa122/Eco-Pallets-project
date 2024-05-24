@@ -80,7 +80,7 @@ const Offers = () => {
             };
             console.log(body);
 
-            const response = await fetch("http://localhost:7001/addToCart", {
+            const response = await fetch("http://localhost:/addToCart", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
