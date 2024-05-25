@@ -21,7 +21,6 @@ export class ProductController {
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
   }
-
   @Get('/getAllProducts')
   async getAllProducts(): Promise<CreateProductDto[]> {
     try {
@@ -34,10 +33,9 @@ export class ProductController {
       throw new NotFoundException('Failed to fetch products: ' + (error as Error).message);
     }
   }
-
-  @Get(':id')
+  @Get('/productdetails/:id')
   async getProductById(@Param('id') id: string): Promise<Product> {
-    return this.productService.getProductById(id);
+    return this.productService.viewProductDetails(id);
   }
   
   @Post(':productId/addreview')
@@ -47,10 +45,11 @@ export class ProductController {
      createReviewDto);
   }
 
-  @Get(':id/reviews')
-  async getProductReviews(@Param('id') productId: string): Promise<Review[]> {
+  @Get('/reviews/:productId')
+  async getProductReviews(@Param('productId') productId: string): Promise<Review[]> {
     console.log(productId)
     return this.productService.getProductReviews(productId);
+    console.log(productId);
   }
 
   @Delete('reviews/:id/:userId')
@@ -66,19 +65,20 @@ export class ProductController {
       userId
     });
   }
-  @Get('/getwishlist')
-  async getWishlistByUser(@CurrentUser() userId: string): Promise<Wishlist[]> {
-    console.log(userId);
+  @Get('/MyWishlist')
+  async getWishlistByUser(@CurrentUser('userId') userId: string): Promise<Wishlist[]> {
     try {
+      console.log('User ID:', userId); // Add this line
       return await this.productService.getWishlistByUser(userId);
     } catch (error) {
       console.error('Error retrieving wishlist:', error);
       throw new NotFoundException('Failed to retrieve wishlist');
     }
   }
+  
 
-  @Delete(':id/wishlist')
-  async removeFromWishlist(@Param('id') productId: string): Promise<Wishlist | null> {
+  @Delete('/wishlist/:id')
+  async removeFromWishlist(@Param('id') productId: string, @CurrentUser('userId') userId: string,): Promise<Wishlist | null> {
     return this.productService.removeFromWishlist(productId);
   }
 
