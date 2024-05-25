@@ -1,6 +1,6 @@
 // src/pages/products.tsx
 'use client';
-import Products from "@/app/components/products/products";
+import Products from "../../components/products/products";
 
 const ProductsPage = () => {
   return (

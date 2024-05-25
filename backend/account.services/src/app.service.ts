@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserInfoService } from './user-info/user-info/user-info.service';
 import { LoginDto } from './identity/dto/login.dto';
 import { CreateGuestIdentityDto } from './identity/dto/guest.identity.dto';
+import { UpdatePasswordDto } from './identity/dto/update-password.dto';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -33,14 +34,20 @@ export class AppService implements OnModuleInit {
     return this.identityService.register(createIdentityDto);
   }
 
-  async guestRegister(createGuestIdentityDto: CreateGuestIdentityDto): Promise<any> {
+  async guestRegister(
+    createGuestIdentityDto: CreateGuestIdentityDto,
+  ): Promise<any> {
     return this.identityService.guestRegister(createGuestIdentityDto);
   }
-
+  async requestPasswordReset(email: string): Promise<void> {
+    return this.identityService.requestPasswordReset(email);
+  }
   async login(loginDto: LoginDto): Promise<any> {
     return this.identityService.login(loginDto);
   }
-
+  async updatePassword(updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+    return this.identityService.updatePassword(updatePasswordDto);
+  }
   public hello() {
     return 'Hello from API';
   }

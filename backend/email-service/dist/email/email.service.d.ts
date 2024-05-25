@@ -14,7 +14,7 @@ export declare class EmailService implements OnModuleInit {
     sendVerificationEmail(user: {
         name: string;
         email: string;
-    }): Promise<string>;
+    }): Promise<void>;
     sendMail(to: string, subject: string, text: string): Promise<any>;
     sendResetMail(user: {
         email: string;

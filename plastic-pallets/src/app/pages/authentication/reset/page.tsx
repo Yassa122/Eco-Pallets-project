@@ -3,11 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png"; // Update this with the correct path to your logo
+import { useSearchParams } from "next/navigation";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -17,13 +21,39 @@ const ResetPasswordPage = () => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
+      setPopupMessage("Passwords do not match. Please try again.");
       setShowPopup(true);
       return;
     }
-    // Handle form submission logic here
+    try {
+      const response = await fetch(
+        "http://localhost:8000/account/password/update",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ newPassword: password, token }),
+        }
+      );
+
+      const result = await response.json();
+      setPopupMessage(result.message);
+      setShowPopup(true);
+
+      if (response.ok) {
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      setPopupMessage("Failed to update password. Please try again.");
+      setShowPopup(true);
+      console.error("Error updating password:", error);
+    }
   };
 
   const closePopup = () => {
@@ -93,7 +123,7 @@ const ResetPasswordPage = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-dark-grey p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Error</h2>
-            <p className="mb-4">Passwords do not match. Please try again.</p>
+            <p className="mb-4">{popupMessage}</p>
             <button
               onClick={closePopup}
               className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-400"

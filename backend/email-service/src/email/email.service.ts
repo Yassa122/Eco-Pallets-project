@@ -23,10 +23,13 @@ export class EmailService implements OnModuleInit {
 
     const handlebarOptions = {
       viewEngine: {
-        partialsDir: path.resolve('./src/email/'),
-        defaultLayout: false,
+        extName: '.handlebars', // Specify extension .handlebars
+        partialsDir: path.resolve('./src/email/partials/'), // Path to partials
+        layoutsDir: path.resolve('./src/email/layouts/'), // Path to layouts
+        defaultLayout: false, // No default layout
       },
-      viewPath: path.resolve('./src/email/views/'),
+      viewPath: path.resolve('./src/email/views/'), // Path to views
+      extName: '.handlebars',
     };
 
     this.transporter.use('compile', hbs(handlebarOptions));
@@ -34,30 +37,43 @@ export class EmailService implements OnModuleInit {
 
   async onModuleInit() {
     this.consumer = this.kafkaService.getConsumer('email-service-group');
-    await this.kafkaService.subscribeToTopic(this.consumer, 'password-reset-request');
-    this.kafkaService.runConsumer(this.consumer, this.processMessage.bind(this));
+    await this.kafkaService.subscribeToTopic(
+      this.consumer,
+      'password-reset-request',
+    );
+    this.kafkaService.runConsumer(
+      this.consumer,
+      this.processMessage.bind(this),
+    );
   }
+
   async processMessage(topic: string, partition: number, message: any) {
     const value = JSON.parse(message.value.toString());
     const { email, resetToken } = value;
+  
+    console.log(`Received Kafka message:`, value); // Log the received message
+    console.log(`Extracted email: ${email}, resetToken: ${resetToken}`); // Log extracted values
+  
     const resetUrl = `http://localhost:3000/pages/authentication/reset?token=${resetToken}`;
     console.log(`Generated reset URL: ${resetUrl}`); // Log the reset URL for debugging
+  
     await this.sendResetMail({ email, resetUrl });
   }
-
+  
   async sendWelcomeEmail(user: { name: string; email: string }) {
     try {
       const mailOptions = {
         from: 'plasticpallets-software@outlook.com',
-        template: 'welcome',
         to: user.email,
         subject: `Welcome to Plastic Pallets, ${user.name}`,
+        template: 'welcome',
         context: {
           name: user.name,
           company: 'Plastic Pallets Software',
         },
       };
       await this.transporter.sendMail(mailOptions);
+      console.log('Welcome email sent successfully');
     } catch (error) {
       console.error(`Nodemailer error sending email to ${user.email}`, error);
     }
@@ -67,16 +83,16 @@ export class EmailService implements OnModuleInit {
     try {
       const mailOptions = {
         from: 'plasticpallets-software@outlook.com',
-        template: 'emailVerification',
         to: user.email,
         subject: `Verify your email, ${user.name}`,
+        template: 'emailVerification',
         context: {
           name: user.name,
           company: 'Plastic Pallets Software',
         },
       };
       await this.transporter.sendMail(mailOptions);
-      return 'Mail sent successfully';
+      console.log('Verification email sent successfully');
     } catch (error) {
       console.error(`Nodemailer error sending email to ${user.email}`, error);
     }
@@ -95,18 +111,21 @@ export class EmailService implements OnModuleInit {
 
   async sendResetMail(user: { email: string; resetUrl: string }) {
     try {
+      console.log(
+        `Sending reset email to: ${user.email} with URL: ${user.resetUrl}`,
+      ); // Log for debugging
       const mailOptions = {
         from: 'plasticpallets-software@outlook.com',
-        template: 'reset',
         to: user.email,
         subject: 'Reset your password',
+        template: 'reset',
         context: {
           resetUrl: user.resetUrl,
           company: 'Plastic Pallets Software',
         },
       };
       await this.transporter.sendMail(mailOptions);
-      console.log('Mail sent successfully');
+      console.log('Reset email sent successfully');
     } catch (error) {
       console.error(`Nodemailer error sending email to ${user.email}`, error);
     }
