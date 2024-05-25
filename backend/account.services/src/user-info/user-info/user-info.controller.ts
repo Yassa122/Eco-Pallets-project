@@ -23,9 +23,15 @@ export class UserInfoController {
     return this.userInfoService.getUserData(userId);
   }
 
+
   @Put('update')
   updateUser(@CurrentUser() userId: string, @Body() userData: GetUserDto) {
     return this.userInfoService.updateUserData(userId, userData);
+  }
+
+  @Put('updateByMail')
+  updateUserDataByEmail(@Body('email') email: string, @Body() userData: GetUserDto) {
+    return this.userInfoService.updateUserDataByEmail(email, userData);
   }
 
   @Post('add-address')

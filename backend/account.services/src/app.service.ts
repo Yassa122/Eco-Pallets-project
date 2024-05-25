@@ -80,6 +80,23 @@ export class AppService implements OnModuleInit {
     });
   }
 
+
+  async updateUserDataByEmail(
+    email: string,
+    updateUserDto: UpdateUserProfileDto,
+  ): Promise<User | null> {
+    return new Promise((resolve, reject) => {
+      this.userInfoService
+        .updateUserDataByEmail(email, updateUserDto)
+        .then((user) => {
+          resolve(user);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
   async createGuestUser(): Promise<any> {
     try {
       return this.identityService.createGuestUser();

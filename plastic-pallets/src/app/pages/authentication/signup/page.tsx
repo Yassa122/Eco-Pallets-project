@@ -42,7 +42,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // await sendMail(formData.firstName, formData.email);
+    await sendMail(formData.firstName, formData.email);
     if (
       !formData.username.trim() ||
       !formData.password.trim() ||

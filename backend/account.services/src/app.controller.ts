@@ -90,6 +90,15 @@ export class AppController {
     return this.userInfoService.updateUserData(userId, updateUserDto);
   }
 
+
+
+
+  @Put('profile/updateByMail')
+  async updateUserDataByEmail(
+    @Body('email') email: string, @Body() updateUserDto: UpdateUserProfileDto
+  ) {
+    return this.userInfoService.updateUserDataByEmail(email, updateUserDto);
+  }
   @Get('user-info/addresses')
   getShippingAddresses(@CurrentUser('userId') userId: string) {
     return this.userInfoService.getShippingAddresses(userId);
