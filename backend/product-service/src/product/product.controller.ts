@@ -1,5 +1,7 @@
 // product.controller.ts
 import { Controller, Post, Body, Get, Param, Query, Delete, Put, NotFoundException } from '@nestjs/common';
+
+import { Req, UnauthorizedException } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateReviewDto } from './dto/create.review.dto';
@@ -10,18 +12,18 @@ import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-
-
+import { ProductWishlistDto } from './dto/product-wishlist.dto';
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {
+    
+  }
 
   //working   
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
   }
-<<<<<<< HEAD
   @Get('/getAllProducts')
   async getAllProducts(): Promise<CreateProductDto[]> {
     try {
@@ -34,19 +36,9 @@ export class ProductController {
       throw new NotFoundException('Failed to fetch products: ' + (error as Error).message);
     }
   }
-=======
-
-
-  //working
-  @Get()
-  async getAllProducts() {
-    return await this.productService.findAllProducts();
-  }
-
->>>>>>> origin/main
-  @Get(':id')
+  @Get('/productdetails/:id')
   async getProductById(@Param('id') id: string): Promise<Product> {
-    return this.productService.getProductById(id);
+    return this.productService.viewProductDetails(id);
   }
   
   @Post(':productId/addreview')
@@ -56,16 +48,24 @@ export class ProductController {
      createReviewDto);
   }
 
-  @Get(':id/reviews')
-  async getProductReviews(@Param('id') productId: string): Promise<Review[]> {
+  @Get('/reviews/:productId')
+  async getProductReviews(@Param('productId') productId: string): Promise<Review[]> {
     console.log(productId)
     return this.productService.getProductReviews(productId);
+    console.log(productId);
   }
 
-  @Delete('reviews/:id/:userId')
-  async deleteReview(@Param('id') id: string, @Param('userId') userId: string): Promise<void> {
-    return this.productService.deleteReview(id, userId);
+  @Get('/getProductById/:id')
+  async viewProductDetails(@Param('_id') id: string): Promise<Product> {
+    console.log(id); // Logging the id parameter
+    return this.productService.findById(id);
   }
+
+  @Get(':id/reviews')
+  async viewReviews(@Param('_id') productId: string): Promise<Review[]> {
+    return this.productService.viewReviews(productId);
+  }
+
 
   @Post(':id/wishlist')
   async addToWishlist(@Param('id') productId: string, @CurrentUser('userId') userId: string, @Body() createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
@@ -75,26 +75,8 @@ export class ProductController {
       userId
     });
   }
-  @Get('/getwishlist')
-  async getWishlistByUser(@CurrentUser() userId: string): Promise<Wishlist[]> {
-    console.log(userId);
-    try {
-      return await this.productService.getWishlistByUser(userId);
-    } catch (error) {
-      console.error('Error retrieving wishlist:', error);
-      throw new NotFoundException('Failed to retrieve wishlist');
-    }
-  }
 
-  @Delete(':id/wishlist')
-  async removeFromWishlist(@Param('id') productId: string): Promise<Wishlist | null> {
-    return this.productService.removeFromWishlist(productId);
-  }
 
-  @Put(':productId/customize')
-  async customizeProduct(@Param('productId') productId: string, @Body() customizationDto: CustomizationDto) {
-    return this.productService.customizeProduct(productId, customizationDto);
-  }
 
 @Post(':productId/rent')
 async rentProduct(@Param('productId') productId: string, @Body() rentProductDto: RentProductDto) {
@@ -112,6 +94,31 @@ async rentProduct(@Param('productId') productId: string, @Body() rentProductDto:
     }
   }
 }
- 
+  @Delete('reviews/:id')
+  async deleteReview(@Param('id') id: string, @CurrentUser('userId') userId: string): Promise<any> {
+    return this.productService.deleteReview(id, userId);
+  }
+
+  @Get('my-wishlist')
+  getWishlist(@CurrentUser() userId: string) {
+    return this.productService.findWishlistByUserId(userId);
+  }
+
+  @Post('add-to-wishlist')
+  addProduct(@Body() addProductDto: ProductWishlistDto, @CurrentUser() userId: string) {
+    return this.productService.addProductToWishlist(userId, addProductDto);
+  }
+
+@Delete('remove-from-wishlist')
+removeProduct(@Body() removeProductDto: ProductWishlistDto, @CurrentUser() userId: string) {
+  return this.productService.removeProductFromWishlist(userId, removeProductDto);
+}
+
+
+@Put(':productId/customize') 
+async customizeProduct(@Param('productId') productId: string, @Body() customizationDto: CustomizationDto,) {
+  return this.productService.customizeProduct(productId, customizationDto);
+}
+
 
 }

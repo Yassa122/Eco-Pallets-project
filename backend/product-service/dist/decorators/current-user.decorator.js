@@ -5,17 +5,29 @@ const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
 exports.CurrentUser = (0, common_1.createParamDecorator)((data, ctx) => {
     const request = ctx.switchToHttp().getRequest();
-    const authorizationHeader = request.headers.authorization;
-    if (!authorizationHeader) {
-        throw new Error('Authorization header is missing');
+    const cookies = request.headers.cookie;
+    if (!cookies) {
+        throw new common_1.UnauthorizedException('Cookies are missing');
     }
-    const token = authorizationHeader.split(' ')[1];
-    const decodedToken = jwt.decode(token);
-    if (typeof decodedToken === 'object' && decodedToken) {
-        return decodedToken.id;
+    const cookieObject = Object.fromEntries(cookies.split('; ').map((c) => c.split('=')));
+    let token = cookieObject['auth_token'];
+    if (!token) {
+        token = cookieObject['accessToken'];
     }
-    else {
-        throw new Error('Invalid token');
+    if (!token) {
+        throw new common_1.UnauthorizedException('Token verification failed:  Token not found');
+    }
+    try {
+        const decodedToken = jwt.decode(token);
+        if (typeof decodedToken === 'object' && decodedToken && decodedToken.id) {
+            return decodedToken.id;
+        }
+        else {
+            throw new common_1.UnauthorizedException('Invalid token');
+        }
+    }
+    catch (err) {
+        throw new common_1.UnauthorizedException('Token verification failed: ' + err.message);
     }
 });
 //# sourceMappingURL=current-user.decorator.js.map

@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   Injectable,
@@ -55,11 +54,16 @@ export class IdentityService {
     return user;
   }
 
-  async guestRegister(createGuestIdentityDto: CreateGuestIdentityDto): Promise<User> {
+  async guestRegister(
+    createGuestIdentityDto: CreateGuestIdentityDto,
+  ): Promise<User> {
     this.logger.debug('Attempting to register a GUEST user');
 
     if (
-      await this.userExists(createGuestIdentityDto.username, createGuestIdentityDto.email)
+      await this.userExists(
+        createGuestIdentityDto.username,
+        createGuestIdentityDto.email,
+      )
     ) {
       this.logger.warn(
         `Registration failed: User already exists with username ${createGuestIdentityDto.username} or email ${createGuestIdentityDto.email}`,
@@ -67,10 +71,15 @@ export class IdentityService {
       throw new UserAlreadyExistsException();
     }
     console.log(createGuestIdentityDto._id);
-    const hashedPassword = await bcrypt.hash(createGuestIdentityDto.password, 10);
-    const user = await this.createUserFromGuest(createGuestIdentityDto,  hashedPassword);
+    const hashedPassword = await bcrypt.hash(
+      createGuestIdentityDto.password,
+      10,
+    );
+    const user = await this.createUserFromGuest(
+      createGuestIdentityDto,
+      hashedPassword,
+    );
     this.logger.debug(`User ${user._id} registered successfully`);
-
 
     // now we dont create a cart as it is already made when he started as a guest
     // // Send message to Kafka to create a cart for the new user
@@ -80,7 +89,6 @@ export class IdentityService {
 
     return user.save();
   }
-
 
   private async userExists(username: string, email: string): Promise<boolean> {
     const user = await this.userModel
@@ -213,42 +221,40 @@ export class IdentityService {
     return safeData;
   }
 
-  async updatePassword(
-    userId: string,
-    updatePasswordDto: UpdatePasswordDto,
-  ): Promise<boolean> {
-    const { oldPassword, newPassword } = updatePasswordDto;
+  async updatePassword(updatePasswordDto: UpdatePasswordDto): Promise<boolean> {
+    const { token, newPassword } = updatePasswordDto;
 
-    // Find user by their ID
-    const user = await this.userModel.findById(userId).exec();
+    let decodedToken;
+    try {
+      decodedToken = this.jwtService.verify(token, {
+        secret:
+          process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token.');
+    }
+
+    const user = await this.userModel.findById(decodedToken.id).exec();
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found.`);
+      throw new NotFoundException('User not found.');
     }
-
-    // Verify old password
-    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isOldPasswordValid) {
-      throw new UnauthorizedException('Old password is incorrect.');
-    }
-
-    // Check if the new password is the same as the old password
-    const isNewPasswordSame = await bcrypt.compare(newPassword, user.password);
-    if (isNewPasswordSame) {
-      throw new BadRequestException('The new password cannot be the same as the old password.');
-    }
-
 
     // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     // Update user's password
-
     await this.userModel.updateOne(
-      { _id: userId },
-      { $set: { password: hashedNewPassword } },
+      { _id: user._id },
+      {
+        $set: {
+          password: hashedNewPassword,
+          passwordResetToken: null,
+          passwordResetExpires: null,
+        },
+      },
     );
 
-    this.logger.debug(`Password updated successfully for user ID ${userId}`);
+    this.logger.debug(`Password updated successfully for user ID ${user._id}`);
     return true;
   }
 
@@ -266,12 +272,46 @@ export class IdentityService {
       await this.kafkaService.sendMessage('user-registered', {
         userId: uniqueGuestId.toString(),
       });
-  
+
       return { accessToken };
     } catch (error) {
       this.logger.error('Failed to create guest user', error.stack);
       throw new Error('Failed to create guest user');
     }
   }
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      this.logger.warn(
+        `Password reset request failed: No user found with email ${email}`,
+      );
+      throw new NotFoundException('User not found');
+    }
 
+    const resetToken = this.jwtService.sign(
+      { id: user._id },
+      {
+        secret:
+          process.env.JWT_SECRET || 'secretKey_YoucANWritewhateveryoulikey',
+        expiresIn: '1h', // Token expiration time
+      },
+    );
+
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/pages/authentication/reset?token=${resetToken}`;
+    console.log(`Generated reset URL: ${resetUrl}`); // Log the reset URL
+
+    await this.kafkaService.sendMessage('password-reset-request', {
+      userId: user._id.toString(),
+      email: user.email,
+      resetToken, // Send the token in the Kafka message
+    });
+
+    this.logger.debug(
+      `Password reset token generated and message sent to Kafka for ${user.email}`,
+    );
+  }
 }

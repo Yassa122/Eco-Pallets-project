@@ -12,12 +12,19 @@ export declare class EmailController {
     sendWelcomeEmail(user: {
         name: string;
         email: string;
-    }): Promise<void>;
+    }): Promise<{
+        message: string;
+    }>;
     sendVerificationEmail(user: {
         name: string;
         email: string;
-    }): Promise<void>;
-    sendResetMail(user: {
+    }): Promise<{
+        message: string;
+    }>;
+    sendResetMail(data: {
         email: string;
-    }): Promise<void>;
+        resetUrl: string;
+    }): Promise<{
+        message: string;
+    }>;
 }

@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from './product.controller';
-import { describe, beforeEach, it } from 'node:test';
 
 describe('ProductController', () => {
   let controller: ProductController;
@@ -17,7 +16,3 @@ describe('ProductController', () => {
     expect(controller).toBeDefined();
   });
 });
-function expect(controller: ProductController) {
-  throw new Error('Function not implemented.');
-}
-

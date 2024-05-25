@@ -41,13 +41,4 @@ export class IdentityController {
     const { id, ...rest } = command.user;
     return rest;
   }
-  @UseGuards(JwtAuthGuard)
-  @Put('update-password')
-  async updatePassword(@CurrentUser() userId: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<{ success: boolean }> { 
-
-    const result = await this.identityService.updatePassword(userId, updatePasswordDto);
-
-    return { success: result };
-  }
- 
 }

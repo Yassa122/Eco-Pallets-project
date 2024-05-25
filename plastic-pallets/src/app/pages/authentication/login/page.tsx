@@ -5,6 +5,7 @@ import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
 
+
 export default function Login() {
   const router=useRouter();
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ export default function Login() {
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
   const [error, setError] = useState<string | null>(null); // Add error state
-
+const router=useRouter();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -76,7 +77,7 @@ export default function Login() {
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-
+          router.push("/pages/home")
         // Handle successful login here (e.g., redirect or store JWT)
         router.push("/pages/home"); // Redirect to dashboard
 

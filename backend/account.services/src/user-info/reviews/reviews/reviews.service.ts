@@ -22,6 +22,11 @@ export class ReviewsService {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
+
+  async getAllProducts(): Promise<Product[]> {
+    return this.productModel.find().exec();
+  }
+  
   
   async findUserReviews(userId: string): Promise<UserReviewsDto[]> {
     // Find reviews by user ID and populate product details

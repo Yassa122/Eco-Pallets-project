@@ -23,6 +23,7 @@ import { DeleteShippingAddressDto } from './user-info/dto/delete-shipping-addres
 import { UpdateShippingAddressDto } from './user-info/dto/update-shipping-address.dto';
 import { UserInfoService } from './user-info/user-info/user-info.service';
 import mongoose from 'mongoose';
+import { UpdatePasswordDto } from './identity/dto/update-password.dto';
 
 @Controller('account')
 export class AppController {
@@ -47,7 +48,6 @@ export class AppController {
   async guestRegister(@Body() reqBody: any) {
     return this.accountServices.guestRegister(reqBody);
   }
-  
 
   @UseGuards(JwtAuthGuard)
   @Post('sign-in')
@@ -66,13 +66,16 @@ export class AppController {
     }
   }
 
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getUser(@CurrentUser() userId: string) {
     return this.accountServices.getUser(userId);
   }
-
+  @Put('password/update')
+  async updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    await this.accountServices.updatePassword(updatePasswordDto);
+    return { message: 'Password updated successfully' };
+  }
   @Get(':id/send-info')
   async handleSendUserInfo(@Param('id') id: string) {
     await this.accountServices.sendUserInfo(id);
@@ -136,6 +139,17 @@ export class AppController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to create guest user',
       });
+    }
+  }
+
+  @Post('request-password-reset')
+  async requestPasswordReset(@Body('email') email: string) {
+    try {
+      await this.accountServices.requestPasswordReset(email);
+      return { message: 'Password reset email sent successfully' };
+    } catch (error) {
+      this.logger.error('Error in requestPasswordReset endpoint', error.stack);
+      return { message: 'Failed to send password reset email' };
     }
   }
 }
