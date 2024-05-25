@@ -27,6 +27,18 @@ let ProductController = class ProductController {
     async createProduct(createProductDto) {
         return this.productService.createProduct(createProductDto);
     }
+    async getAllProducts() {
+        try {
+            const products = await this.productService.getAllProducts();
+            if (!products || products.length === 0) {
+                throw new common_1.NotFoundException('No products found');
+            }
+            return products;
+        }
+        catch (error) {
+            throw new common_1.NotFoundException('Failed to fetch products: ' + error.message);
+        }
+    }
     async viewProductDetails(id) {
         console.log(id);
         return this.productService.findById(id);
@@ -61,6 +73,12 @@ __decorate([
     __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "createProduct", null);
+__decorate([
+    (0, common_1.Get)('/getAllProducts'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "getAllProducts", null);
 __decorate([
     (0, common_1.Get)('/getProductById/:id'),
     __param(0, (0, common_1.Param)('_id')),

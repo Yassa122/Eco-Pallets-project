@@ -1,6 +1,6 @@
 // product.controller.ts
 
-import { Controller, Post, Body, Get, Param, Query, Delete, Req, UnauthorizedException, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, Delete, Req, UnauthorizedException, Put, NotFoundException } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateReviewDto } from './dto/create.review.dto';
@@ -23,11 +23,18 @@ export class ProductController {
     return this.productService.createProduct(createProductDto);
   }
 
-  //working
-  // @Get()
-  // async getAllProducts() {
-  //   return await this.productService.findAllProducts();
-  // }
+  @Get('/getAllProducts')
+  async getAllProducts(): Promise<CreateProductDto[]> {
+    try {
+      const products = await this.productService.getAllProducts();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No products found');
+      }
+      return products;
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch products: ' + (error as Error).message);
+    }
+  }
 
   @Get('/getProductById/:id')
   async viewProductDetails(@Param('_id') id: string): Promise<Product> {

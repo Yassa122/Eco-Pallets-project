@@ -10,6 +10,7 @@ export declare class ProductController {
     private readonly productService;
     constructor(productService: ProductService);
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
+    getAllProducts(): Promise<CreateProductDto[]>;
     viewProductDetails(id: string): Promise<Product>;
     addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<Review>;
     viewReviews(productId: string): Promise<Review[]>;

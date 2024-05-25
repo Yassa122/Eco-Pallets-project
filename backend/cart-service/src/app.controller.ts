@@ -77,10 +77,6 @@ async makeOrder(userId: string, @Body() makeOrderDto: makeOrderDto): Promise<any
   async getCartItemsByUserId(@CurrentUser('userId') userId: string) {
     return this.appService.getCartItemsByUserId(userId);
   }
-  @Get('viewCartItems')
-  async viewCartItems(@CurrentUser('userId') userId: string): Promise<any> {
-    return this.appService.getCartItems(userId);
-  }
 
   @Put('addQuantity')//working
   async addOneQuantity(
@@ -137,4 +133,10 @@ async makeOrder(userId: string, @Body() makeOrderDto: makeOrderDto): Promise<any
  async getOrderHistory(@CurrentUser('userId') userId: string) {
   return this.appService.getOrderHistory(userId);
 }
+
+@Get('viewCartItems')
+async viewCartItems(@CurrentUser('userId') userId: string): Promise<any> {
+  return this.appService.getCartItems(userId);
+}
+
 }

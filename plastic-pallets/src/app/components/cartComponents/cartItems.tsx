@@ -21,7 +21,7 @@ const ShoppingCart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('accessToken');
       const response = await fetch("http://localhost:7000/cartItems", {
         method: "GET",
         headers: {
@@ -45,7 +45,7 @@ const ShoppingCart = () => {
 
   const removeItem = async (itemId) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('accessToken');
       const response = await fetch("http://localhost:7000/removeCartItem", {
         method: 'DELETE',
         headers: {

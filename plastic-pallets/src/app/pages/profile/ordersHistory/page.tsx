@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Pallet2 from '../../../images/cart/pallet2.png';
 
 interface Order {
-  orderId: string;
+  _id: string;
   date: string;
   totalPrice: number;
   status: string;
@@ -67,13 +67,13 @@ const OrderHistoryPage: React.FC = () => {
     <div className="order-history-container">
       <h1 className="order-history-header">Order History</h1>
       {orders.map((order) => (
-        <div key={order.orderId} className="order-item">
+        <div key={order._id} className="order-item">
           <div className="order-details">
-            <div className="order-number">Order Number: {order.orderId}</div>
+            <div className="order-number">Order Number: {order._id}</div>
             <Image src={Pallet2} alt="Pallet2" width={200} height={200} className="pallet-image" />
             <div className="order-date">Date: {new Date(order.date).toLocaleDateString()}</div>
             <div className="order-status">Status: {order.status}</div>
-            <button className="add-to-cart" onClick={() => handleViewOrderDetails(order.orderId)}>View Order Details</button>
+            <button className="add-to-cart" onClick={() => handleViewOrderDetails(order._id)}>View Order Details</button>
             <div className="order-total">Total Amount: ${order.totalPrice.toFixed(2)}</div>
           </div>
         </div>
