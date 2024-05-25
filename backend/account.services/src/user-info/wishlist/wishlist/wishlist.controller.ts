@@ -14,15 +14,16 @@ export class WishlistController {
     return this.wishlistService.findWishlistByUserId(userId);
   }
 
-  @Post('add')
-  addProduct(@Body() addProductDto: AddProductWishlistDto, @CurrentUser() userId: string) {
-    return this.wishlistService.addProductToWishlist(userId, addProductDto);
-  }
+  // @Post('add')
+  // addProduct(@Body() addProductDto: AddProductWishlistDto, @CurrentUser() userId: string) {
+  //   return this.wishlistService.addProductToWishlist(userId, addProductDto);
+  // }
 
   @Delete('remove')
-  removeProduct(@Body() removeProductDto: RemoveProductWishlistDto, @CurrentUser() userId: string) {
-    return this.wishlistService.removeProductFromWishlist(userId, removeProductDto);
-  }
+removeProduct(@Body() removeProductDto: RemoveProductWishlistDto, @CurrentUser() userId: string) {
+  return this.wishlistService.removeProductFromWishlist(userId, removeProductDto);
+}
+
 
   @Post('wishlist-to-cart/:id')
   async addToCartFromWishlist(

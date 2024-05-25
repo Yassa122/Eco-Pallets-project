@@ -10,6 +10,7 @@ import { join } from 'path';
 import { mkdir, writeFile } from 'fs/promises'; // Correct import
 import { FilesInterceptor, AnyFilesInterceptor as NestAnyFilesInterceptor } from '@nestjs/platform-express'; // Rename import
 import { Express } from 'express';
+import { Product } from 'src/user-info/interfaces/product';
 
 @Controller('reviews')
 export class ReviewsController {

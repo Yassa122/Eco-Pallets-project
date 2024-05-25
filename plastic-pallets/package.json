@@ -12,7 +12,13 @@
     "@apollo/client": "^3.9.11",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.1",
+    "@popperjs/core": "^2.11.8",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-icons": "^1.3.0",
     "bootstrap": "^5.3.3",
+    "class-variance-authority": "^0.7.0",
     "cors": "^2.8.5",
 
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -38,6 +44,8 @@
     "react-toastify": "^10.0.5",
     "swr": "^2.2.5",
     "lucide-react": "^0.377.0",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.379.0",
     "next": "^14.2.3",
     "next-themes": "^0.3.0",
 

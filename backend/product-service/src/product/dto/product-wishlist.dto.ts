@@ -1,3 +1,3 @@
-export class ProductWishlistDto{
+export class ProductWishlistDto {
     productId: string;
-}
+  }

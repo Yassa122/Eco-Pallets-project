@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
@@ -10,7 +11,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
-
     allowedHeaders: 'Content-Type,Accept,Authorization',
     credentials: true, // This allows the server to send cookies
   });
