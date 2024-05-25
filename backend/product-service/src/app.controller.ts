@@ -11,7 +11,7 @@ export class AppController {
 
   @Get()
   async getAllProducts() {
-    return await this.productService.findAllProducts();
+    return await this.productService.getAllProducts;
   }
 
   @Post('create-product')

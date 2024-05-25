@@ -17,29 +17,18 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let ProductService = class ProductService {
-    constructor(productModel, reviewModel, wishlistModel) {
+    constructor(productModel, reviewModel, wishlistModel, rentalModel) {
         this.productModel = productModel;
         this.reviewModel = reviewModel;
         this.wishlistModel = wishlistModel;
+        this.rentalModel = rentalModel;
     }
     async createProduct(createProductDto) {
         const createdProduct = new this.productModel(createProductDto);
         return createdProduct.save();
     }
-    async findAllProducts() {
-        try {
-            const products = await this.productModel.find().exec();
-            if (!products || products.length === 0) {
-                throw new common_1.NotFoundException('No products found');
-            }
-            return products;
-        }
-        catch (error) {
-            console.error('Error retrieving all products', error);
-            throw error;
-        }
-    }
-    async findById(id) {
+    async viewProductDetails(id) {
+        console.log(id);
         try {
             console.log(`Finding product with ID: ${id}`);
             const product = await this.productModel.findById(id).exec();
@@ -53,16 +42,29 @@ let ProductService = class ProductService {
             throw error;
         }
     }
+    async getAllProducts() {
+        const products = this.productModel.find().exec();
+        console.log("fetch", products);
+        return (products);
+    }
     async addReview(productId, userId, createReviewDto) {
+        console.log(createReviewDto);
         const review = new this.reviewModel({
-            productId: productId,
-            userId: userId,
-            ...createReviewDto,
+            productId,
+            userId,
+            rating: createReviewDto.rating,
+            comment: createReviewDto.comment,
         });
         return review.save();
     }
-    async viewReviews(productId) {
-        return this.reviewModel.find({ productId }).exec();
+    async getProductReviews(productId) {
+        const reviews = await this.reviewModel.find({ productId }).exec();
+        console.log(productId);
+        console.log(reviews);
+        if (!reviews) {
+            throw new common_1.NotFoundException('No reviews found for this product');
+        }
+        return reviews;
     }
     async deleteReview(id, userId) {
         const review = await this.reviewModel.findById(id).exec();
@@ -70,14 +72,16 @@ let ProductService = class ProductService {
         if (!review) {
             throw new common_1.NotFoundException('Review not found');
         }
-        if (review.userId !== userId) {
-            throw new common_1.UnauthorizedException('You are not authorized to delete this review');
-        }
         await this.reviewModel.findByIdAndDelete(id).exec();
+        return { message: 'Review successfully deleted' };
     }
     async addToWishlist(createWishlistDto) {
         const newWishlistItem = new this.wishlistModel(createWishlistDto);
         return newWishlistItem.save();
+    }
+    async getWishlistByUser(userId) {
+        console.log('Finding wishlist for User ID:', userId);
+        return this.wishlistModel.find({ userId }).populate('productId').exec();
     }
     async removeFromWishlist(productId) {
         return this.wishlistModel.findOneAndDelete({ productId }).exec();
@@ -92,6 +96,41 @@ let ProductService = class ProductService {
         product.material = customizationDto.material;
         return product.save();
     }
+    async rentProduct(productId, rentProductDto) {
+        const product = await this.productModel.findById(productId);
+        if (!product) {
+            throw new common_1.NotFoundException('Product not found');
+        }
+        const { rentalStart, rentalEnd, deposit } = rentProductDto;
+        const startDate = new Date(rentalStart);
+        const endDate = new Date(rentalEnd);
+        const rentalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (rentalDays <= 0) {
+            throw new Error('Invalid rental period');
+        }
+        const totalPrice = (rentalDays) * deposit;
+        console.log("here");
+        console.log("1", rentalDays);
+        console.log("3", deposit);
+        const rentalRecord = new this.rentalModel({
+            productId,
+            rentalStart,
+            rentalEnd,
+            rentalDays,
+            deposit,
+            totalPrice,
+        });
+        console.log(rentalRecord);
+        await rentalRecord.save();
+        return {
+            productId,
+            rentalStart,
+            rentalEnd,
+            rentalDays,
+            deposit: deposit,
+            totalPrice,
+        };
+    }
 };
 exports.ProductService = ProductService;
 exports.ProductService = ProductService = __decorate([
@@ -99,7 +138,9 @@ exports.ProductService = ProductService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)('Product')),
     __param(1, (0, mongoose_1.InjectModel)('Review')),
     __param(2, (0, mongoose_1.InjectModel)('Wishlist')),
+    __param(3, (0, mongoose_1.InjectModel)('Rentals')),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])
 ], ProductService);

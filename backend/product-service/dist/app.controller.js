@@ -22,7 +22,7 @@ let AppController = class AppController {
         this.productService = productService;
     }
     async getAllProducts() {
-        return await this.productService.findAllProducts();
+        return await this.productService.getAllProducts;
     }
     async create(reqBody) {
         return this.appService.create(reqBody);

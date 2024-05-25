@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
@@ -8,9 +8,10 @@ import Pallet1 from '../../../images/Pallet1.png';
 import CustomizeProduct from './CustomizeProduct';
 import './style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faShareAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 interface Product {
+  _id:string,
   name: string;
   description: string;
   images: string[];
@@ -27,9 +28,11 @@ interface Product {
 }
 
 interface Review {
+  _id: string;
   user: string;
   rating: number;
   comment: string;
+  userId: string;
 }
 
 interface ProductDetailsProps {
@@ -48,16 +51,26 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
   const [rentalEnd, setRentalEnd] = useState<string>('');
   const [deposit, setDeposit] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number | null>(null);
+  const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     fetchProductDetails();
     fetchProductReviews();
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+    // Assuming you have a function to get the current user's ID from the token
+    const userId = getCurrentUserIdFromToken(token);
+    setCurrentUserId(userId);
   }, [_id]);
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}`);
+      const response = await fetch(`http://localhost:8080/product/productdetails/${_id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -71,7 +84,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
   const fetchProductReviews = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}/reviews`);
+      const response = await fetch(`http://localhost:8080/product/reviews/${_id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -83,31 +96,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
     }
   };
 
-  const handleCustomize = () => {
-    setShowModal(true);
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
-  };
-
-  const handleRent = () => {
-    setShowRentModal(true);
-  };
-
-  const handleRentClose = () => {
-    setShowRentModal(false);
-    setTotalPrice(null);
-  };
+  const handleCustomize = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const handleRent = () => setShowRentModal(true);
+  const handleRentClose = () => setShowRentModal(false);
+  const handleShare = () => setShowShareModal(true);
+  const handleShareClose = () => setShowShareModal(false);
 
   const handleAddToWishlist = async () => {
+    const token = localStorage.getItem('token');
     try {
       const response = await fetch(`http://localhost:8080/product/${_id}/wishlist`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId: 'yourUserId' }), // Replace 'yourUserId' with the actual user ID
+        credentials: 'include',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -119,13 +124,35 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
     }
   };
 
-  const handleShare = () => {
-    setShowShareModal(true);
-  };
+  const handleAddToCart = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const body = {
+        productId: product._id,
+        productName: product.name,
+        quantity: 1,
+        price: product.price,
+      };
 
-  const handleShareClose = () => {
-    setShowShareModal(false);
-  };
+      const response = await fetch("http://localhost:7001/addToCart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        console.log("Added to cart");
+      } else {
+        console.log("Failed to add to cart");
+      }
+    } catch (error) {
+      console.log("Failed to add to cart");
+      console.error("Add to cart error:", error);
+    }  };
 
   const handleShareTo = (platform: string) => {
     let url = '';
@@ -184,6 +211,89 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
     }
   };
 
+  const handleReviewInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setReviewData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleRatingChange = (rating: number) => {
+    setReviewData((prevState) => ({
+      ...prevState,
+      rating,
+    }));
+  };
+
+  const handleReviewSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login page if not logged in
+      sessionStorage.setItem('redirectUrl', window.location.href);
+      router.push('/pages/authentication/login');
+      return;
+    }
+
+    // Validate rating
+    if (reviewData.rating < 1 || reviewData.rating > 5) {
+      setError('Rating must be between 1 and 5.');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8080/product/${_id}/addreview`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify(reviewData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      setReviews((prevReviews) => [...prevReviews, data]);
+      setReviewData({ rating: 0, comment: '' });
+    } catch (error) {
+      console.error('Review submission error:', error);
+      setError('Failed to submit review. Please try again later.');
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login page if not logged in
+      sessionStorage.setItem('redirectUrl', window.location.href);
+      router.push('/pages/authentication/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/product/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      setReviews((prevReviews) => prevReviews.filter(review => review._id !== reviewId));
+    } catch (error) {
+      console.error('Delete review error:', error);
+      setError('Failed to delete review. Please try again later.');
+    }
+  };
+
   useEffect(() => {
     calculateTotalPrice();
   }, [rentalStart, rentalEnd, deposit]);
@@ -210,9 +320,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
               <p className="product-material">Material: {product.material}</p>
             </div>
             <div className="product-actions">
-              <Button variant="custom" onClick={handleCustomize}>Customize</Button>
-              <Button variant="outline-custom" onClick={handleAddToWishlist}>Add to Wishlist</Button>
-              <Button variant="custom" onClick={handleRent}>Rent</Button>
+              <Button variant="custom custom-button" onClick={handleCustomize}>Customize</Button>
+              <Button variant="outline-custom custom-button" onClick={handleAddToWishlist}>Add to Wishlist</Button>
+              <Button variant="custom custom-button" onClick={handleRent}>Rent</Button>
+              <Button variant="custom custom-button" onClick={handleAddToCart}>Add to Cart</Button>
               <FontAwesomeIcon icon={faShareAlt} className="share-icon" onClick={handleShare} />
             </div>
             {wishlistMessage && <p>{wishlistMessage}</p>}
@@ -224,12 +335,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
         <Col>
           <h2 className="mb-4">Customer Reviews</h2>
           {reviews.length > 0 ? (
-            reviews.map((review, index) => (
-              <Card key={index} className="mb-3 review-card">
+            reviews.map((review) => (
+              <Card key={review._id} className="mb-3 review-card">
                 <Card.Body>
                   <Card.Title>{review.user}</Card.Title>
                   <Card.Text>Rating: {review.rating}/5</Card.Text>
                   <Card.Text>{review.comment}</Card.Text>
+                  {currentUserId === review.userId && (
+                    <Button variant="danger custom-button" onClick={() => handleDeleteReview(review._id)}>
+                      <FontAwesomeIcon icon={faTrash} /> Delete
+                    </Button>
+                  )}
                 </Card.Body>
               </Card>
             ))
@@ -238,6 +354,40 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
           )}
         </Col>
       </Row>
+
+      {isLoggedIn && (
+        <div className="review-form mt-5">
+          <h3>Add a Review</h3>
+          <Form onSubmit={handleReviewSubmit}>
+            <Form.Group>
+              <Form.Label>Rating</Form.Label>
+              <div className="rating-input">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FontAwesomeIcon
+                    key={star}
+                    icon={faStar}
+                    className={`star ${reviewData.rating >= star ? 'filled' : ''}`}
+                    onClick={() => handleRatingChange(star)}
+                  />
+                ))}
+              </div>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="comment"
+                value={reviewData.comment}
+                onChange={handleReviewInputChange}
+                required
+              />
+            </Form.Group>
+            <Button type="submit" variant="primary custom-button">Submit Review</Button>
+          </Form>
+        </div>
+      )}
+
+      {!isLoggedIn && <p>Please log in to add a review.</p>}
 
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -281,7 +431,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
             {totalPrice !== null && (
               <p>Total Rental Price: ${totalPrice}</p>
             )}
-            <Button variant="primary" onClick={handleRentSubmit}>
+            <Button variant="primary custom-button" onClick={handleRentSubmit}>
               Submit
             </Button>
           </Form>
@@ -293,8 +443,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
           <Modal.Title>Share Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Button variant="primary" className="mb-2 w-100" onClick={() => handleShareTo('facebook')}>Share on Facebook</Button>
-          <Button variant="success" className="mb-2 w-100" onClick={() => handleShareTo('whatsapp')}>Share on WhatsApp</Button>
+          <Button variant="primary custom-button" className="mb-2 w-100" onClick={() => handleShareTo('facebook')}>Share on Facebook</Button>
+          <Button variant="success custom-button" className="mb-2 w-100" onClick={() => handleShareTo('whatsapp')}>Share on WhatsApp</Button>
         </Modal.Body>
       </Modal>
     </Container>
@@ -302,3 +452,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 };
 
 export default ProductDetails;
+
+const getCurrentUserIdFromToken = (token: string | null): string | null => {
+  if (!token) return null;
+  try {
+    const decodedToken: any = JSON.parse(atob(token.split('.')[1]));
+    return decodedToken.userId;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};

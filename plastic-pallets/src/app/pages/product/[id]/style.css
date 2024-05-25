@@ -105,3 +105,25 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add shadow */
   margin-bottom: var(--dl-space-space-unit); /* Space between cards */
 }
+
+Copy code
+.star {
+  cursor: pointer;
+  color: #ccc;
+  font-size: 24px;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.custom-button {
+  background-color: #38B2AC;
+  border-color: #38B2AC;
+  color: white;
+}
+
+.custom-button:hover {
+  background-color: #2C9A97;
+  border-color: #2C9A97;
+}

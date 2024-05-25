@@ -26,22 +26,29 @@ import { Model } from 'mongoose';
 import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
+import { Rentals } from './interfaces/rentals';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateReviewDto } from './dto/create.review.dto';
 import { CreateWishlistDto } from './dto/wishlist.dto';
 import { CustomizationDto } from './dto/customization.dto';
+import { RentProductDto } from './dto/rent-product.dto';
 export declare class ProductService {
     private readonly productModel;
     private readonly reviewModel;
     private readonly wishlistModel;
-    constructor(productModel: Model<Product>, reviewModel: Model<Review>, wishlistModel: Model<Wishlist>);
+    private readonly rentalModel;
+    constructor(productModel: Model<Product>, reviewModel: Model<Review>, wishlistModel: Model<Wishlist>, rentalModel: Model<Rentals>);
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
-    findAllProducts(): Promise<Product[]>;
-    findById(id: string): Promise<Product>;
+    viewProductDetails(id: string): Promise<Product>;
+    getAllProducts(): Promise<CreateProductDto[]>;
     addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<Review>;
-    viewReviews(productId: string): Promise<Review[]>;
-    deleteReview(id: string, userId: string): Promise<void>;
+    getProductReviews(productId: string): Promise<Review[]>;
+    deleteReview(id: string, userId: string): Promise<{
+        message: string;
+    }>;
     addToWishlist(createWishlistDto: CreateWishlistDto): Promise<Wishlist>;
+    getWishlistByUser(userId: string): Promise<any>;
     removeFromWishlist(productId: string): Promise<Wishlist | null>;
     customizeProduct(productId: string, customizationDto: CustomizationDto): Promise<Product>;
+    rentProduct(productId: string, rentProductDto: RentProductDto): Promise<any>;
 }

@@ -35,6 +35,7 @@ export declare const wishlistProviders: {
             createFromHexString?: {};
             isValid?: {};
         };
+        userId?: string;
     }, {}, {}, {}, import("mongoose").Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
         createdAt: Date;
         productId?: {
@@ -45,6 +46,7 @@ export declare const wishlistProviders: {
             createFromHexString?: {};
             isValid?: {};
         };
+        userId?: string;
     }>>;
     inject: string[];
 }[];

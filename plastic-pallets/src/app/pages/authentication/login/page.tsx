@@ -3,7 +3,8 @@
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
-
+import { useRouter } from "next/navigation";
+import router from "next/router";
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
@@ -13,6 +14,7 @@ export default function Login() {
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
   const [error, setError] = useState<string | null>(null); // Add error state
+  const router = useRouter(); // Use the useRouter hook
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,48 +24,60 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    if (!formData.username.trim() || !formData.password.trim()) {
-      setError("Both username and password are required.");
-      return;
-    }
+  const handleGuestLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/account/guest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+      });
 
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Guest login successful", data);
+        const token = data.accessToken;
+        localStorage.setItem("token", token);
+        document.cookie =
+          "auth_token=${token}; path=/; max-age=86400; secure; samesite=strict";
+        router.push("/pages/home"); // Redirect to dashboard
+      } else {
+        throw new Error(data.message || "Failed to log in as guest");
+      }
+    } catch (error) {
+      console.error("Guest login error:", error);
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent default form submission
     try {
       const response = await fetch("http://localhost:8000/account/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
-
-
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
         }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
-
         const token = data.accessToken;
         localStorage.setItem("token", token);
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-
-        // Handle successful login here (e.g., redirect or store JWT)
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict`;
+        router.push("/pages/home"); // Redirect to home page
       } else {
         throw new Error(data.message || "Failed to log in");
       }
-
     } catch (error) {
       console.error("Login error:", error);
     }
-  };
-
-  const handleBackToLogin = () => {
-    setShowSubmissionMessage(false);
   };
 
   return (

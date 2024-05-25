@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import product1 from '../pics/p2 Background Removed.png';
+import Pallet1 from '../images/Pallet1.png'
 import HeartIcon from '../pics/favs Background Removed.png';
 
 const FeaturedProducts = () => {
@@ -82,7 +82,7 @@ const FeaturedProducts = () => {
                 {items.map((item) => (
                     <div key={item.id} style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                         <div style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '250px' }}>
-                            <Image src={product1} layout="responsive" width={300} height={300} objectFit="cover" alt={item.name} />
+                            <Image src={Pallet1} layout="responsive" width={300} height={300} objectFit="cover" alt={item.name} />
                             <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2 }}>
                                 <button onClick={() => addToFavorites(item)} className="btn">
                                     <Image src={HeartIcon} alt="Add to Favorites" width={30} height={30} />

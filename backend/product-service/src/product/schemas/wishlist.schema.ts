@@ -7,7 +7,7 @@ export const WishlistSchema = new Schema({
         required: false
     },
     userId:{
-        type: Types.ObjectId,
+        type: String,
         ref: 'User',
         required: false
     },

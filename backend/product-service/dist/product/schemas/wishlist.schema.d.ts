@@ -33,4 +33,5 @@ export declare const WishlistSchema: Schema<any, import("mongoose").Model<any, a
         createFromHexString?: {};
         isValid?: {};
     };
+    userId?: string;
 }>;

@@ -13,9 +13,9 @@ const app_service_1 = require("./app.service");
 const product_module_1 = require("./product/product.module");
 const mongoose_1 = require("@nestjs/mongoose");
 const product_service_1 = require("./product/product.service");
+const product_controller_1 = require("./product/product.controller");
 const create_product_dto_1 = require("./product/dto/create-product.dto");
-const kafka_service_1 = require("./kafka/kafka.service");
-const kafka_module_1 = require("./kafka/kafka.module");
+const product_schema_1 = require("./product/schemas/product.schema");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,14 +24,14 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             product_module_1.ProductModule,
             mongoose_1.MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets-products'),
-            kafka_module_1.ProductKafkaModule,
+            mongoose_1.MongooseModule.forFeature([{ name: "Product", schema: product_schema_1.ProductSchema }]),
         ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
             product_service_1.ProductService,
             create_product_dto_1.CreateProductDto,
-            kafka_service_1.KafkaConsumerService,
+            product_controller_1.ProductController,
         ],
     })
 ], AppModule);

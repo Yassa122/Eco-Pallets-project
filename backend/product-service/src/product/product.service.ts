@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './interfaces/product';
@@ -11,8 +11,8 @@ import { CreateWishlistDto } from './dto/wishlist.dto';
 import { CustomizationDto } from './dto/customization.dto';
 import { RentProductDto } from './dto/rent-product.dto';
 import { productProviders } from './database/product.providers';
-// import { KafkaConsumerService } from './kafka/kafka.service';
-// import { ClientKafka, MessagePattern } from '@nestjs/microservices';
+
+
 
 @Injectable()
 export class ProductService {
@@ -22,48 +22,14 @@ export class ProductService {
     @InjectModel('Review') private readonly reviewModel: Model<Review>,
     @InjectModel('Wishlist') private readonly wishlistModel: Model<Wishlist>,
     @InjectModel('Rentals') private readonly rentalModel: Model<Rentals>,
-    // private readonly kafkaConsumerService: KafkaConsumerService,
-    // private readonly clientKafka: ClientKafka, 
    ) {}
-
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
 
-<<<<<<< HEAD
-  // async viewProductDetails(id: string): Promise<Product> {
-  //   try {
-  //     console.log(`Finding product with ID: ${id}`);
-  //     const product = await this.productModel.findById(id).exec();
-  //     if (!product) {
-  //       throw new NotFoundException('Product not found');
-  //     }
-  //     return product;
-  //   } catch (error) {
-  //     console.error(`Error finding product with ID: ${id}`, error.stack);
-  //     throw error;
-  //   }
-  // }
-  async getAllProducts(): Promise<CreateProductDto[]> {
-    const products = this.productModel.find().exec();
-    console.log("fetch", products)
-    return(products);
-=======
-async findAllProducts(): Promise<Product[]> {
-    try {
-      const products = await this.productModel.find().exec();
-      if (!products || products.length === 0) {
-        throw new NotFoundException('No products found');
-      }
-      return products;
-    } catch (error) {
-      console.error('Error retrieving all products', error);
-      throw error;
-    }
-  }
-
-  async findById(id: string): Promise<Product> {
+  async viewProductDetails(id: string): Promise<Product> {
+    console.log(id);
     try {
       console.log(`Finding product with ID: ${id}`);
       const product = await this.productModel.findById(id).exec();
@@ -75,17 +41,21 @@ async findAllProducts(): Promise<Product[]> {
       console.error(`Error finding product with ID: ${id}`, error.stack);
       throw error;
     }
->>>>>>> origin/main
+  }
+  async getAllProducts(): Promise<CreateProductDto[]> {
+    const products = this.productModel.find().exec();
+    console.log("fetch", products)
+    return(products);
   }
   
-  async getProductById(id: string): Promise<Product> {
-    console.log(id)
-    const product = await this.productModel.findById(id).exec();
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
-    return product;
-  }
+  // async getProductById(id: string): Promise<Product> {
+  //   console.log(id)
+  //   const product = await this.productModel.findById(id).exec();
+  //   if (!product) {
+  //     throw new NotFoundException('Product not found');
+  //   }
+  //   return product;
+  // }
   async addReview(productId: string, userId: string,
    createReviewDto: CreateReviewDto): Promise<Review> {
     console.log(createReviewDto)
@@ -106,25 +76,30 @@ async findAllProducts(): Promise<Product[]> {
     }
     return reviews;
   }
-  async deleteReview(id: string, userId: string): Promise<void> {
+  async deleteReview(id: string, userId: string): Promise<{ message: string }> {
     const review = await this.reviewModel.findById(id).exec();
     console.log('Found review:', review); // Add this logging statement
     if (!review) {
       throw new NotFoundException('Review not found');
     }
+    // Uncomment this if you want to check the user's authorization
     // if (review.userId !== userId) {
     //   throw new UnauthorizedException('You are not authorized to delete this review');
     // }
     await this.reviewModel.findByIdAndDelete(id).exec();
-}
+    return { message: 'Review successfully deleted' };
+  }
 
   async addToWishlist(createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
     const newWishlistItem = new this.wishlistModel(createWishlistDto);
     return newWishlistItem.save();
   }
-  async getWishlistByUser(userId: string): Promise<Wishlist[]> {
+  
+  async getWishlistByUser(userId: string): Promise<any> {
+    console.log('Finding wishlist for User ID:', userId); // Add this line
     return this.wishlistModel.find({ userId }).populate('productId').exec();
   }
+  
   async removeFromWishlist(productId: string): Promise<Wishlist | null> {
     return this.wishlistModel.findOneAndDelete({ productId }).exec();
   }

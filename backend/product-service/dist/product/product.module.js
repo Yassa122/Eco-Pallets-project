@@ -16,6 +16,7 @@ const review_schema_1 = require("./schemas/review.schema");
 const wishlist_schema_1 = require("./schemas/wishlist.schema");
 const product_providers_1 = require("./database/product.providers");
 const database_providers_1 = require("./database/database.providers");
+const rentals_schema_1 = require("./schemas/rentals.schema");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -23,6 +24,7 @@ exports.ProductModule = ProductModule = __decorate([
     (0, common_1.Module)({
         imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema },
                 { name: 'Review', schema: review_schema_1.ReviewSchema }, { name: "Wishlist", schema: wishlist_schema_1.WishlistSchema },
+                { name: 'Rentals', schema: rentals_schema_1.RentalSchema },
             ])],
         controllers: [product_controller_1.ProductController],
         providers: [product_service_1.ProductService, ...database_providers_1.databaseProviders, ...product_providers_1.productProviders],

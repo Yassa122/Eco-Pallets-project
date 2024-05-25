@@ -28,7 +28,7 @@ const ShoppingCart = () => {
       }
   
       // Fetch cart items
-      const response = await fetch("http://localhost:7000/cartItems", {
+      const response = await fetch("http://localhost:7001/cartItems", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const ShoppingCart = () => {
   const removeItem = async (itemId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch("http://localhost:7000/removeCartItem", {
+      const response = await fetch("http://localhost:7001/removeCartItem", {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const ShoppingCart = () => {
   const incrementQuantity = async (itemId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:7000/addQuantity', {
+      const response = await fetch('http://localhost:7001/addQuantity', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const ShoppingCart = () => {
   const decrementQuantity = async (itemId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:7000/subtractQuantity', {
+      const response = await fetch('http://localhost:7001/subtractQuantity', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ return (
   <div>
     <div style={{ color: '#7F92B3', width: '40%', float: 'left', marginLeft: '5vw' }} className='p-8'>
       {cartItems.map((item, index) => {
-        const ProductImage = require(`../../images/cart/${item.productName.replace(/\s/g, '').toLowerCase()}.png`).default;
+        const ProductImage = require(`../../images/cart/pallet1.png`);
         return (
           <div key={item.productId} style={{ display: 'flex', alignItems: 'center', borderBottom: index !== cartItems.length - 1 ? '1px solid white' : 'none', padding: '3vh' }}>
             <Image src={ProductImage} alt={item.name} style={{ width: '12vw', height: '16vh', marginRight: '2vw' }}/>
