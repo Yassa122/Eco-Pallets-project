@@ -20,14 +20,7 @@ const ShoppingCart = () => {
 
   const fetchCartItems = async () => {
     try {
-      // Retrieve token from localStorage
-      const token = localStorage.getItem('token');  
-      // Check if token exists
-      if (!token) {
-        throw new Error("Token not found in localStorage");
-      }
-  
-      // Fetch cart items
+      const token = localStorage.getItem('accessToken');
       const response = await fetch("http://localhost:7000/cartItems", {
         method: "GET",
         headers: {
@@ -54,7 +47,7 @@ const ShoppingCart = () => {
 
   const removeItem = async (itemId) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
       const response = await fetch("http://localhost:7000/removeCartItem", {
         method: 'DELETE',
         headers: {

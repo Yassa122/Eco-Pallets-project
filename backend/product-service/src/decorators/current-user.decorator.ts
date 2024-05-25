@@ -1,20 +1,48 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+import {
+  createParamDecorator,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
-export const CurrentUser = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-  const request = ctx.switchToHttp().getRequest();
-  const authorizationHeader = request.headers.authorization;
+export const CurrentUser = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const cookies = request.headers.cookie;
 
-  if (!authorizationHeader) {
-    throw new Error('Authorization header is missing');
-  }
+    if (!cookies) {
+      throw new UnauthorizedException('Cookies are missing');
+    }
 
-  const token = authorizationHeader.split(' ')[1]; // Assuming the format is "Bearer <token>"
-  const decodedToken = jwt.decode(token);
+    const cookieObject = Object.fromEntries(
+      cookies.split('; ').map((c) => c.split('=')),
+    );
 
-  if (typeof decodedToken === 'object' && decodedToken) {
-    return decodedToken.id;
-  } else {
-    throw new Error('Invalid token');
-  }
-});
+
+    let token = cookieObject['auth_token']; // Update to look for 'auth_token'
+    
+    if (!token) {
+      token = cookieObject['accessToken']; // Update to look for 'auth_token'
+    }
+
+    if (!token) {
+      throw new UnauthorizedException(
+        'Token verification failed:  Token not found',
+      );
+    }
+
+    try {
+      const decodedToken = jwt.decode(token);
+      if (typeof decodedToken === 'object' && decodedToken && decodedToken.id) {
+        return decodedToken.id;
+      } else {
+        throw new UnauthorizedException('Invalid token');
+      }
+    } catch (err) {
+      throw new UnauthorizedException(
+        'Token verification failed: ' + err.message,
+      );
+    }
+  },
+);

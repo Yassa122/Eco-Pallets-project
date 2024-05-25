@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from 'react';
 
 const WelcomeHome = () => {
@@ -20,7 +19,7 @@ const WelcomeHome = () => {
         Welcome to Our World of Quality  Pallets
       </div>
       <div className="authorized" style={{ fontSize: '20px', marginBottom: '20px' }}>
-        <span style={{ color: "cyan", fontWeight: 'bold' }}>100%</span> Authorized
+        <span style={{ color: "#38b2ac", fontWeight: 'bold' }}>100%</span> Authorized
       </div>
       <div className="subscribe" style={{ marginBottom: '50px' }}>
         <input 
@@ -36,14 +35,14 @@ const WelcomeHome = () => {
             outline: 'none',
             width: '300px', 
             marginRight: '10px',
-            color: 'black' // Changed font color to black
+            color: '#38b2ac' // Changed font color to #38b2ac
           }} 
         />
         <button 
           onClick={handleSubscribe}
           style={{ 
-            backgroundColor: 'cyan', 
-            border: '2px solid cyan', 
+            backgroundColor: '#38b2ac', // Changed background color to #38b2ac
+            border: '2px solid #38b2ac', // Changed border color to #38b2ac
             borderRadius: '5px', 
             color: 'white', 
             padding: '10px 20px', 
@@ -74,7 +73,7 @@ const WelcomeHome = () => {
           Email saved successfully!
         </div>
       )}
-      <div className="since" style={{ fontSize: '14px' }}>Serving Since <span style={{ color: "cyan", fontWeight: 'bold', fontSize: '24px' }}>1911</span></div>
+      <div className="since" style={{ fontSize: '14px' }}>Serving Since <span style={{ color: "#38b2ac", fontWeight: 'bold', fontSize: '24px' }}>1911</span></div>
       <style jsx>{`
         @keyframes fadeInOut {
           0% {
