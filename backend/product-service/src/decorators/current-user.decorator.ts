@@ -1,3 +1,4 @@
+
 import {
   createParamDecorator,
   ExecutionContext,
@@ -9,26 +10,25 @@ export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     const cookies = request.headers.cookie;
-    const authHeader = request.headers.authorization;
 
-    let token: string | undefined;
-
-    // Check for token in cookies
-    if (cookies) {
-      const cookieObject = Object.fromEntries(
-        cookies.split('; ').map((c) => c.split('='))
-      );
-      token = cookieObject['auth_token'] || cookieObject['accessToken'];
+    if (!cookies) {
+      throw new UnauthorizedException('Cookies are missing');
     }
 
-    // Check for token in Authorization header if not found in cookies
-    if (!token && authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.split(' ')[1];
+    const cookieObject = Object.fromEntries(
+      cookies.split('; ').map((c) => c.split('=')),
+    );
+
+
+    let token = cookieObject['auth_token']; // Update to look for 'auth_token'
+    
+    if (!token) {
+      token = cookieObject['accessToken']; // Update to look for 'auth_token'
     }
 
     if (!token) {
       throw new UnauthorizedException(
-        'Token verification failed: Token not found'
+        'Token verification failed:  Token not found',
       );
     }
 
@@ -41,8 +41,8 @@ export const CurrentUser = createParamDecorator(
       }
     } catch (err) {
       throw new UnauthorizedException(
-        'Token verification failed: ' + err.message
+        'Token verification failed: ' + err.message,
       );
     }
-  }
+  },
 );
