@@ -22,6 +22,7 @@ import { AddShippingAddressDto } from './user-info/dto/add-shipping-address.dto'
 import { DeleteShippingAddressDto } from './user-info/dto/delete-shipping-address.dto';
 import { UpdateShippingAddressDto } from './user-info/dto/update-shipping-address.dto';
 import { UserInfoService } from './user-info/user-info/user-info.service';
+import mongoose from 'mongoose';
 
 @Controller('account')
 export class AppController {
@@ -41,6 +42,12 @@ export class AppController {
   async register(@Body() reqBody: any) {
     return this.accountServices.register(reqBody);
   }
+
+  @Post('guest-sign-up')
+  async guestRegister(@Body() reqBody: any) {
+    return this.accountServices.guestRegister(reqBody);
+  }
+  
 
   @UseGuards(JwtAuthGuard)
   @Post('sign-in')

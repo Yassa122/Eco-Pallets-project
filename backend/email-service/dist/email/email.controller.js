@@ -26,12 +26,15 @@ let EmailController = class EmailController {
     }
     async sendWelcomeEmail(user) {
         await this.emailService.sendWelcomeEmail(user);
+        return { message: 'Welcome email sent successfully' };
     }
     async sendVerificationEmail(user) {
         await this.emailService.sendVerificationEmail(user);
+        return { message: 'Verification email sent successfully' };
     }
-    async sendResetMail(user) {
-        await this.emailService.sendResetMail(user);
+    async sendResetMail(data) {
+        await this.emailService.sendResetMail(data);
+        return { message: 'Reset password email sent successfully' };
     }
 };
 exports.EmailController = EmailController;

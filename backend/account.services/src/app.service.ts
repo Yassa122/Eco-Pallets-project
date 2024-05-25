@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ClientKafka } from '@nestjs/microservices';
 import { User } from './identity/interfaces/user';
 import { CreateIdentityDto } from './identity/dto/create.identity.dto';
@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UserInfoService } from './user-info/user-info/user-info.service';
 import { LoginDto } from './identity/dto/login.dto';
+import { CreateGuestIdentityDto } from './identity/dto/guest.identity.dto';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -30,6 +31,10 @@ export class AppService implements OnModuleInit {
 
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {
     return this.identityService.register(createIdentityDto);
+  }
+
+  async guestRegister(createGuestIdentityDto: CreateGuestIdentityDto): Promise<any> {
+    return this.identityService.guestRegister(createGuestIdentityDto);
   }
 
   async login(loginDto: LoginDto): Promise<any> {

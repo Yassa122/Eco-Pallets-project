@@ -13,7 +13,6 @@ import { RentProductDto } from './dto/rent-product.dto';
 import { productProviders } from './database/product.providers';
 
 
-
 @Injectable()
 export class ProductService {
 
@@ -22,6 +21,7 @@ export class ProductService {
     @InjectModel('Review') private readonly reviewModel: Model<Review>,
     @InjectModel('Wishlist') private readonly wishlistModel: Model<Wishlist>,
     @InjectModel('Rentals') private readonly rentalModel: Model<Rentals>,
+    
    ) {}
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
@@ -38,7 +38,7 @@ export class ProductService {
       }
       return product;
     } catch (error) {
-      console.error(`Error finding product with ID: ${id}`, error.stack);
+      console.error("Error finding product with ID: ${id}", error.stack);
       throw error;
     }
   }
@@ -186,8 +186,3 @@ export class ProductService {
     };
   }
 }
-
-  
-
-  
-

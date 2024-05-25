@@ -145,7 +145,7 @@ export class AppService {
 
     // Check if the cartItem already exists in the cart
     const existingCartItem = cart.cartItems.find(
-      (item) => item.productId === cartItem.productId,
+      (item) => item.productId == cartItem.productId,
     );
 
     if (existingCartItem) {
@@ -287,7 +287,6 @@ export class AppService {
     await cart.save();
     return { message: 'Cart cleared successfully' };
   }
-
 
   
   async getOrderHistory(userId: string) {

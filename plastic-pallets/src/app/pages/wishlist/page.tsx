@@ -1,55 +1,41 @@
-'use client';
+// pages/my-wishlist.tsx
+"use client";
+
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // Import the Next.js Image component
-import Pallet1 from '../../images/cart/pallet1.png'; // Ensure this path is correct
+import Image from 'next/image'; // Import the Image component from Next.js
+import Pallet1 from '../../../images/cart/pallet1.png'; // Corrected path
 
 interface Product {
+  productId:string;
   name: string;
   description: string;
-  images: string[];
   price: number;
-  color: string;
-  size: string;
-  material: string;
+  images: string[];
   availability: boolean;
-  rentalOptions: {
-    available: boolean;
-    duration?: number;
-    price?: number;
-  };
 }
 
-interface WishlistItem {
-  _id: string;
-  productId: Product;
+interface Wishlist {
   userId: string;
-  createdAt: string;
+  products: Product[];
 }
 
-const WishlistPage: React.FC = () => {
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false);
-  const router = useRouter();
+const MyWishlist: React.FC = () => {
+  const [wishlist, setWishlist] = useState<Wishlist | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [openMenus, setOpenMenus] = useState<boolean[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false); // State for showing the delete message
 
   useEffect(() => {
-    console.log('useEffect triggered');
     const fetchWishlist = async () => {
-      const token = localStorage.getItem('accessToken');
-      console.log('Token retrieved:', token); // Debugging log
-
-      if (!token) {
-        setError("Token not found in localStorage");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await fetch('http://localhost:8080/product/MyWishlist', {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          throw new Error('No access token found');
+        }
+
+        const response = await fetch('http://localhost:8080/product/my-wishlist', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -57,32 +43,33 @@ const WishlistPage: React.FC = () => {
           },
           credentials: 'include',
         });
-        console.log("res", response);
-
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          console.error('Fetching error:', errorResponse);
-          throw new Error(errorResponse.message || 'Failed to fetch wishlist');
-        }
 
         const data = await response.json();
-        console.log('Response data:', data); // Log the response data
-
-        if (!Array.isArray(data) || data.length === 0) {
-          setError('No items found in wishlist');
-        } else {
+        if (response.ok) {
+          console.log('Fetched wishlist:', data); // Debug log
           setWishlist(data);
+          setOpenMenus(data.products.map(() => false));
+        } else {
+          throw new Error(data.message || 'Failed to fetch wishlist');
         }
-      } catch (err) {
-        console.error('Fetching error:', err);
-        setError(err.message);
+      } catch (error) {
+        console.error('Fetching error:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchWishlist();
-  }, [router]);
+  }, []);
+
+  const toggleMenu = (productId: string, index: number) => {
+    setOpenMenus(prev => {
+      const newOpenMenus = [...prev];
+      newOpenMenus[index] = !newOpenMenus[index];
+      return newOpenMenus;
+    });
+    setSelectedProductId(productId);
+  };
 
   const handleDeleteProduct = async (productId: string) => {
     try {
@@ -91,18 +78,26 @@ const WishlistPage: React.FC = () => {
         throw new Error('No access token found');
       }
 
-      const response = await fetch(`http://localhost:8080/product/wishlist/${productId}`, {
+      const response = await fetch(http://localhost:8080/product/remove-from-wishlist, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': Bearer ${token},
         },
         credentials: 'include',
         body: JSON.stringify({ productId }), // Include productId in the request body
       });
 
       if (response.ok) {
-        setWishlist(prev => prev.filter(item => item.productId._id !== productId));
+        setWishlist(prev => {
+          if (!prev) {
+            return null;
+          }
+          return {
+            ...prev,
+            products: prev.products.filter(product => product.productId !== productId)
+          };
+        });
         setShowDeleteMessage(true); // Show the delete message
         setTimeout(() => setShowDeleteMessage(false), 3000); // Hide the delete message after 3 seconds
       } else {
@@ -114,44 +109,98 @@ const WishlistPage: React.FC = () => {
     }
   };
 
+  const addToCart = async (product) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const body = {
+        productId: product.productId,
+        productName: product.name,
+        quantity: 1,
+        price: product.price,
+        image: product.images[0], // Assuming the first image is the main image
+        totalPrice: product.price, // Assuming total price is the same as price for now
+      };
+      console.log(body);
+  
+      const response = await fetch("http://localhost:7000/addToCart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Item added to cart:", data);
+        handleDeleteProduct(product.productId);
+      } else {
+        throw new Error(data.message || "Failed to add item to cart");
+      }
+    } catch (error) {
+      console.error("Add to cart error:", error);
+    }
+  };
+  
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!wishlist.length) {
-    return <div>No items in wishlist.</div>;
+  if (!wishlist || !wishlist.products) {
+    return <p>No wishlist found.</p>;
   }
 
   return (
-    <Container className="mt-5">
-      {showDeleteMessage && <Alert variant="success">Product deleted successfully!</Alert>}
-      <Row>
-        {wishlist.map((item) => (
-          <Col md={3} key={item._id}>
-            <Card className="mb-4 bg-dark text-white">
-              <Image src={Pallet1} alt={item.productId.name} layout="responsive" width={300} height={300} />
-              <Card.Body>
-                <Card.Title>{item.productId.name}</Card.Title>
-                <Card.Text>${item.productId.price}</Card.Text>
-                <Button variant="danger" onClick={() => handleDeleteProduct(item.productId._id)}>Delete Product</Button>
-              </Card.Body>
-            </Card>
-          </Col>
+    <div className="wishlist-container">
+      <h1 className="wishlist-header">My Wishlist</h1>
+      {showDeleteMessage && <p className="delete-message">Product deleted from wishlist</p>}
+      <ul className="wishlist-list">
+        {wishlist.products.map((product, index) => (
+          <li key={product.productId
+          } className="wishlist-item">
+            <div className="wishlist-item-header">
+              <button
+                className="meatball-button"
+                onClick={() => toggleMenu(product.productId, index)}
+              >
+                ...
+              </button>
+              {openMenus[index] && (
+                <div className="meatball-menu">
+                  <button className="delete-button" onClick={() => handleDeleteProduct(product.productId
+                  )}>Delete</button>
+                </div>
+              )}
+            </div>
+            <div className="product-image">
+              <Image src={Pallet1} alt={product.name} />
+            </div>
+            <div className="product-details">
+              <h2>{product.name}</h2>
+              <p className="product-description">{product.description}</p>
+              <p className="product-price">Price: ${product.price}</p>
+            </div>
+            <button
+              className="add-to-cart"
+              onClick={() => addToCart(product.productId)}
+              disabled={!product.availability}
+            >
+              {product.availability ? 'Add to Cart' : 'Out of Stock'}
+            </button>
+          </li>
         ))}
-      </Row>
+      </ul>
       <style jsx>{`
         .wishlist-container {
           padding: 20px;
           max-width: 1200px; /* Increase the max width of the container */
           margin: 0 auto; /* Center the container */
-          background-color: #1e1e1e; /* Dark background color */
         }
         .wishlist-header {
-          color: #e0e0e0; /* Light text color */
+          color: grey; /* Set the text color to grey */
           font-size: 2rem; /* Increase the font size */
           margin-bottom: 20px; /* Add space below the header */
         }
@@ -164,11 +213,10 @@ const WishlistPage: React.FC = () => {
           align-items: center;
           margin-bottom: 20px;
           padding: 20px; /* Increase padding for a larger box */
-          border: 1px solid #444; /* Dark border color */
+          border: 1px solid #ccc;
           border-radius: 8px;
           justify-content: space-between;
           width: 100%; /* Make sure the item takes full width */
-          background-color: #333; /* Darker background color */
         }
         .product-image {
           width: 150px; /* Increase width of the image container */
@@ -187,7 +235,7 @@ const WishlistPage: React.FC = () => {
           margin-bottom: 10px; /* Add space below the name */
         }
         .product-description {
-          color: #ccc; /* Light grey description color */
+          color: grey; /* Set the description color to grey */
           margin-bottom: 10px; /* Add space below the description */
         }
         .product-price {
@@ -264,7 +312,7 @@ const WishlistPage: React.FC = () => {
           align-items: center;
           margin-bottom: 20px;
           padding: 20px;
-          border: 1px solid #444; /* Dark border color */
+          border: 1px solid #ccc;
           border-radius: 8px;
           justify-content: space-between;
           width: 100%;
@@ -313,8 +361,8 @@ const WishlistPage: React.FC = () => {
           background: #2c2c2c;
         }
       `}</style>
-    </Container>
+    </div>
   );
 };
 
-export default WishlistPage;
+export default MyWishlist;

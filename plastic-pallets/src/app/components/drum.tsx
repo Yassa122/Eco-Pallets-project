@@ -7,7 +7,7 @@ import product2 from '../pics/durm2 Background Removed.png';
 import product3 from '../pics/drum1 Background Removed.png';
 
 
-const MetalPage = () => {
+const  = () => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -99,4 +99,4 @@ const MetalPage = () => {
     );
 };
 
-export default MetalPage;
+export default ;

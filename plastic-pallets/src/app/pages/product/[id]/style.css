@@ -1,37 +1,4 @@
 :root {
-  --dl-size-size-large: 144px;
-  --dl-size-size-small: 48px;
-  --dl-size-size-medium: 96px;
-  --dl-size-size-xlarge: 192px;
-  --dl-size-size-xsmall: 16px;
-  --dl-space-space-unit: 16px;
-  --dl-size-size-xxlarge: 288px;
-  --dl-size-size-maxwidth: 1400px;
-  --dl-color-theme-accent1: #F3E8E2;
-  --dl-color-theme-accent2: #D8BFAF;
-  --dl-radius-radius-round: 50%;
-  --dl-color-theme-primary1: #38B2AC;
-  --dl-color-theme-primary2: #38B2AC;
-  --dl-space-space-halfunit: 8px;
-  --dl-space-space-sixunits: 96px;
-  --dl-space-space-twounits: 32px;
-  --dl-radius-radius-radius2: 2px;
-  --dl-radius-radius-radius4: 4px;
-  --dl-radius-radius-radius8: 8px;
-  --dl-space-space-fiveunits: 80px;
-  --dl-space-space-fourunits: 64px;
-  --dl-color-theme-secondary1: #F3E8E2;
-  --dl-color-theme-secondary2: #E0D1CB;
-  --dl-space-space-threeunits: 48px;
-  --dl-color-default-lighttext: rgba(255, 255, 255, 1);
-  --dl-color-theme-neutral-dark: #191818;
-  --dl-radius-radius-cardradius: 8px;
-  --dl-color-theme-neutral-light: #FBFAF9;
-  --dl-radius-radius-imageradius: 8px;
-  --dl-radius-radius-inputradius: 24px;
-  --dl-radius-radius-buttonradius: 24px;
-  --dl-space-space-oneandhalfunits: 24px;
-}
 
 .product-container {
   padding: 20px;

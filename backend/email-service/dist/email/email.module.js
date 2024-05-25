@@ -10,13 +10,14 @@ exports.EmailModule = void 0;
 const common_1 = require("@nestjs/common");
 const email_controller_1 = require("./email.controller");
 const email_service_1 = require("./email.service");
+const kafka_service_1 = require("../kafka/kafka.service");
 let EmailModule = class EmailModule {
 };
 exports.EmailModule = EmailModule;
 exports.EmailModule = EmailModule = __decorate([
     (0, common_1.Module)({
         controllers: [email_controller_1.EmailController],
-        providers: [email_service_1.EmailService],
+        providers: [email_service_1.EmailService, kafka_service_1.KafkaService],
     })
 ], EmailModule);
 //# sourceMappingURL=email.module.js.map
