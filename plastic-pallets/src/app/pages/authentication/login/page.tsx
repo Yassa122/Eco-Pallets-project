@@ -3,8 +3,10 @@
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
+import { useRouter } from "next/navigation"; // Correct import for useRouter
 
 export default function Login() {
+  const router=useRouter();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -21,7 +23,30 @@ export default function Login() {
       [name]: value,
     }));
   };
+  const handleGuestLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/account/guest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // This is needed to handle cookies if you're using them for authentication
+      });
 
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Guest login successful", data);
+        const token = data.accessToken;
+        localStorage.setItem("token", token);
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict`;
+        router.push("/pages/home"); // Redirect to dashboard
+      } else {
+        throw new Error(data.message || "Failed to log in as guest");
+      }
+    } catch (error) {
+      console.error("Guest login error:", error);
+    }
+  };
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (!formData.username.trim() || !formData.password.trim()) {
@@ -53,6 +78,8 @@ export default function Login() {
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
 
         // Handle successful login here (e.g., redirect or store JWT)
+        router.push("/pages/home"); // Redirect to dashboard
+
       } else {
         throw new Error(data.message || "Failed to log in");
       }
@@ -123,7 +150,14 @@ export default function Login() {
             Sign in
           </button>
         </form>
-
+        <div className="space-y-4 text-sm font-medium">
+          <button
+            className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100"
+            onClick={handleGuestLogin}
+          >
+            Continue as Guest
+          </button>
+        </div>
         <div className="relative">
           <span className="block w-full h-px bg-gray-700"></span>
           <p className="inline-block w-fit text-sm bg-gray-800 px-2 absolute -top-2 inset-x-0 mx-auto text-gray-400">

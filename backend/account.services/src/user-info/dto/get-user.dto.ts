@@ -1,4 +1,4 @@
-import { IsUUID, IsOptional, ValidateNested, IsString, IsEmail } from 'class-validator';
+import { IsUUID, IsOptional, ValidateNested, IsString, IsEmail, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AddShippingAddressDto } from './add-shipping-address.dto';
 
@@ -13,6 +13,11 @@ export class GetUserDto {
   @IsOptional()
   @IsString()
   public lastName?: string;
+
+
+  @IsOptional()
+  @IsBoolean()
+  public isEmailVerified?: boolean;
 
   @IsOptional()
   @IsString()
