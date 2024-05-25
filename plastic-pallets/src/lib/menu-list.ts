@@ -3,22 +3,18 @@ import {
   Users,
   Settings,
   Bookmark,
-  SquarePen,
-  LayoutGrid
+  ShoppingCart,
+  LayoutGrid,
+  Heart,
+  LogIn,
+  LogOut
 } from "lucide-react";
-
-type Submenu = {
-  href: string;
-  label: string;
-  active: boolean;
-};
 
 type Menu = {
   href: string;
   label: string;
   active: boolean;
   icon: any;
-  submenus: Submenu[];
 };
 
 type Group = {
@@ -35,8 +31,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
-          submenus: []
+          icon: LayoutGrid
         }
       ]
     },
@@ -44,36 +39,22 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts",
-              active: pathname === "/posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post",
-              active: pathname === "/posts/new"
-            }
-          ]
+          href: "http://localhost:3000/pages/cart",
+          label: "Cart",
+          active: pathname.includes("/cart"),
+          icon: ShoppingCart
         },
         {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: Bookmark,
-          submenus: []
+          href: "http://localhost:3000/pages/wishlist",
+          label: "Favorites",
+          active: pathname.includes("/favorites") || pathname.includes("/wishlist"),
+          icon: Heart
         },
         {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag,
-          submenus: []
+          href: "http://localhost:3000/pages/wishlist",
+          label: "Wishlist",
+          active: pathname.includes("/wishlist") || pathname.includes("/favorites"),
+          icon: Bookmark
         }
       ]
     },
@@ -84,15 +65,30 @@ export function getMenuList(pathname: string): Group[] {
           href: "/users",
           label: "Users",
           active: pathname.includes("/users"),
-          icon: Users,
-          submenus: []
+          icon: Users
         },
         {
           href: "/account",
           label: "Account",
           active: pathname.includes("/account"),
-          icon: Settings,
-          submenus: []
+          icon: Settings
+        }
+      ]
+    },
+    {
+      groupLabel: "Account",
+      menus: [
+        {
+          href: "/login",
+          label: "Login",
+          active: pathname.includes("/login"),
+          icon: LogIn
+        },
+        {
+          href: "/logout",
+          label: "Logout",
+          active: pathname.includes("/logout"),
+          icon: LogOut
         }
       ]
     }

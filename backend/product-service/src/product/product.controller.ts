@@ -21,7 +21,7 @@ export class ProductController {
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.createProduct(createProductDto);
   }
-<<<<<<< HEAD
+
   @Get('/getAllProducts')
   async getAllProducts(): Promise<CreateProductDto[]> {
     try {
@@ -34,16 +34,7 @@ export class ProductController {
       throw new NotFoundException('Failed to fetch products: ' + (error as Error).message);
     }
   }
-=======
 
-
-  //working
-  @Get()
-  async getAllProducts() {
-    return await this.productService.findAllProducts();
-  }
-
->>>>>>> origin/main
   @Get(':id')
   async getProductById(@Param('id') id: string): Promise<Product> {
     return this.productService.getProductById(id);

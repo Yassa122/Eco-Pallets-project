@@ -3,7 +3,7 @@
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
-
+import { useRouter } from "next/navigation";
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
@@ -13,7 +13,7 @@ export default function Login() {
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
   const [error, setError] = useState<string | null>(null); // Add error state
-
+const router=useRouter();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -51,7 +51,7 @@ export default function Login() {
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-
+          router.push("/pages/home")
         // Handle successful login here (e.g., redirect or store JWT)
       } else {
         throw new Error(data.message || "Failed to log in");
