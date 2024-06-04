@@ -24,7 +24,7 @@ const Profile: React.FC = () => {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/user-info/profile', {
+      const response = await fetch('http://localhost:8000/account/profile', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const Profile: React.FC = () => {
   const fetchShippingAddresses = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/user-info/addresses', {
+      const response = await fetch('http://localhost:8000/account/user-info/addresses', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const Profile: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/user-info/update', {
+      const response = await fetch('http://localhost:8000/account/user-info/update-address', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const Profile: React.FC = () => {
   const handleDeleteAddress = async (addressId: string) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/user-info/delete-address', {
+      const response = await fetch('http://localhost:8000/account/user-info/delete-address', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ const Profile: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/user-info/update-address', {
+      const response = await fetch('http://localhost:8000/account/user-info/update-address', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

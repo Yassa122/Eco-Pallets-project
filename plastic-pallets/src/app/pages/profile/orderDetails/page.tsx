@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Pallet1 from '../../../images/cart/pallet1.png'; // Correct the path as needed
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import Pallet1 from "../../../images/cart/pallet1.png"; // Correct the path as needed
 
 interface CartItem {
   productId: string;
@@ -21,18 +21,18 @@ const ViewCartItemsPage: React.FC = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         if (!token) {
-          throw new Error('No access token found');
+          throw new Error("No access token found");
         }
 
-        const response = await fetch('http://localhost:7000/viewCartItems', {
-          method: 'GET',
+        const response = await fetch("http://localhost:7000/viewCartItems", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         const data = await response.json();
@@ -40,10 +40,10 @@ const ViewCartItemsPage: React.FC = () => {
           setCartItems(data);
           calculateTotalPrice(data);
         } else {
-          throw new Error(data.message || 'Failed to fetch cart items');
+          throw new Error(data.message || "Failed to fetch cart items");
         }
       } catch (error: any) {
-        setError(error.message || 'Failed to fetch cart items');
+        setError(error.message || "Failed to fetch cart items");
       } finally {
         setLoading(false);
       }
@@ -73,22 +73,38 @@ const ViewCartItemsPage: React.FC = () => {
       ) : (
         <>
           {cartItems.map((item) => (
-            <div key={item.productId} className="border p-4 rounded mb-4 flex justify-between">
+            <div
+              key={item.productId}
+              className="border p-4 rounded mb-4 flex justify-between"
+            >
               <div className="flex">
                 <div className="product-image mr-4">
-                  <Image src={Pallet1} alt={item.productName} width={150} height={150} />
+                  <Image
+                    src={Pallet1}
+                    alt={item.productName}
+                    width={150}
+                    height={150}
+                  />
                 </div>
                 <div className="product-details">
-                  <h2 className="text-xl font-bold text-38B2AC">{item.productName}</h2>
+                  <h2 className="text-xl font-bold text-38B2AC">
+                    {item.productName}
+                  </h2>
                   <p className="text-gray-600">Quantity: {item.quantity}</p>
-                  <p className="text-gray-600">Price: ${item.price.toFixed(2)}</p>
-                  <p className="text-gray-600">Total Price: ${item.totalPrice.toFixed(2)}</p>
+                  <p className="text-gray-600">
+                    Price: ${item.price.toFixed(2)}
+                  </p>
+                  <p className="text-gray-600">
+                    Total Price: ${item.totalPrice.toFixed(2)}
+                  </p>
                 </div>
               </div>
             </div>
           ))}
           <div className="total-price-container flex justify-end">
-            <p className="text-xl font-bold text-38B2AC">Total: ${totalPrice.toFixed(2)}</p>
+            <p className="text-xl font-bold text-38B2AC">
+              Total: ${totalPrice.toFixed(2)}
+            </p>
           </div>
         </>
       )}
@@ -109,7 +125,7 @@ const ViewCartItemsPage: React.FC = () => {
           margin-top: 20px; /* Add margin to separate from the last cart item */
         }
         .text-38B2AC {
-          color: #38B2AC; /* Set the text color to #38B2AC */
+          color: #38b2ac; /* Set the text color to #38B2AC */
         }
       `}</style>
     </div>

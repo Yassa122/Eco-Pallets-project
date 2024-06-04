@@ -7,7 +7,7 @@ import product2 from '../pics/durm2 Background Removed.png';
 import product3 from '../pics/drum1 Background Removed.png';
 
 
-const  = () => {
+const  drum= () => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const  = () => {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch("http://localhost:5555/items", {
+            const response = await fetch("http://localhost:5555/favorites/items", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,4 +99,4 @@ const  = () => {
     );
 };
 
-export default ;
+export default drum;

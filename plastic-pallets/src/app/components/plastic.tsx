@@ -13,7 +13,7 @@ const MetalPage = () => {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch("http://localhost:5555/items", {
+            const response = await fetch("http://localhost:5555/favorites/items", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

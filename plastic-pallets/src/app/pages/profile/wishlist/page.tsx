@@ -1,12 +1,12 @@
 // pages/my-wishlist.tsx
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image'; // Import the Image component from Next.js
-import Pallet1 from '../../../images/cart/pallet1.png'; // Corrected path
+import React, { useEffect, useState } from "react";
+import Image from "next/image"; // Import the Image component from Next.js
+import Pallet1 from "../../../images/cart/pallet1.png"; // Corrected path
 
 interface Product {
-  productId:string;
+  productId: string;
   name: string;
   description: string;
   price: number;
@@ -24,36 +24,41 @@ const MyWishlist: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [openMenus, setOpenMenus] = useState<boolean[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
   const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false); // State for showing the delete message
 
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         if (!token) {
-          throw new Error('No access token found');
+          throw new Error("No access token found");
         }
 
-        const response = await fetch('http://localhost:8080/product/my-wishlist', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          credentials: 'include',
-        });
+        const response = await fetch(
+          "http://localhost:8080/product/my-wishlist",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
 
         const data = await response.json();
         if (response.ok) {
-          console.log('Fetched wishlist:', data); // Debug log
+          console.log("Fetched wishlist:", data); // Debug log
           setWishlist(data);
           setOpenMenus(data.products.map(() => false));
         } else {
-          throw new Error(data.message || 'Failed to fetch wishlist');
+          throw new Error(data.message || "Failed to fetch wishlist");
         }
       } catch (error) {
-        console.error('Fetching error:', error);
+        console.error("Fetching error:", error);
       } finally {
         setLoading(false);
       }
@@ -63,7 +68,7 @@ const MyWishlist: React.FC = () => {
   }, []);
 
   const toggleMenu = (productId: string, index: number) => {
-    setOpenMenus(prev => {
+    setOpenMenus((prev) => {
       const newOpenMenus = [...prev];
       newOpenMenus[index] = !newOpenMenus[index];
       return newOpenMenus;
@@ -73,45 +78,52 @@ const MyWishlist: React.FC = () => {
 
   const handleDeleteProduct = async (productId: string) => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       if (!token) {
-        throw new Error('No access token found');
+        throw new Error("No access token found");
       }
 
-      const response = await fetch(`http://localhost:8080/product/remove-from-wishlist`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({ productId }), // Include productId in the request body
-      });
+      const response = await fetch(
+        `http://localhost:8080/product/remove-from-wishlist`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ productId }), // Include productId in the request body
+        }
+      );
 
       if (response.ok) {
-        setWishlist(prev => {
+        setWishlist((prev) => {
           if (!prev) {
             return null;
           }
           return {
             ...prev,
-            products: prev.products.filter(product => product.productId !== productId)
+            products: prev.products.filter(
+              (product) => product.productId !== productId
+            ),
           };
         });
         setShowDeleteMessage(true); // Show the delete message
         setTimeout(() => setShowDeleteMessage(false), 3000); // Hide the delete message after 3 seconds
       } else {
         const data = await response.json();
-        throw new Error(data.message || 'Failed to delete product from wishlist');
+        throw new Error(
+          data.message || "Failed to delete product from wishlist"
+        );
       }
     } catch (error) {
-      console.error('Error deleting product from wishlist:', error);
+      console.error("Error deleting product from wishlist:", error);
     }
   };
 
   const addToCart = async (product) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem("auth_token");
       const body = {
         productId: product.productId,
         productName: product.name,
@@ -121,17 +133,17 @@ const MyWishlist: React.FC = () => {
         totalPrice: product.price, // Assuming total price is the same as price for now
       };
       console.log(body);
-  
+
       const response = await fetch("http://localhost:7000/addToCart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify(body),
       });
-  
+
       const data = await response.json();
       if (response.ok) {
         console.log("Item added to cart:", data);
@@ -143,7 +155,6 @@ const MyWishlist: React.FC = () => {
       console.error("Add to cart error:", error);
     }
   };
-  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -156,11 +167,12 @@ const MyWishlist: React.FC = () => {
   return (
     <div className="wishlist-container">
       <h1 className="wishlist-header">My Wishlist</h1>
-      {showDeleteMessage && <p className="delete-message">Product deleted from wishlist</p>}
+      {showDeleteMessage && (
+        <p className="delete-message">Product deleted from wishlist</p>
+      )}
       <ul className="wishlist-list">
         {wishlist.products.map((product, index) => (
-          <li key={product.productId
-          } className="wishlist-item">
+          <li key={product.productId} className="wishlist-item">
             <div className="wishlist-item-header">
               <button
                 className="meatball-button"
@@ -170,8 +182,12 @@ const MyWishlist: React.FC = () => {
               </button>
               {openMenus[index] && (
                 <div className="meatball-menu">
-                  <button className="delete-button" onClick={() => handleDeleteProduct(product.productId
-                  )}>Delete</button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteProduct(product.productId)}
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </div>
@@ -188,7 +204,7 @@ const MyWishlist: React.FC = () => {
               onClick={() => addToCart(product.productId)}
               disabled={!product.availability}
             >
-              {product.availability ? 'Add to Cart' : 'Out of Stock'}
+              {product.availability ? "Add to Cart" : "Out of Stock"}
             </button>
           </li>
         ))}
@@ -239,7 +255,7 @@ const MyWishlist: React.FC = () => {
           margin-bottom: 10px; /* Add space below the description */
         }
         .product-price {
-          color: #38B2AC; /* Set the desired color for the price */
+          color: #38b2ac; /* Set the desired color for the price */
           margin: 0; /* Remove margin for better alignment */
           padding: 0; /* Remove padding for better alignment */
         }
@@ -253,11 +269,11 @@ const MyWishlist: React.FC = () => {
           font-weight: 600;
           text-decoration: none;
           cursor: pointer;
-          border: 1px solid #38B2AC; /* Change border color to #38B2AC */
+          border: 1px solid #38b2ac; /* Change border color to #38B2AC */
           border-radius: 25px;
           outline: none;
           overflow: hidden;
-          color: #38B2AC; /* Change text color to #38B2AC */
+          color: #38b2ac; /* Change text color to #38B2AC */
           transition: color 0.3s 0.1s ease-out;
           text-align: center;
           margin-left: -30px; /* Move the button a little bit to the left */
@@ -272,7 +288,7 @@ const MyWishlist: React.FC = () => {
           right: 0;
           bottom: 0;
           margin: auto;
-          content: '';
+          content: "";
           border-radius: 50%;
           display: block;
           width: 20em;
@@ -284,10 +300,10 @@ const MyWishlist: React.FC = () => {
         }
         .add-to-cart:hover {
           color: #fff;
-          border: 1px solid #38B2AC; /* Change hover border color to #38B2AC */
+          border: 1px solid #38b2ac; /* Change hover border color to #38B2AC */
         }
         .add-to-cart:hover::before {
-          box-shadow: inset 0 0 0 10em #38B2AC; /* Change hover shadow color to #38B2AC */
+          box-shadow: inset 0 0 0 10em #38b2ac; /* Change hover shadow color to #38B2AC */
         }
         .add-to-cart:disabled {
           background-color: #ccc;
@@ -304,7 +320,7 @@ const MyWishlist: React.FC = () => {
           cursor: pointer;
           padding: 5px;
           font-size: 20px;
-          color: #38B2AC;
+          color: #38b2ac;
           outline: none;
         }
         .wishlist-item {
@@ -340,7 +356,7 @@ const MyWishlist: React.FC = () => {
           top: 30px;
           right: 10px;
           background: #1e1e1e;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           border-radius: 5px;
           padding: 10px;
           z-index: 100;

@@ -15,7 +15,7 @@ const FeaturedProducts = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:5555/items", {
+      const response = await fetch("http://localhost:5555/favorites/items", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,6 @@ const FeaturedProducts = () => {
         image: item.image,
       };
 
-
       const response = await fetch("http://localhost:7000/addToCart", {
         method: "POST",
         headers: {
@@ -64,7 +63,6 @@ const FeaturedProducts = () => {
       if (response.ok) {
         showPopupMessage("Added to cart");
       } else {
-
         showPopupMessage(" added to cart");
       }
     } catch (error) {
@@ -76,15 +74,18 @@ const FeaturedProducts = () => {
   const addToFavorites = async (item) => {
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch("http://localhost:5555/addToFavorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify({ item }),
-      });
+      const response = await fetch(
+        "http://localhost:5555/favorites/addToFavorites",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ item }),
+        }
+      );
 
       if (response.ok) {
         showPopupMessage("Added to favorites");
@@ -102,7 +103,7 @@ const FeaturedProducts = () => {
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
-    }, 2000); 
+    }, 2000);
   };
 
   const getRatingColor = (rating) => {
@@ -173,12 +174,23 @@ const FeaturedProducts = () => {
                 objectFit="cover"
                 alt={item.name}
               />
-              <div style={{ position: "absolute", top: "10px", right: "10px", zIndex: 2 }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  zIndex: 2,
+                }}
+              >
                 <button onClick={() => addToFavorites(item)} className="btn">
-                  <Image src={heart} alt="Add to Favorites" width={30} height={30} />
+                  <Image
+                    src={heart}
+                    alt="Add to Favorites"
+                    width={30}
+                    height={30}
+                  />
                 </button>
               </div>
-
             </div>
             <div style={{ padding: "20px" }}>
               <h3
@@ -215,7 +227,7 @@ const FeaturedProducts = () => {
               </p>
               <p
                 style={{
-                  margin:                  "0",
+                  margin: "0",
                   color: "#bbb",
                   fontSize: "1.4rem",
                   marginBottom: "10px",
@@ -233,7 +245,13 @@ const FeaturedProducts = () => {
                   {item.rating}
                 </span>
               </p>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <button
                   onClick={() => addToCart(item)}
                   style={{
@@ -300,4 +318,3 @@ const FeaturedProducts = () => {
 };
 
 export default FeaturedProducts;
-

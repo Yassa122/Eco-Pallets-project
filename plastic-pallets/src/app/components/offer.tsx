@@ -13,7 +13,7 @@ const Offers = () => {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch("http://localhost:5555/items", {
+            const response = await fetch("http://localhost:5555/favorites/items", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const Offers = () => {
     const addToFavorites = async (item) => {
         try {
             const token = localStorage.getItem('auth_token');
-            const response = await fetch("http://localhost:5555/addToFavorites", {
+            const response = await fetch("http://localhost:5555/favorites/addToFavorites", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

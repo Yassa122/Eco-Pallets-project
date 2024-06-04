@@ -77,7 +77,7 @@ export function Navbar({ title }: NavbarProps) {
 
   const searchItem = async (query: string) => {
     try {
-      const response = await fetch(`http://localhost:5555/searchItem/${query}`);
+      const response = await fetch(`http://localhost:5555/favorites/searchItem/${query}`);
       if (!response.ok) {
         throw new Error("Network response was not ok.");
       }

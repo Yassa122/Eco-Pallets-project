@@ -2,7 +2,7 @@
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function VerifyEmailPage() {
   const [email, setEmail] = useState<string>("");
@@ -19,7 +19,7 @@ export default function VerifyEmailPage() {
       const response = await fetch(
         "http://localhost:8000/account/profile/updateByMail",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
         throw new Error("Failed to send verification email");
       }
       // Redirect to another page after successfully sending the verification email
-      router.push("/verification-success");
+      router.push("/pages/authentication/login");
     } catch (error) {
       console.error("Error sending verification email:", error.message);
       // Handle error (optional)
@@ -70,7 +70,9 @@ export default function VerifyEmailPage() {
               required
               className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
             />
-            {typeof error === 'string' && <p className="text-red-500">{error}</p>}
+            {typeof error === "string" && (
+              <p className="text-red-500">{error}</p>
+            )}
           </div>
           <button
             type="submit"

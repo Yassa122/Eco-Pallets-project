@@ -5,11 +5,11 @@ import { AddToFavDto, AddToFavItemDto } from './dto/fav.dto';
 import { CurrentUser } from 'src/decorators/get-user-id.decorator';
 
 
-@Controller()
+@Controller("favorites")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get("/get-fav")//working
   getHello(): string {
     return this.appService.getHello();
   }

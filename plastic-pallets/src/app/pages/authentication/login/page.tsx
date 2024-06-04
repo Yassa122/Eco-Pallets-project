@@ -16,7 +16,6 @@ export default function Login() {
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
   const [error, setError] = useState<string | null>(null); // Add error state
-const router=useRouter();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
