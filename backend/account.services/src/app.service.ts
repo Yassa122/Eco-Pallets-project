@@ -4,7 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { ClientKafka } from '@nestjs/microservices';
 import { User } from './identity/interfaces/user';
 import { CreateIdentityDto } from './identity/dto/create.identity.dto';
-import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
+import {UpdateUserProfile} from './identity/dto/update-user-profile.dto';
 import { IdentityService } from './identity/identity.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -66,7 +66,7 @@ export class AppService implements OnModuleInit {
 
   async updateUser(
     userId: string,
-    updateUserDto: UpdateUserProfileDto,
+    updateUserDto: UpdateUserProfile,
   ): Promise<User | null> {
     return new Promise((resolve, reject) => {
       this.userInfoService
@@ -80,10 +80,9 @@ export class AppService implements OnModuleInit {
     });
   }
 
-
   async updateUserDataByEmail(
     email: string,
-    updateUserDto: UpdateUserProfileDto,
+    updateUserDto: UpdateUserProfile,
   ): Promise<User | null> {
     return new Promise((resolve, reject) => {
       this.userInfoService

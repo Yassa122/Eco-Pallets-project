@@ -14,7 +14,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/userAlreadyExists.exception';
 import { KafkaService } from '../kafka/kafka.service';
-import { UpdateUserProfileDto } from './dto/updateUserProfile.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateGuestIdentityDto } from './dto/guest.identity.dto';
