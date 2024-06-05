@@ -6,11 +6,10 @@
         "start:dev": "nest start --watch",
         "start:prod": "node dist/main",
         "build": "tsc"
-    }
-    ,
+    },
     "dependencies": {
-        "@nestjs/common": "^10.3.8",
-        "@nestjs/core": "^10.3.8",
+        "@nestjs/common": "^10.3.9",
+        "@nestjs/core": "^10.3.9",
         "@nestjs/microservices": "^10.3.8",
         "@nestjs/mongoose": "^10.0.6",
         "@nestjs/platform-express": "^10.3.8",
