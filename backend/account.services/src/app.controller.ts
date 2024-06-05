@@ -17,7 +17,7 @@ import { Response } from 'express';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 import { CurrentUser } from './decorators/get-user-id.decorator';
-import { UpdateUserProfileDto } from './identity/dto/updateUserProfile.dto';
+import { UpdateUserProfile } from './identity/dto/update-user-profile.dto';
 import { AddShippingAddressDto } from './user-info/dto/add-shipping-address.dto';
 import { DeleteShippingAddressDto } from './user-info/dto/delete-shipping-address.dto';
 import { UpdateShippingAddressDto } from './user-info/dto/update-shipping-address.dto';
@@ -85,17 +85,15 @@ export class AppController {
   @Put('profile/update')
   async updateUser(
     @CurrentUser() userId: string,
-    @Body() updateUserDto: UpdateUserProfileDto,
+    @Body() updateUserDto: UpdateUserProfile,
   ) {
     return this.userInfoService.updateUserData(userId, updateUserDto);
   }
 
-
-
-
   @Put('profile/updateByMail')
   async updateUserDataByEmail(
-    @Body('email') email: string, @Body() updateUserDto: UpdateUserProfileDto
+    @Body('email') email: string,
+    @Body() updateUserDto: UpdateUserProfile,
   ) {
     return this.userInfoService.updateUserDataByEmail(email, updateUserDto);
   }
