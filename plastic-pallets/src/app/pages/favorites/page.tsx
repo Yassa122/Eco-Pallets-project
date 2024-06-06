@@ -35,17 +35,14 @@ const MyWishlist: React.FC = () => {
           throw new Error("No access token found");
         }
 
-        const response = await fetch(
-          "http://localhost:8080/product/my-wishlist",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          }
-        );
+        const response = await fetch("http://localhost:5555/favorites/items", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
 
         const data = await response.json();
         if (response.ok) {
