@@ -34,7 +34,7 @@ export class AddToFavDto {
   toString() {
     return JSON.stringify({
       userId: this.userId,
-      items: this.items.map(item => item.toString()),
+      items: this.items.map((item) => item.toString()),
     });
   }
 }
