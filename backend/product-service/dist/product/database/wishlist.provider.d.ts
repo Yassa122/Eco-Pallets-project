@@ -25,6 +25,28 @@
 import { Connection } from 'mongoose';
 export declare const wishlistProviders: {
     provide: string;
-    useFactory: (connection: Connection) => import("mongoose").Model<import("../interfaces/wishlist").Wishlist, {}, {}, {}, import("mongoose").Schema<import("../interfaces/wishlist").Wishlist, import("mongoose").Model<import("../interfaces/wishlist").Wishlist, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, import("../interfaces/wishlist").Wishlist>>;
+    useFactory: (connection: Connection) => import("mongoose").Model<{
+        createdAt: Date;
+        productId?: {
+            prototype?: import("mongoose").Types.ObjectId;
+            cacheHexString?: unknown;
+            generate?: {};
+            createFromTime?: {};
+            createFromHexString?: {};
+            isValid?: {};
+        };
+        userId?: string;
+    }, {}, {}, {}, import("mongoose").Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
+        createdAt: Date;
+        productId?: {
+            prototype?: import("mongoose").Types.ObjectId;
+            cacheHexString?: unknown;
+            generate?: {};
+            createFromTime?: {};
+            createFromHexString?: {};
+            isValid?: {};
+        };
+        userId?: string;
+    }>>;
     inject: string[];
 }[];

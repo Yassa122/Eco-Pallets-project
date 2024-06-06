@@ -39,6 +39,5 @@ export interface Product extends Document {
     material: string;
     availability: boolean;
     rentalOptions: RentalOptions;
-    category: string;
 }
 export {};

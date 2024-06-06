@@ -5,19 +5,19 @@ const mongoose_1 = require("mongoose");
 exports.ProductSchema = new mongoose_1.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,
-        required: true
+        required: true,
     },
     images: {
         type: [String],
-        required: true
+        required: true,
     },
     price: {
         type: Number,
-        required: true
+        required: true,
     },
     color: {
         type: String,
@@ -36,17 +36,17 @@ exports.ProductSchema = new mongoose_1.Schema({
     },
     availability: {
         type: Boolean,
-        default: true
+        default: true,
     },
     rentalOptions: {
         available: {
             type: Boolean,
-            default: false
+            default: false,
         },
         deposit: {
             type: Number,
             require: false,
-        }
-    }
+        },
+    },
 });
 //# sourceMappingURL=product.schema.js.map

@@ -7,7 +7,6 @@ import { RentProductDto } from './dto/rent-product.dto';
 import { Product } from './interfaces/product';
 import { Review } from './interfaces/review';
 import { Wishlist } from './interfaces/wishlist';
-import { ProductWishlistDto } from './dto/product-wishlist.dto';
 export declare class ProductController {
     private readonly productService;
     constructor(productService: ProductService);
@@ -16,16 +15,15 @@ export declare class ProductController {
     getProductById(id: string): Promise<Product>;
     addReview(productId: string, userId: string, createReviewDto: CreateReviewDto): Promise<Review>;
     getProductReviews(productId: string): Promise<Review[]>;
-    viewProductDetails(id: string): Promise<Product>;
-    viewReviews(productId: string): Promise<Review[]>;
+    deleteReview(id: string, userId: string): Promise<{
+        message: string;
+    }>;
     addToWishlist(productId: string, userId: string, createWishlistDto: CreateWishlistDto): Promise<Wishlist>;
+    getWishlistByUser(userId: string): Promise<Wishlist[]>;
+    removeFromWishlist(productId: string, userId: string): Promise<Wishlist | null>;
+    customizeProduct(productId: string, customizationDto: CustomizationDto): Promise<Product>;
     rentProduct(productId: string, rentProductDto: RentProductDto): Promise<{
         success: boolean;
         rentalDetails: any;
     }>;
-    deleteReview(id: string, userId: string): Promise<any>;
-    getWishlist(userId: string): Promise<Wishlist>;
-    addProduct(addProductDto: ProductWishlistDto, userId: string): Promise<Wishlist>;
-    removeProduct(removeProductDto: ProductWishlistDto, userId: string): Promise<Wishlist>;
-    customizeProduct(productId: string, customizationDto: CustomizationDto): Promise<Product>;
 }

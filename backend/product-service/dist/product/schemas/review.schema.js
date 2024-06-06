@@ -6,26 +6,26 @@ exports.ReviewSchema = new mongoose_1.Schema({
     productId: {
         type: mongoose_1.Types.ObjectId,
         ref: 'Product',
-        required: false
+        required: false,
     },
     userId: {
         type: mongoose_1.Types.ObjectId,
         ref: 'User',
-        required: false
+        required: false,
     },
     rating: {
         type: Number,
         required: true,
         min: 1,
-        max: 5
+        max: 5,
     },
     comment: {
         type: String,
-        required: true
+        required: true,
     },
     createdAt: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 //# sourceMappingURL=review.schema.js.map

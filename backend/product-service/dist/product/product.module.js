@@ -22,10 +22,14 @@ let ProductModule = class ProductModule {
 exports.ProductModule = ProductModule;
 exports.ProductModule = ProductModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema },
-                { name: 'Review', schema: review_schema_1.ReviewSchema }, { name: "Wishlist", schema: wishlist_schema_1.WishlistSchema },
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Product', schema: product_schema_1.ProductSchema },
+                { name: 'Review', schema: review_schema_1.ReviewSchema },
+                { name: 'Wishlist', schema: wishlist_schema_1.WishlistSchema },
                 { name: 'Rentals', schema: rentals_schema_1.RentalSchema },
-            ])],
+            ]),
+        ],
         controllers: [product_controller_1.ProductController],
         providers: [product_service_1.ProductService, ...database_providers_1.databaseProviders, ...product_providers_1.productProviders],
         exports: [product_service_1.ProductService, mongoose_1.MongooseModule],

@@ -21,7 +21,6 @@ const wishlist_dto_1 = require("./dto/wishlist.dto");
 const customization_dto_1 = require("./dto/customization.dto");
 const rent_product_dto_1 = require("./dto/rent-product.dto");
 const current_user_decorator_1 = require("../decorators/current-user.decorator");
-const product_wishlist_dto_1 = require("./dto/product-wishlist.dto");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -52,19 +51,31 @@ let ProductController = class ProductController {
         return this.productService.getProductReviews(productId);
         console.log(productId);
     }
-    async viewProductDetails(id) {
-        console.log(id);
-        return this.productService.findById(id);
-    }
-    async viewReviews(productId) {
-        return this.productService.viewReviews(productId);
+    async deleteReview(id, userId) {
+        return this.productService.deleteReview(id, userId);
     }
     async addToWishlist(productId, userId, createWishlistDto) {
         return this.productService.addToWishlist({
             ...createWishlistDto,
             productId,
-            userId
+            userId,
         });
+    }
+    async getWishlistByUser(userId) {
+        try {
+            console.log('User ID:', userId);
+            return await this.productService.getWishlistByUser(userId);
+        }
+        catch (error) {
+            console.error('Error retrieving wishlist:', error);
+            throw new common_1.NotFoundException('Failed to retrieve wishlist');
+        }
+    }
+    async removeFromWishlist(productId, userId) {
+        return this.productService.removeFromWishlist(productId);
+    }
+    async customizeProduct(productId, customizationDto) {
+        return this.productService.customizeProduct(productId, customizationDto);
     }
     async rentProduct(productId, rentProductDto) {
         try {
@@ -79,21 +90,6 @@ let ProductController = class ProductController {
                 throw new common_1.NotFoundException('Failed to rent product: ' + error.message);
             }
         }
-    }
-    async deleteReview(id, userId) {
-        return this.productService.deleteReview(id, userId);
-    }
-    getWishlist(userId) {
-        return this.productService.findWishlistByUserId(userId);
-    }
-    addProduct(addProductDto, userId) {
-        return this.productService.addProductToWishlist(userId, addProductDto);
-    }
-    removeProduct(removeProductDto, userId) {
-        return this.productService.removeProductFromWishlist(userId, removeProductDto);
-    }
-    async customizeProduct(productId, customizationDto) {
-        return this.productService.customizeProduct(productId, customizationDto);
     }
 };
 exports.ProductController = ProductController;
@@ -134,19 +130,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getProductReviews", null);
 __decorate([
-    (0, common_1.Get)('/getProductById/:id'),
-    __param(0, (0, common_1.Param)('_id')),
+    (0, common_1.Delete)('reviews/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
-], ProductController.prototype, "viewProductDetails", null);
-__decorate([
-    (0, common_1.Get)(':id/reviews'),
-    __param(0, (0, common_1.Param)('_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], ProductController.prototype, "viewReviews", null);
+], ProductController.prototype, "deleteReview", null);
 __decorate([
     (0, common_1.Post)(':id/wishlist'),
     __param(0, (0, common_1.Param)('id')),
@@ -157,44 +147,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "addToWishlist", null);
 __decorate([
-    (0, common_1.Post)(':productId/rent'),
-    __param(0, (0, common_1.Param)('productId')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Get)('/MyWishlist'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, rent_product_dto_1.RentProductDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], ProductController.prototype, "rentProduct", null);
+], ProductController.prototype, "getWishlistByUser", null);
 __decorate([
-    (0, common_1.Delete)('reviews/:id'),
+    (0, common_1.Delete)('/wishlist/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
-], ProductController.prototype, "deleteReview", null);
-__decorate([
-    (0, common_1.Get)('my-wishlist'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ProductController.prototype, "getWishlist", null);
-__decorate([
-    (0, common_1.Post)('add-to-wishlist'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [product_wishlist_dto_1.ProductWishlistDto, String]),
-    __metadata("design:returntype", void 0)
-], ProductController.prototype, "addProduct", null);
-__decorate([
-    (0, common_1.Delete)('remove-from-wishlist'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [product_wishlist_dto_1.ProductWishlistDto, String]),
-    __metadata("design:returntype", void 0)
-], ProductController.prototype, "removeProduct", null);
+], ProductController.prototype, "removeFromWishlist", null);
 __decorate([
     (0, common_1.Put)(':productId/customize'),
     __param(0, (0, common_1.Param)('productId')),
@@ -203,6 +169,14 @@ __decorate([
     __metadata("design:paramtypes", [String, customization_dto_1.CustomizationDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "customizeProduct", null);
+__decorate([
+    (0, common_1.Post)(':productId/rent'),
+    __param(0, (0, common_1.Param)('productId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, rent_product_dto_1.RentProductDto]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "rentProduct", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
     __metadata("design:paramtypes", [product_service_1.ProductService])

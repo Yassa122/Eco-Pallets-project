@@ -22,7 +22,16 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Schema } from 'mongoose';
-import { Wishlist, WishlistProduct } from '../interfaces/wishlist';
-export declare const WishlistProductSchema: Schema<WishlistProduct, import("mongoose").Model<WishlistProduct, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, WishlistProduct>;
-export declare const WishlistSchema: Schema<Wishlist, import("mongoose").Model<Wishlist, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Wishlist>;
+import mongoose from 'mongoose';
+export declare const WishlistSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+    createdAt: Date;
+    productId?: {
+        prototype?: mongoose.Types.ObjectId;
+        cacheHexString?: unknown;
+        generate?: {};
+        createFromTime?: {};
+        createFromHexString?: {};
+        isValid?: {};
+    };
+    userId?: string;
+}>;
