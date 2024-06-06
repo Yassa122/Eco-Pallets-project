@@ -1,15 +1,22 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Button,
+  Modal,
+  Form,
+} from "react-bootstrap";
 import Image from "next/image";
-import Pallet1 from '../../../images/Pallet1.png';
-import CustomizeProduct from './CustomizeProduct';
-import './style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import Pallet1 from "../../../images/Pallet1.png";
+import CustomizeProduct from "./CustomizeProduct";
+import "./style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShareAlt } from "@fortawesome/free-solid-svg-icons";
 
 interface Product {
   name: string;
@@ -45,8 +52,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
   const [showModal, setShowModal] = useState(false);
   const [showRentModal, setShowRentModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [rentalStart, setRentalStart] = useState<string>('');
-  const [rentalEnd, setRentalEnd] = useState<string>('');
+  const [rentalStart, setRentalStart] = useState<string>("");
+  const [rentalEnd, setRentalEnd] = useState<string>("");
   const [deposit, setDeposit] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number | null>(null);
   const router = useRouter();
@@ -58,7 +65,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}`);
+      const response = await fetch(
+        `http://localhost:8080/product/productdetails/${_id}`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -66,22 +75,24 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
       const data: Product = await response.json();
       setProduct(data);
     } catch (error) {
-      console.error('Fetching error:', error);
-      setError('Failed to fetch product details. Please try again later.');
+      console.error("Fetching error:", error);
+      setError("Failed to fetch product details. Please try again later.");
     }
   };
 
   const fetchProductReviews = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}/reviews`);
+      const response = await fetch(
+        `http://localhost:8080/product/reviews/${_id}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data: Review[] = await response.json();
       setReviews(data);
     } catch (error) {
-      console.error('Fetching error:', error);
-      setError('Failed to fetch product reviews. Please try again later.');
+      console.error("Fetching error:", error);
+      setError("Failed to fetch product reviews. Please try again later.");
     }
   };
 
@@ -104,20 +115,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
   const handleAddToWishlist = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}/wishlist`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: 'yourUserId' }), // Replace 'yourUserId' with the actual user ID
-      });
+      const response = await fetch(
+        `http://localhost:8080/product/${_id}/wishlist`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: "yourUserId" }), // Replace 'yourUserId' with the actual user ID
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      setWishlistMessage('Product added to wishlist!');
+      setWishlistMessage("Product added to wishlist!");
     } catch (error) {
-      console.error('Wishlist error:', error);
-      setWishlistMessage('Failed to add product to wishlist. Please try again later.');
+      console.error("Wishlist error:", error);
+      setWishlistMessage(
+        "Failed to add product to wishlist. Please try again later."
+      );
     }
   };
 
@@ -130,22 +146,26 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
   };
 
   const handleShareTo = (platform: string) => {
-    let url = '';
+    let url = "";
     const productUrl = window.location.href;
-    const productTitle = product?.name || '';
+    const productTitle = product?.name || "";
 
     switch (platform) {
-      case 'facebook':
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+      case "facebook":
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          productUrl
+        )}`;
         break;
-      case 'whatsapp':
-        url = `https://api.whatsapp.com/send?text=${encodeURIComponent(productTitle + ' ' + productUrl)}`;
+      case "whatsapp":
+        url = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          productTitle + " " + productUrl
+        )}`;
         break;
       default:
         break;
     }
 
-    window.open(url, '_blank');
+    window.open(url, "_blank");
     setShowShareModal(false);
   };
 
@@ -154,7 +174,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
     const start = new Date(rentalStart);
     const end = new Date(rentalEnd);
-    const rentalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const rentalDays = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     if (rentalDays <= 0) {
       setTotalPrice(null);
@@ -166,22 +188,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
 
   const handleRentSubmit = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${_id}/rent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ rentalStart, rentalEnd, deposit }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/product/${_id}/rent`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rentalStart, rentalEnd, deposit }),
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('Rent details:', data);
+      console.log("Rent details:", data);
       setShowRentModal(false);
       // Optionally redirect or update UI after successful rent
     } catch (error) {
-      console.error('Rent error:', error);
+      console.error("Rent error:", error);
       // Optionally show error message to the user
     }
   };
@@ -212,10 +237,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
               <p className="product-material">Material: {product.material}</p>
             </div>
             <div className="product-actions">
-              <Button variant="custom" onClick={handleCustomize}>Customize</Button>
-              <Button variant="outline-custom" onClick={handleAddToWishlist}>Add to Wishlist</Button>
-              <Button variant="custom" onClick={handleRent}>Rent</Button>
-              <FontAwesomeIcon icon={faShareAlt} className="share-icon" onClick={handleShare} />
+              <Button variant="custom" onClick={handleCustomize}>
+                Customize
+              </Button>
+              <Button variant="outline-custom" onClick={handleAddToWishlist}>
+                Add to Wishlist
+              </Button>
+              <Button variant="custom" onClick={handleRent}>
+                Rent
+              </Button>
+              <FontAwesomeIcon
+                icon={faShareAlt}
+                className="share-icon"
+                onClick={handleShare}
+              />
             </div>
             {wishlistMessage && <p>{wishlistMessage}</p>}
           </div>
@@ -280,9 +315,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
                 onChange={(e) => setDeposit(Number(e.target.value))}
               />
             </Form.Group>
-            {totalPrice !== null && (
-              <p>Total Rental Price: ${totalPrice}</p>
-            )}
+            {totalPrice !== null && <p>Total Rental Price: ${totalPrice}</p>}
             <Button variant="primary" onClick={handleRentSubmit}>
               Submit
             </Button>
@@ -295,8 +328,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ _id }) => {
           <Modal.Title>Share Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Button variant="primary" className="mb-2 w-100" onClick={() => handleShareTo('facebook')}>Share on Facebook</Button>
-          <Button variant="success" className="mb-2 w-100" onClick={() => handleShareTo('whatsapp')}>Share on WhatsApp</Button>
+          <Button
+            variant="primary"
+            className="mb-2 w-100"
+            onClick={() => handleShareTo("facebook")}
+          >
+            Share on Facebook
+          </Button>
+          <Button
+            variant="success"
+            className="mb-2 w-100"
+            onClick={() => handleShareTo("whatsapp")}
+          >
+            Share on WhatsApp
+          </Button>
         </Modal.Body>
       </Modal>
     </Container>
