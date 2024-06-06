@@ -5,31 +5,30 @@ export const RentalSchema = new Schema({
   productId: {
     type: Types.ObjectId,
     ref: 'Product',
-    required: true
+    required: true,
   },
   rentalStart: {
     type: Date,
-    required: true
+    required: true,
   },
   rentalEnd: {
     type: Date,
-    required: true
+    required: true,
   },
   rentalDays: {
     type: Number,
-    required: true
+    required: true,
   },
-//   dailyRate: {
-//     type: Number,
-//     required: true
-//   },
+  //   dailyRate: {
+  //     type: Number,
+  //     required: true
+  //   },
   deposit: {
     type: Number,
-    required: true
+    required: true,
   },
   totalPrice: {
     type: Number,
-    required: true
+    required: true,
   },
-  
 });

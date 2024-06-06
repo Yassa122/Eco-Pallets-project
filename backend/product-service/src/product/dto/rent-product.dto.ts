@@ -2,7 +2,6 @@
 import { IsDateString, IsNotEmpty, IsMongoId } from 'class-validator';
 
 export class RentProductDto {
-
   @IsDateString()
   @IsNotEmpty()
   rentalStart: Date;
@@ -12,5 +11,5 @@ export class RentProductDto {
   rentalEnd: Date;
 
   @IsNotEmpty()
-  deposit:number;
+  deposit: number;
 }
