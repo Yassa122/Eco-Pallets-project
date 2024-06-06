@@ -7,7 +7,8 @@ import {
   LayoutGrid,
   Heart,
   LogIn,
-  LogOut
+  LogOut,
+  Box, // Import the Box icon
 } from "lucide-react";
 
 type Menu = {
@@ -28,35 +29,43 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
+          href: "/pages/home",
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
-          icon: LayoutGrid
-        }
-      ]
+          icon: LayoutGrid,
+        },
+      ],
     },
     {
       groupLabel: "Contents",
       menus: [
         {
-          href: "http://localhost:3000/pages/cart",
+          href: "/pages/cart",
           label: "Cart",
           active: pathname.includes("/cart"),
-          icon: ShoppingCart
+          icon: ShoppingCart,
         },
         {
-          href: "http://localhost:3000/pages/wishlist",
+          href: "/pages/products",
+          label: "Products",
+          active: pathname.includes("/products"),
+          icon: Box, // Use the Box icon for Products
+        },
+        {
+          href: "/pages/wishlist",
           label: "Favorites",
-          active: pathname.includes("/favorites") || pathname.includes("/wishlist"),
-          icon: Heart
+          active:
+            pathname.includes("/favorites") || pathname.includes("/wishlist"),
+          icon: Heart,
         },
         {
-          href: "http://localhost:3000/pages/wishlist",
+          href: "/pages/wishlist",
           label: "Wishlist",
-          active: pathname.includes("/wishlist") || pathname.includes("/favorites"),
-          icon: Bookmark
-        }
-      ]
+          active:
+            pathname.includes("/wishlist") || pathname.includes("/favorites"),
+          icon: Bookmark,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
@@ -65,15 +74,15 @@ export function getMenuList(pathname: string): Group[] {
           href: "/users",
           label: "Users",
           active: pathname.includes("/users"),
-          icon: Users
+          icon: Users,
         },
         {
-          href: "/account",
+          href: "/pages/profile/profile-settings",
           label: "Account",
           active: pathname.includes("/account"),
-          icon: Settings
-        }
-      ]
+          icon: Settings,
+        },
+      ],
     },
     {
       groupLabel: "Account",
@@ -82,15 +91,15 @@ export function getMenuList(pathname: string): Group[] {
           href: "/login",
           label: "Login",
           active: pathname.includes("/login"),
-          icon: LogIn
+          icon: LogIn,
         },
         {
           href: "/logout",
           label: "Logout",
           active: pathname.includes("/logout"),
-          icon: LogOut
-        }
-      ]
-    }
+          icon: LogOut,
+        },
+      ],
+    },
   ];
 }
