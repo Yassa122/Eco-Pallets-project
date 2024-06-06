@@ -15,7 +15,7 @@ const FeaturedProducts = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:5555/favorites/items", {
+      const response = await fetch("http://localhost:5555/items", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -74,18 +74,39 @@ const FeaturedProducts = () => {
   const addToFavorites = async (item) => {
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch(
-        "http://localhost:5555/favorites/addToFavorites",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-          body: JSON.stringify({ item }),
-        }
-      );
+      const response = await fetch("http://localhost:5555/addToFavorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ item }),
+      });
+
+      if (response.ok) {
+        showPopupMessage("Added to favorites");
+      } else {
+        showPopupMessage("Item already exists in favorites");
+      }
+    } catch (error) {
+      showPopupMessage("Failed to add to favorites");
+      console.error("Add to favorites error:", error);
+    }
+  };
+
+  const addToWishlist = async (item) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch("http://localhost:8080/addToFavorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ item }),
+      });
 
       if (response.ok) {
         showPopupMessage("Added to favorites");
