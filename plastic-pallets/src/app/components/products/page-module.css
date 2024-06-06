@@ -22,10 +22,11 @@
 }
 
 .productCard {
-  background-color: #191B1F !important;
+  background-color: #1a1a1a !important;
   color: #ffffff;
   border: none;
   transition: transform 0.2s;
+  border-radius: 10px;
 }
 
 .productCard:hover {
@@ -33,7 +34,7 @@
 }
 
 .productCard .card-body {
-  background-color: #191B1F;
+  background-color: #1a1a1a;
   color: #ffffff;
 }
 
