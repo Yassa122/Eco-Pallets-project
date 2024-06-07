@@ -19,7 +19,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     KafkaModule,
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets'),
+    MongooseModule.forRoot(
+      'mongodb+srv://Admin:98pE-8FZADg8bbZ@eco-pallets.saefewe.mongodb.net/plastic-pallets?retryWrites=true&w=majority&appName=Eco-Pallets',
+    ),
     IdentityModule,
     UsersModule,
     ReviewsModule,

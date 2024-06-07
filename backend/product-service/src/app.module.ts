@@ -12,18 +12,12 @@ import { ProductSchema } from './product/schemas/product.schema';
   imports: [
     ProductModule,
     MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/plastic-pallets-products',
+      'mongodb+srv://Admin:98pE-8FZADg8bbZ@eco-pallets.saefewe.mongodb.net/plastic-pallets-products?retryWrites=true&w=majority&appName=Eco-Pallets',
     ),
-    MongooseModule.forFeature([{ name: "Product", schema: ProductSchema }]),
-
+    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
   ],
 
   controllers: [AppController],
-  providers: [
-    AppService,
-    ProductService,
-    CreateProductDto,
-    ProductController,
-  ],
+  providers: [AppService, ProductService, CreateProductDto, ProductController],
 })
 export class AppModule {}
