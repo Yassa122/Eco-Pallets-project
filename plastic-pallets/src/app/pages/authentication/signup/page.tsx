@@ -23,22 +23,23 @@ export default function SignupPage() {
     }));
   };
 
-  const sendMail = async (name:string, email: string) => {
-    try{
-    const response = await fetch("http://localhost:8888/email/verification-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // This is needed to handle cookies if you're using them for authentication
-      body: JSON.stringify({name, email }), // Include the email in the request body
-    });
-
-  }catch (error) {
-    throw new Error("Failed to send mail: " + error);
-  }
-};
-
+  const sendMail = async (name: string, email: string) => {
+    try {
+      const response = await fetch(
+        "http://localhost:8888/email/verification-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // This is needed to handle cookies if you're using them for authentication
+          body: JSON.stringify({ name, email }), // Include the email in the request body
+        }
+      );
+    } catch (error) {
+      throw new Error("Failed to send mail: " + error);
+    }
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -54,35 +55,35 @@ export default function SignupPage() {
       return;
     }
     try {
-      const token = localStorage.getItem('token');
-      let flag=false;
+      const token = localStorage.getItem("token");
+      let flag = false;
       let _id;
       let payload;
       if (token) {
-         payload = JSON.parse(atob(token.split('.')[1]));
+        payload = JSON.parse(atob(token.split(".")[1]));
         const userRole = payload.role;
-        if (userRole === 'guest') {
-            flag = true;
-            _id=payload.id;
+        if (userRole === "guest") {
+          flag = true;
+          _id = payload.id;
         }
-
-
-        
       }
-      if (flag==true){
+      if (flag == true) {
         const mergedData = { ...formData, _id };
         console.log(mergedData);
         //cal GUestRegisterAPi with the guestUserId as a param
         console.log("flag is trueeee");
-        const response = await fetch("http://localhost:8000/account/guest-sign-up", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(mergedData),
-        });
-  
+        const response = await fetch(
+          "http://localhost:8000/account/guest-sign-up",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(mergedData),
+          }
+        );
+
         const data = await response.json();
         if (response.ok) {
           console.log("Signup successful", data);
@@ -92,10 +93,9 @@ export default function SignupPage() {
         }
 
         return;
-
       }
 
-        const response = await fetch("http://localhost:8000/account/sign-up", {
+      const response = await fetch("http://localhost:8000/account/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,97 +121,103 @@ export default function SignupPage() {
     console.error(errorMessage);
   };
   return (
-<main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
-      <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
-    <div className="text-center">
-      <Image src={logo} alt="Logo" width={150} height={50} className="mx-auto mb-4 rounded-lg" />
-      <div className="mt-5 space-y-2">
-        <h3 className="text-white text-2xl font-bold sm:text-3xl">
-          Sign up for an account
-        </h3>
-        <p className="text-gray-400">
-          Already have an account?{' '}
-          <a
-            href="/pages/authentication/login"
-            className="font-medium text-teal-500 hover:text-teal-400"
+    <main className="w-full max-h-fit flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
+      <div className="max-w-2xl w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
+        <div className="text-center">
+          <Image
+            src={logo}
+            alt="Logo"
+            width={150}
+            height={50}
+            className="mx-auto mb-4 rounded-lg"
+          />
+          <div className="mt-5 space-y-2">
+            <h3 className="text-white text-2xl font-bold sm:text-3xl">
+              Sign up for an account
+            </h3>
+            <p className="text-gray-400">
+              Already have an account?{" "}
+              <a
+                href="/pages/authentication/login"
+                className="font-medium text-teal-500 hover:text-teal-400"
+              >
+                Login
+              </a>
+            </p>
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="flex space-x-4">
+            <div className="flex-1">
+              <label className="font-medium text-white">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                required
+                className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="font-medium text-white">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+                className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="font-medium text-white">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="font-medium text-white">Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              required
+              className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="font-medium text-white">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full mt-4 px-4 py-2 text-white font-medium bg-teal-500 hover:bg-teal-400 active:bg-teal-600 rounded-lg duration-150"
           >
-            Login
-          </a>
-        </p>
-      </div>
-    </div>
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="flex space-x-4">
-        <div className="flex-1">
-          <label className="font-medium text-white">First Name</label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-            className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
-          />
+            Sign up
+          </button>
+        </form>
+        <div className="relative">
+          <span className="block w-full h-px bg-gray-700"></span>
+          <p className="inline-block w-fit text-sm bg-gray-800 px-2 absolute -top-2 inset-x-0 mx-auto text-gray-400">
+            Or continue with
+          </p>
         </div>
-        <div className="flex-1">
-          <label className="font-medium text-white">Last Name</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            required
-            className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="font-medium text-white">Email</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
-        />
-      </div>
-      <div>
-        <label className="font-medium text-white">Username</label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleInputChange}
-          required
-          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
-        />
-      </div>
-      <div>
-        <label className="font-medium text-white">Password</label>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-          className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full mt-4 px-4 py-2 text-white font-medium bg-teal-500 hover:bg-teal-400 active:bg-teal-600 rounded-lg duration-150"
-      >
-        Sign up
-      </button>
-    </form>
-    <div className="relative">
-      <span className="block w-full h-px bg-gray-700"></span>
-      <p className="inline-block w-fit text-sm bg-gray-800 px-2 absolute -top-2 inset-x-0 mx-auto text-gray-400">
-        Or continue with
-      </p>
-    </div>
-    <div className="space-y-4 text-sm font-medium">
+        <div className="space-y-4 text-sm font-medium">
           <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border border-gray-700 rounded-lg hover:bg-gray-700 duration-150 active:bg-gray-600">
             <svg
               className="w-5 h-5"
@@ -260,20 +266,17 @@ export default function SignupPage() {
             Continue with Twitter
           </button>
         </div>
-    <div className="text-center">
-      <a
-        href="/src/app/pages/authentication/resetPassword/page.tsx"
-        className="text-teal-500 hover:text-teal-400"
-      >
-        Forgot password?
-      </a>
-    </div>
-  </div>
-</main>
-
-
+        <div className="text-center">
+          <a
+            href="/src/app/pages/authentication/resetPassword/page.tsx"
+            className="text-teal-500 hover:text-teal-400"
+          >
+            Forgot password?
+          </a>
+        </div>
+      </div>
+    </main>
   );
-
 }
 
 function setError(errorMessage: string) {
