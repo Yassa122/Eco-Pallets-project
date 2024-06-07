@@ -12,6 +12,9 @@ const config: Config = {
     extend: {
       colors: {
         "dark-grey": "#1B1B1B",
+        "dark-gray": "#050505",
+        "darker-gray": "#000000",
+        "darkest-gray": "#181818",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -46,7 +49,7 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-    
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -77,6 +80,11 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "custom-gradient":
+          "linear-gradient(45deg, #050505 0%, #000000 50%, #181818 100%)",
+      },
+      borderRadius: {
+        xl: "1.25rem", // You can adjust this value as needed
       },
     },
   },
