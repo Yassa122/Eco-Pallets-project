@@ -7,6 +7,7 @@ import { ProductService } from './product/product.service'; // Import ProductSer
 import { ProductController } from './product/product.controller';
 import { CreateProductDto } from './product/dto/create-product.dto';
 import { ProductSchema } from './product/schemas/product.schema';
+import { KafkaService } from './product/kafka/kafka.service';
 
 @Module({
   imports: [
@@ -18,6 +19,12 @@ import { ProductSchema } from './product/schemas/product.schema';
   ],
 
   controllers: [AppController],
-  providers: [AppService, ProductService, CreateProductDto, ProductController],
+  providers: [
+    AppService,
+    ProductService,
+    CreateProductDto,
+    ProductController,
+    KafkaService,
+  ],
 })
 export class AppModule {}

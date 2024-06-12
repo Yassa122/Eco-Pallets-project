@@ -16,6 +16,7 @@ const product_service_1 = require("./product/product.service");
 const product_controller_1 = require("./product/product.controller");
 const create_product_dto_1 = require("./product/dto/create-product.dto");
 const product_schema_1 = require("./product/schemas/product.schema");
+const kafka_service_1 = require("./product/kafka/kafka.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -23,8 +24,8 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             product_module_1.ProductModule,
-            mongoose_1.MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets-products'),
-            mongoose_1.MongooseModule.forFeature([{ name: "Product", schema: product_schema_1.ProductSchema }]),
+            mongoose_1.MongooseModule.forRoot('mongodb+srv://Admin:98pE-8FZADg8bbZ@eco-pallets.saefewe.mongodb.net/plastic-pallets-products?retryWrites=true&w=majority&appName=Eco-Pallets'),
+            mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema }]),
         ],
         controllers: [app_controller_1.AppController],
         providers: [
@@ -32,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
             product_service_1.ProductService,
             create_product_dto_1.CreateProductDto,
             product_controller_1.ProductController,
+            kafka_service_1.KafkaService,
         ],
     })
 ], AppModule);

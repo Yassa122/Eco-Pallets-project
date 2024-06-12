@@ -32,12 +32,14 @@ import { CreateReviewDto } from './dto/create.review.dto';
 import { CreateWishlistDto } from './dto/wishlist.dto';
 import { CustomizationDto } from './dto/customization.dto';
 import { RentProductDto } from './dto/rent-product.dto';
+import { KafkaService } from './kafka/kafka.service';
 export declare class ProductService {
     private readonly productModel;
     private readonly reviewModel;
     private readonly wishlistModel;
     private readonly rentalModel;
-    constructor(productModel: Model<Product>, reviewModel: Model<Review>, wishlistModel: Model<Wishlist>, rentalModel: Model<Rentals>);
+    private readonly kafkaService;
+    constructor(productModel: Model<Product>, reviewModel: Model<Review>, wishlistModel: Model<Wishlist>, rentalModel: Model<Rentals>, kafkaService: KafkaService);
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
     viewProductDetails(id: string): Promise<Product>;
     getAllProducts(): Promise<CreateProductDto[]>;

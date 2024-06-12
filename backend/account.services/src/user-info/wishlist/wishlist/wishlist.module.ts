@@ -7,6 +7,7 @@ import { WishlistService } from './wishlist.service';
 import { ProductSchema } from '../../schemas/product.schema';
 import { JwtStrategy } from 'src/identity/strategies/jwt.strategy';
 import { UserSchema } from 'src/identity/schemas/user.schema';
+import { KafkaService } from 'src/kafka/kafka.service';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { UserSchema } from 'src/identity/schemas/user.schema';
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
   ],
   controllers: [WishlistController],
-  providers: [WishlistService, JwtStrategy],
+  providers: [WishlistService, JwtStrategy, KafkaService],
   exports: [WishlistService],
 })
 export class WishlistModule {}

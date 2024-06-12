@@ -1,39 +1,72 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { Kafka, Consumer } from 'kafkajs';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from '@nestjs/common';
+import { Kafka, Producer, Consumer } from 'kafkajs';
 
 @Injectable()
-export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
-  private kafkaClient: Kafka;
-  private consumer: Consumer;
+export class KafkaService implements OnModuleInit, OnModuleDestroy {
+  private readonly kafkaClient: Kafka;
+  private readonly producer: Producer;
+  private readonly consumers: Consumer[] = [];
+  private readonly logger = new Logger(KafkaService.name);
 
   constructor() {
     this.kafkaClient = new Kafka({
       clientId: 'product-service',
-      brokers: ['localhost:9092'],
+      brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
     });
-    this.consumer = this.kafkaClient.consumer({
-      groupId: 'product-service-group',
-    });
+    this.producer = this.kafkaClient.producer();
   }
 
   async onModuleInit() {
-    await this.consumer.connect();
-    await this.consumer.subscribe({
-      topic: 'user-login-events',
-      fromBeginning: true,
-    });
-
-    await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const user = JSON.parse(message.value.toString());
-        console.log(`User logged in: ${user.userId}`);
-        console.log(`Received message: ${message.value.toString()}`);
-        // Implement your message handling logic here
-      },
-    });
+    await this.producer.connect();
   }
 
   async onModuleDestroy() {
-    await this.consumer.disconnect();
+    await this.producer.disconnect();
+    for (const consumer of this.consumers) {
+      await consumer.disconnect();
+    }
+  }
+
+  async sendMessage(topic: string, message: any): Promise<void> {
+    this.logger.log(
+      `Sending message to topic: ${topic}, message: ${JSON.stringify(message)}`,
+    );
+    await this.producer.send({
+      topic,
+      messages: [
+        {
+          key: message.userId?.toString() || '',
+          value: JSON.stringify(message),
+        },
+      ],
+    });
+  }
+
+  getConsumer(groupId: string): Consumer {
+    const consumer = this.kafkaClient.consumer({ groupId });
+    this.consumers.push(consumer);
+    return consumer;
+  }
+
+  async subscribeToTopic(consumer: Consumer, topic: string): Promise<void> {
+    await consumer.connect();
+    await consumer.subscribe({ topic, fromBeginning: true });
+  }
+
+  async runConsumer(
+    consumer: Consumer,
+    callback: (topic: string, partition: number, message: any) => void,
+  ): Promise<void> {
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        this.logger.log(`Received message from topic: ${topic}`);
+        callback(topic, partition, message);
+      },
+    });
   }
 }

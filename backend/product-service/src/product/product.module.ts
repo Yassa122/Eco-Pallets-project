@@ -9,6 +9,7 @@ import { productProviders } from './database/product.providers';
 import { databaseProviders } from './database/database.providers';
 import { reviewProviders } from './database/review.providers';
 import { RentalSchema } from './schemas/rentals.schema';
+import { KafkaService } from './kafka/kafka.service';
 
 @Module({
   imports: [
@@ -20,7 +21,12 @@ import { RentalSchema } from './schemas/rentals.schema';
     ]),
   ], // Corrected schema name
   controllers: [ProductController],
-  providers: [ProductService, ...databaseProviders, ...productProviders],
+  providers: [
+    ProductService,
+    ...databaseProviders,
+    ...productProviders,
+    KafkaService,
+  ],
   exports: [ProductService, MongooseModule], // Make sure to export MongooseModule],
 })
 export class ProductModule {}

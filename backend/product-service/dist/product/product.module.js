@@ -17,6 +17,7 @@ const wishlist_schema_1 = require("./schemas/wishlist.schema");
 const product_providers_1 = require("./database/product.providers");
 const database_providers_1 = require("./database/database.providers");
 const rentals_schema_1 = require("./schemas/rentals.schema");
+const kafka_service_1 = require("./kafka/kafka.service");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -31,7 +32,12 @@ exports.ProductModule = ProductModule = __decorate([
             ]),
         ],
         controllers: [product_controller_1.ProductController],
-        providers: [product_service_1.ProductService, ...database_providers_1.databaseProviders, ...product_providers_1.productProviders],
+        providers: [
+            product_service_1.ProductService,
+            ...database_providers_1.databaseProviders,
+            ...product_providers_1.productProviders,
+            kafka_service_1.KafkaService,
+        ],
         exports: [product_service_1.ProductService, mongoose_1.MongooseModule],
     })
 ], ProductModule);
