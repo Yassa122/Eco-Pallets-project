@@ -12,6 +12,7 @@ interface NavbarProps {
 }
 
 interface SearchResult {
+  id: string;
   name: string;
   price: number;
   rating: number;
@@ -31,8 +32,8 @@ const SearchResultsPopup: React.FC<SearchResultsPopupProps> = ({
       <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-lg">
         <h2 className="text-xl font-bold mb-4 text-black">Search Results</h2>
         <ul>
-          {results.map((item, index) => (
-            <li key={index} className="mb-4 text-black flex items-center">
+          {results.map((item) => (
+            <li key={item.id} className="mb-4 text-black flex items-center">
               <Image
                 src={product1}
                 className="w-16 h-16 object-cover mr-4"
@@ -76,10 +77,12 @@ export function Navbar({ title }: NavbarProps) {
     if (event.key === "Enter") {
       try {
         const foundItems = await searchItem(searchQuery);
-        const filteredItems = foundItems.map(({ id, ...rest }) => ({
-          ...rest,
-          rating: Math.floor(Math.random() * 5) + 1,
-        }));
+        const filteredItems = foundItems.map(
+          ({ id, ...rest }: { id: string; [key: string]: any }) => ({
+            ...rest,
+            rating: Math.floor(Math.random() * 5) + 1,
+          })
+        );
         console.log(filteredItems); // Debugging: Log the items to verify
         setSearchResults(filteredItems);
       } catch (error) {
