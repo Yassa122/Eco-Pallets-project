@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import Profile from "../../../components/profileComponent/profile";
+import Profile from "@/components/profileComponent/profile";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,13 +13,23 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Modal from "@/components/modalTest"; // Import Modal component
 import { useState, useEffect } from "react";
+import Modal from "@/components/modalTest";
 
-export default function profile() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function ProfilePage() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      setIsModalOpen(true);
+    }
+  }, [success]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <ContentLayout title="Dashboard">
@@ -37,8 +47,10 @@ export default function profile() {
         </BreadcrumbList>
       </Breadcrumb>
       <PlaceholderContent>
-        <Profile /> {/* Cart component is rendered inside PlaceholderContent */}
+        <Profile />
+        {/* Cart component is rendered inside PlaceholderContent */}
       </PlaceholderContent>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </ContentLayout>
   );
 }

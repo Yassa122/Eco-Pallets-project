@@ -1,11 +1,11 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { Suspense, SetStateAction, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png"; // Update this with the correct path to your logo
 import { useSearchParams } from "next/navigation";
 
-const ResetPasswordPage = () => {
+const ResetPasswordPageComponent = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -138,6 +138,14 @@ const ResetPasswordPage = () => {
         </div>
       )}
     </main>
+  );
+};
+
+const ResetPasswordPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordPageComponent />
+    </Suspense>
   );
 };
 

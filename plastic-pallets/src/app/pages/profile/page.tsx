@@ -16,12 +16,21 @@ import {
 import Modal from "@/components/modalTest"; // Import Modal component
 import { useState, useEffect } from "react";
 
-export default function profile() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function ProfilePage() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
+  useEffect(() => {
+    if (success) {
+      setIsModalOpen(true);
+    }
+  }, [success]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <ContentLayout title="Dashboard">
       <Breadcrumb>
@@ -38,8 +47,10 @@ export default function profile() {
         </BreadcrumbList>
       </Breadcrumb>
       <PlaceholderContent>
-        <Profile /> {/* Cart component is rendered inside PlaceholderContent */}
+        <Profile />
+        {/* Cart component is rendered inside PlaceholderContent */}
       </PlaceholderContent>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </ContentLayout>
   );
 }
