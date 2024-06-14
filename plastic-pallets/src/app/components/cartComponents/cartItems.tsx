@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -159,7 +160,7 @@ const ShoppingCart = () => {
             .toLowerCase()}.png`).default;
           return (
             <div
-              key={item.productId}
+              key={item.productId} // Added key prop
               style={{
                 display: "flex",
                 alignItems: "center",
