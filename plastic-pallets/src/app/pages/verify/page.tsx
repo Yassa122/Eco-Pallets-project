@@ -32,7 +32,7 @@ export default function VerifyEmailPage() {
       // Redirect to another page after successfully sending the verification email
       router.push("/pages/authentication/login");
     } catch (error) {
-      console.error("Error sending verification email:", error.message);
+      console.error("Error sending verification email:");
       // Handle error (optional)
       setError("Failed to send verification email");
     }
