@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import Products from "@/components/products/products";
+import Products from "@/components/products/products"; // Adjust the import path as needed
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,12 +13,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Modal from "@/components/modalTest";
+import Modal from "@/components/modalTest"; // Import Modal component
 import { useState, useEffect, Suspense } from "react";
 
-export default function ProductsPage() {
+const ProductsPageComponent = () => {
   const searchParams = useSearchParams();
-  const success = searchParams.get("success");
+  const success = searchParams.get("success"); // Accessing query parameter 'success'
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -32,26 +32,35 @@ export default function ProductsPage() {
   };
 
   return (
+    <ContentLayout title="Dashboard">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <PlaceholderContent>
+        <Products />
+        {/* Cart component is rendered inside PlaceholderContent */}
+      </PlaceholderContent>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+    </ContentLayout>
+  );
+};
+
+const ProductsPage = () => {
+  return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ContentLayout title="Dashboard">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Dashboard</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <PlaceholderContent>
-          <Products />
-        </PlaceholderContent>
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
-      </ContentLayout>
+      <ProductsPageComponent />
     </Suspense>
   );
-}
+};
+
+export default ProductsPage;
