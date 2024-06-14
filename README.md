@@ -110,10 +110,10 @@ Follow these steps to get your development environment running:
 
 | Contributor       | Contribution                                                                 |
 |-------------------|------------------------------------------------------------------------------|
-| [Fady](https://github.com/FadyM)              | Cart Microservice and payment integration using stripe (backend & frontend ) |
-| [George](https://github.com/GeorgeM)            | Home Microservice and featured products integration (backend & frontend)     |
-| [Renwa](https://github.com/RenwaM)             | Authentication service, user management, wishlist, reviews (backend & frontend)    |
-| [Dina](https://github.com/DinaM)              | Product service, integration with kafka along with the cart microservice (backend & frontend) |
-| [Amir](https://github.com/AmirM)              | Emailing service (backend), authentication pages (frontend), and user verification    |
+| [Fady](https://github.com/FadyIbrahim123)              | Cart Microservice and payment integration using stripe (backend & frontend ) |
+| [George](https://github.com/georgeY2002)            | Home Microservice and featured products integration (backend & frontend)     |
+| [Renwa](https://github.com/renwaa)             | Authentication service, user management, wishlist, reviews (backend & frontend)    |
+| [Dina](https://github.com/dinaa3)              | Product service, integration with kafka along with the cart microservice (backend & frontend) |
+| [Amir](https://github.com/amirwessam)              | Emailing service (backend), authentication pages (frontend), and user verification    |
 | [Yassa122](https://github.com/Yassa122)          | Team Leader, responsible for authentication flow and Kafka integration across the project                      |
 
