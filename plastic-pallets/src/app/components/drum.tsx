@@ -6,8 +6,16 @@ import HeartIcon from "../pics/favs Background Removed.png";
 import product2 from "../pics/durm2 Background Removed.png";
 import product3 from "../pics/drum1 Background Removed.png";
 
+interface Item {
+  id: string;
+  name: string;
+  price: number;
+  rating: string;
+  image?: string;
+}
+
 const Drum = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
     fetchItems();
@@ -26,7 +34,7 @@ const Drum = () => {
       const data = await response.json();
       if (response.ok) {
         console.log("Items Fetched Successfully", data);
-        const itemsWithRandomRating = data.map((item) => ({
+        const itemsWithRandomRating = data.map((item: Item) => ({
           ...item,
           rating: (Math.random() * (5 - 1) + 1).toFixed(1),
         }));
@@ -39,15 +47,15 @@ const Drum = () => {
     }
   };
 
-  const addToFavorites = (item) => {
+  const addToFavorites = (item: Item) => {
     console.log("Added item to favorites:", item);
   };
 
-  const addToCart = (item) => {
+  const addToCart = (item: Item) => {
     console.log("Added item to cart:", item);
   };
 
-  const getRatingColor = (rating) => {
+  const getRatingColor = (rating: string) => {
     const parsedRating = parseFloat(rating);
     if (parsedRating < 2.5) {
       return "red";
@@ -194,7 +202,7 @@ const Drum = () => {
                 }}
               >
                 <button
-                  onClick={() => addToCart(item.id)}
+                  onClick={() => addToCart(item)}
                   style={{
                     padding: "10px 20px",
                     border: "none",
