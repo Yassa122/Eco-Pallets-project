@@ -45,7 +45,7 @@ const Offers = () => {
         }));
         setItems(itemsWithRandomRating);
       } else {
-        throw new Error(data.message || "Failed to fetch Items");
+        throw new Error("Failed to fetch Items");
       }
     } catch (error) {
       console.error("Fetching error:", error);
