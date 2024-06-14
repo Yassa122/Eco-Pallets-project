@@ -1,7 +1,5 @@
 # Plastic Pallets E-commerce Website
 
-## Description
-
 Welcome to the Plastic Pallets E-commerce Website project! This project is designed to provide a comprehensive platform for managing and purchasing plastic pallets, leveraging a microservice architecture. It's perfect for developers interested in modern web development with microservices, Kafka, and Next.js.
 
 ## Tech Stack
