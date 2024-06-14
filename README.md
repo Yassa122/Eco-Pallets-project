@@ -19,12 +19,11 @@ The project uses the following technologies:
 
 Here are some screenshots showcasing different parts of the project:
 
-1. ![Home Page](https://imgur.com/CILC4sT)
-2. ![Product Listing](url-to-product-listing-screenshot)
-3. ![Product Details](url-to-product-details-screenshot)
-4. ![Cart Page](url-to-cart-page-screenshot)
-5. ![Checkout Page](url-to-checkout-page-screenshot)
-6. ![Order Confirmation](url-to-order-confirmation-screenshot)
+1. ![Home Page](https://imgur.com/PWsvq0d.png)
+2. ![](https://imgur.com/zKbL1Tb.png)
+3. ![](https://imgur.com/DyQPPag.png)
+4. ![](https://imgur.com/fRkddCl.png)
+5. ![](https://imgur.com/kITBkXP.png)
 
 ## Getting Started
 
@@ -75,8 +74,28 @@ Follow these steps to get your development environment running:
     
     ```bash
     cd backend
-    npm install
-    npm run dev
+    cd account.services
+    npm run start:dev
+    ```
+     ```bash
+    cd backend
+    cd product-service
+    npm run start:dev
+    ```
+     ```bash
+    cd backend
+    cd cart-service
+    npm run start:dev
+    ```
+      ```bash
+    cd backend
+    cd Home
+    npm run start:dev
+    ```
+   ```bash
+    cd backend
+    cd email-service
+    npm run start:dev
     ```
 
 5. **Open another terminal for the frontend**:
@@ -91,9 +110,10 @@ Follow these steps to get your development environment running:
 
 | Contributor       | Contribution                                                                 |
 |-------------------|------------------------------------------------------------------------------|
-| Yassa122          | Project setup, microservices integration, Kafka setup                        |
-| Contributor 2     | Frontend development, UI/UX design, responsive layout                        |
-| Contributor 3     | Backend development, API creation, database management                       |
-| Contributor 4     | Authentication service, user management, security enhancements               |
-| Contributor 5     | Product service, inventory management, integration with payment gateway      |
-| Contributor 6     | Order service, cart functionality, real-time order tracking                  |
+| [Fady](https://github.com/FadyM)              | Cart Microservice and payment integration using stripe (backend & frontend ) |
+| [George](https://github.com/GeorgeM)            | Home Microservice and featured products integration (backend & frontend)     |
+| [Renwa](https://github.com/RenwaM)             | Authentication service, user management, wishlist, reviews (backend & frontend)    |
+| [Dina](https://github.com/DinaM)              | Product service, integration with kafka along with the cart microservice (backend & frontend) |
+| [Amir](https://github.com/AmirM)              | Emailing service (backend), authentication pages (frontend), and user verification    |
+| [Yassa122](https://github.com/Yassa122)          | Team Leader, responsible for authentication flow and Kafka integration across the project                      |
+
