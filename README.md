@@ -19,7 +19,7 @@ The project uses the following technologies:
 
 Here are some screenshots showcasing different parts of the project:
 
-1. ![Home Page](url-to-home-page-screenshot)
+1. ![Home Page](https://imgur.com/CILC4sT)
 2. ![Product Listing](url-to-product-listing-screenshot)
 3. ![Product Details](url-to-product-details-screenshot)
 4. ![Cart Page](url-to-cart-page-screenshot)
