@@ -6,6 +6,7 @@ import { SheetMenu } from "@/components/admin-panel/sheet-menu";
 import { Search } from "lucide-react";
 import product1 from "../../pics/p3 Background Removed.png";
 import Image from "next/image";
+
 interface NavbarProps {
   title: string;
 }
@@ -32,7 +33,11 @@ const SearchResultsPopup: React.FC<SearchResultsPopupProps> = ({
         <ul>
           {results.map((item, index) => (
             <li key={index} className="mb-4 text-black flex items-center">
-              <Image src={product1} className="w-16 h-16 object-cover mr-4" />
+              <Image
+                src={product1}
+                className="w-16 h-16 object-cover mr-4"
+                alt={item.name} // Added alt attribute
+              />
               <div>
                 <p className="font-semibold">{item.name}</p>
                 <p>Price: ${item.price.toFixed(2)}</p>
