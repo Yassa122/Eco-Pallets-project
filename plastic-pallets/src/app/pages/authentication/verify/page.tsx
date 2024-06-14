@@ -5,7 +5,7 @@ import logo from "src/app/images/Logo/png/logo-white.png";
 
 export default function VerifyEmailPage() {
   const [email, setEmail] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>("") as [string, React.Dispatch<React.SetStateAction<string>>];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png"; // Update this with the correct path to your logo
 import { useSearchParams } from "next/navigation";
@@ -13,15 +13,19 @@ const ResetPasswordPage = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
+  const handleConfirmPasswordChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setPopupMessage("Passwords do not match. Please try again.");
