@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import Profile from "@/components/profileComponent/profile";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,10 +14,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useState, useEffect, Suspense } from "react";
 import Modal from "@/components/modalTest";
+import Profile from "@/components/profileComponent/profile";
 
-export default function ProfilePage() {
+export default function ProfileSettingsPage() {
   const searchParams = useSearchParams();
-  const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const success = searchParams.get("success");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function ProfilePage() {
         </Breadcrumb>
         <PlaceholderContent>
           <Profile />
-          {/* Cart component is rendered inside PlaceholderContent */}
         </PlaceholderContent>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
       </ContentLayout>

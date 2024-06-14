@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import Products from "@/components/products/products"; // Adjust the import path as needed
+import Products from "@/components/products/products";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,12 +13,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Modal from "@/components/modalTest"; // Import Modal component
-import { useState, useEffect,Suspense } from "react";
+import Modal from "@/components/modalTest";
+import { useState, useEffect, Suspense } from "react";
 
-export default function DashboardPage() {
+export default function ProductsPage() {
   const searchParams = useSearchParams();
-  const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const success = searchParams.get("success");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function DashboardPage() {
         </Breadcrumb>
         <PlaceholderContent>
           <Products />
-          {/* Cart component is rendered inside PlaceholderContent */}
         </PlaceholderContent>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
       </ContentLayout>

@@ -13,12 +13,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Modal from "@/components/modalTest"; // Import Modal component
 import { useState, useEffect, Suspense } from "react";
+import Modal from "@/components/modalTest";
 
 export default function ProfilePage() {
   const searchParams = useSearchParams();
-  const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const success = searchParams.get("success");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function ProfilePage() {
         </Breadcrumb>
         <PlaceholderContent>
           <Profile />
-          {/* Cart component is rendered inside PlaceholderContent */}
         </PlaceholderContent>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
       </ContentLayout>
