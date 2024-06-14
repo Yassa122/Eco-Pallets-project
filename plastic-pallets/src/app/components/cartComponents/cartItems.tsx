@@ -5,8 +5,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Proceed from "./proceed";
 
+interface CartItem {
+  productId: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  name: string;
+}
+
 const ShoppingCart = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0); // State to hold the subtotal
 
   useEffect(() => {
@@ -45,7 +53,7 @@ const ShoppingCart = () => {
     }
   };
 
-  const removeItem = async (itemId) => {
+  const removeItem = async (itemId: string) => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch("http://localhost:7000/removeCartItem", {
@@ -73,7 +81,7 @@ const ShoppingCart = () => {
     }
   };
 
-  const incrementQuantity = async (itemId) => {
+  const incrementQuantity = async (itemId: string) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:7000/addQuantity", {
@@ -104,7 +112,7 @@ const ShoppingCart = () => {
     }
   };
 
-  const decrementQuantity = async (itemId) => {
+  const decrementQuantity = async (itemId: string) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:7000/subtractQuantity", {
