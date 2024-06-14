@@ -13,7 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Modal from "@/components/modalTest";
 
 export default function ProfilePage() {
@@ -32,25 +32,27 @@ export default function ProfilePage() {
   };
 
   return (
-    <ContentLayout title="Dashboard">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <PlaceholderContent>
-        <Profile />
-        {/* Cart component is rendered inside PlaceholderContent */}
-      </PlaceholderContent>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
-    </ContentLayout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ContentLayout title="Dashboard">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <PlaceholderContent>
+          <Profile />
+          {/* Cart component is rendered inside PlaceholderContent */}
+        </PlaceholderContent>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+      </ContentLayout>
+    </Suspense>
   );
 }
