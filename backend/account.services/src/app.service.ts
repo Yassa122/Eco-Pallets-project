@@ -4,7 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { ClientKafka } from '@nestjs/microservices';
 import { User } from './identity/interfaces/user';
 import { CreateIdentityDto } from './identity/dto/create.identity.dto';
-import {UpdateUserProfile} from './identity/dto/update-user-profile.dto';
+import { UpdateUserProfile } from './identity/dto/update-user-profile.dto';
 import { IdentityService } from './identity/identity.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -28,6 +28,30 @@ export class AppService implements OnModuleInit {
 
   async onModuleInit() {
     await this.kafkaClient.connect();
+  }
+
+  async loginWithGoogle(user: any): Promise<string> {
+    let existingUser = await this.userModel.findOne({ email: user.email });
+    let newUser;
+
+    if (!existingUser) {
+      newUser = new this.userModel({
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        picture: user.picture,
+        // Add any other required fields here
+      });
+      await newUser.save();
+      existingUser = newUser;
+    }
+
+    const payload = {
+      email: user.email,
+      sub: existingUser._id,
+    };
+
+    return this.jwtService.sign(payload);
   }
 
   async register(createIdentityDto: CreateIdentityDto): Promise<any> {

@@ -12,8 +12,10 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
+  Req,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './identity/strategies/jwt-auth.guard';
 import { CurrentUser } from './decorators/get-user-id.decorator';
@@ -38,7 +40,7 @@ export class AppController {
   getHello(): any {
     return this.accountServices.hello();
   }
-//
+
   @Post('sign-up')
   async register(@Body() reqBody: any) {
     return this.accountServices.register(reqBody);
@@ -71,11 +73,13 @@ export class AppController {
   async getUser(@CurrentUser() userId: string) {
     return this.accountServices.getUser(userId);
   }
+
   @Put('password/update')
   async updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
     await this.accountServices.updatePassword(updatePasswordDto);
     return { message: 'Password updated successfully' };
   }
+
   @Get(':id/send-info')
   async handleSendUserInfo(@Param('id') id: string) {
     await this.accountServices.sendUserInfo(id);
@@ -97,6 +101,7 @@ export class AppController {
   ) {
     return this.userInfoService.updateUserDataByEmail(email, updateUserDto);
   }
+
   @Get('user-info/addresses')
   getShippingAddresses(@CurrentUser('userId') userId: string) {
     return this.userInfoService.getShippingAddresses(userId);
@@ -149,5 +154,18 @@ export class AppController {
       this.logger.error('Error in requestPasswordReset endpoint', error.stack);
       return { message: 'Failed to send password reset email' };
     }
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {
+    // Initiates the Google OAuth2 login flow
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    const jwt = await this.accountServices.loginWithGoogle(req.user);
+    res.redirect(`http://localhost:3000/pages/google-callback?token=${jwt}`);
   }
 }

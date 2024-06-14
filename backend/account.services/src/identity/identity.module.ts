@@ -12,8 +12,11 @@ import { UsersModule } from './users/users.module';
 import { User } from './interfaces/user';
 import { KafkaModule } from 'src/kafka/kafka.module';
 import { KafkaService } from 'src/kafka/kafka.service';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'google' }),
     PassportModule,
     KafkaModule,
     JwtModule.register({
@@ -29,7 +32,9 @@ import { KafkaService } from 'src/kafka/kafka.service';
     ...databaseProviders,
     LocalStrategy,
     JwtStrategy,
+    GoogleStrategy,
     ExistsStrategy,
+    ConfigService,
     KafkaService,
   ],
   exports: [...databaseProviders],

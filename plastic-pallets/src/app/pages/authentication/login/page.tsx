@@ -5,13 +5,11 @@ import Image from "next/image";
 import logo from "src/app/images/Logo/png/logo-white.png";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
 
-
 export default function Login() {
-  const router=useRouter();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-
   });
 
   const [showSubmissionMessage, setShowSubmissionMessage] = useState(false);
@@ -47,6 +45,11 @@ export default function Login() {
       console.error("Guest login error:", error);
     }
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8000/account/google"; // The URL of your Google login route
+  };
+
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (!formData.username.trim() || !formData.password.trim()) {
@@ -62,7 +65,6 @@ export default function Login() {
         },
         credentials: "include",
 
-
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
@@ -76,14 +78,12 @@ export default function Login() {
         const token = data.accessToken;
         localStorage.setItem("token", token);
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict;`;
-          router.push("/pages/home")
+        router.push("/pages/home");
         // Handle successful login here (e.g., redirect or store JWT)
         router.push("/pages/home"); // Redirect to dashboard
-
       } else {
         throw new Error(data.message || "Failed to log in");
       }
-
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -94,9 +94,8 @@ export default function Login() {
   };
 
   return (
-    <main className="w-full min-h-screen flex flex-col items-center justify-center px-4 pt-8 bg-dark-grey">
+    <main className="w-full flex  flex-col items-center justify-center px-2 pt-4 bg-dark-grey mb-20">
       <div className="max-w-md w-full text-gray-600 space-y-8 bg-gray-800 shadow-lg rounded-2xl p-8">
-
         <div className="text-center">
           <Image
             src={logo}
@@ -129,7 +128,7 @@ export default function Login() {
               value={formData.username}
               onChange={handleInputChange}
               required
-              className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+              className="w-full mt-2 px-3 py-2 text-white bg-gray-700 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
             />
           </div>
           <div>
@@ -140,7 +139,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="w-full mt-2 px-3 py-2 text-white bg-gray-900 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
+              className="w-full mt-2 px-3 py-2 text-white bg-gray-700 outline-none border border-gray-700 focus:border-teal-500 shadow-sm rounded-lg"
             />
           </div>
           <button
@@ -165,7 +164,10 @@ export default function Login() {
           </p>
         </div>
         <div className="space-y-4 text-sm font-medium">
-          <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border border-gray-700 rounded-lg hover:bg-gray-700 duration-150 active:bg-gray-600">
+          <button
+            className="w-full flex items-center justify-center gap-x-3 py-2.5 border border-gray-700 rounded-lg hover:bg-gray-700 duration-150 active:bg-gray-600"
+            onClick={handleGoogleLogin} // Added click handler for Google login
+          >
             <svg
               className="w-5 h-5"
               viewBox="0 0 48 48"
@@ -215,8 +217,8 @@ export default function Login() {
         </div>
         <div className="text-center">
           <a
-                href="/pages/authentication/resetPassword"
-                className="text-teal-500 hover:text-teal-400"
+            href="/pages/authentication/resetPassword"
+            className="text-teal-500 hover:text-teal-400"
           >
             Forgot password?
           </a>
@@ -229,8 +231,3 @@ export default function Login() {
 function setError(arg0: string) {
   throw new Error("Function not implemented.");
 }
-
-
-
-
-
