@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
-
-const Proceed = ({ subtotal }) => {
+interface ProceedProps {
+  subtotal: number;
+}
+const Proceed: React.FC<ProceedProps> = ({ subtotal }) => {
   const [enteredPromoCode, setEnteredPromoCode] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [promoCodeMultiplier, setPromoCodeMultiplier] = useState(1);
