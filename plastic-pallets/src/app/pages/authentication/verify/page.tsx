@@ -28,7 +28,7 @@ export default function VerifyEmailPage() {
       // Redirect to another page after successfully sending the verification email
       // router.push("/verification-success");
     } catch (error) {
-      console.error("Error verifying user:", error.message);
+      console.error("Error verifying user:");
       }
   };
 
