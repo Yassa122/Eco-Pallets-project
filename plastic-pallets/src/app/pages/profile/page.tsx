@@ -14,7 +14,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Modal from "@/components/modalTest"; // Import Modal component
-import "./global.css";
 import { useState, useEffect } from "react";
 
 export default function profile() {
