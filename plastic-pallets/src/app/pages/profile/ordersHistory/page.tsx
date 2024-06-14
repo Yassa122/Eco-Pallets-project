@@ -51,7 +51,7 @@ const OrderHistoryPage: React.FC = () => {
     fetchOrderHistory();
   }, []);
 
-  const handleViewOrderDetails = (order) => {
+  const handleViewOrderDetails = (order: string) => {
     router.push(`/pages/profile/orderDetails/`);
   };
 
