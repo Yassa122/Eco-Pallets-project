@@ -1,4 +1,3 @@
-// pages/my-wishlist.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -121,7 +120,7 @@ const MyWishlist: React.FC = () => {
     }
   };
 
-  const addToCart = async (product) => {
+  const addToCart = async (product: Product) => {
     try {
       const token = localStorage.getItem("auth_token");
       const body = {
@@ -201,7 +200,7 @@ const MyWishlist: React.FC = () => {
             </div>
             <button
               className="add-to-cart"
-              onClick={() => addToCart(product.productId)}
+              onClick={() => addToCart(product)}
               disabled={!product.availability}
             >
               {product.availability ? "Add to Cart" : "Out of Stock"}
