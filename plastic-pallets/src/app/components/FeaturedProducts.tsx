@@ -4,8 +4,17 @@ import product1 from "../pics/p2 Background Removed.png";
 import cart from "../pics/cacart Background Removed.png";
 import heart from "../pics/favs Background Removed.png";
 
+interface Item {
+  id: string;
+  name: string;
+  price: number;
+  rating: string;
+  productId: string;
+  image: string;
+}
+
 const FeaturedProducts = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
@@ -24,7 +33,7 @@ const FeaturedProducts = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data: Item[] = await response.json();
         const itemsWithRandomRating = data.map((item) => ({
           ...item,
           rating: (Math.random() * (5 - 1) + 1).toFixed(1),
@@ -32,6 +41,7 @@ const FeaturedProducts = () => {
         setItems(itemsWithRandomRating);
         console.log("Items Fetched Successfully", itemsWithRandomRating);
       } else {
+        const data = await response.json();
         throw new Error(data.message || "Failed to fetch Items");
       }
     } catch (error) {
@@ -39,7 +49,7 @@ const FeaturedProducts = () => {
     }
   };
 
-  const addToCart = async (item) => {
+  const addToCart = async (item: Item) => {
     try {
       const token = localStorage.getItem("auth_token");
       const body = {
@@ -63,15 +73,15 @@ const FeaturedProducts = () => {
       if (response.ok) {
         showPopupMessage("Added to cart");
       } else {
-        showPopupMessage(" added to cart");
+        showPopupMessage("Failed to add to cart");
       }
     } catch (error) {
-      showPopupMessage(" added to cart");
+      showPopupMessage("Failed to add to cart");
       console.error("Add to cart error:", error);
     }
   };
 
-  const addToFavorites = async (item) => {
+  const addToFavorites = async (item: Item) => {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await fetch("http://localhost:5555/addToFavorites", {
@@ -95,7 +105,7 @@ const FeaturedProducts = () => {
     }
   };
 
-  const addToWishlist = async (item) => {
+  const addToWishlist = async (item: Item) => {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await fetch("http://localhost:8080/addToFavorites", {
@@ -109,17 +119,17 @@ const FeaturedProducts = () => {
       });
 
       if (response.ok) {
-        showPopupMessage("Added to favorites");
+        showPopupMessage("Added to wishlist");
       } else {
-        showPopupMessage("Item already exists in favorites");
+        showPopupMessage("Item already exists in wishlist");
       }
     } catch (error) {
-      showPopupMessage("Failed to add to favorites");
-      console.error("Add to favorites error:", error);
+      showPopupMessage("Failed to add to wishlist");
+      console.error("Add to wishlist error:", error);
     }
   };
 
-  const showPopupMessage = (message) => {
+  const showPopupMessage = (message: string) => {
     setPopupMessage(message);
     setShowPopup(true);
     setTimeout(() => {
@@ -127,7 +137,7 @@ const FeaturedProducts = () => {
     }, 2000);
   };
 
-  const getRatingColor = (rating) => {
+  const getRatingColor = (rating: string) => {
     const parsedRating = parseFloat(rating);
     if (parsedRating < 2.5) {
       return "red";
