@@ -11,7 +11,7 @@ import { KafkaConsumerService } from './kafka/kafka.service';
 import { orderSchema } from './schema/orders.schema';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/plastic-pallets-E-commerce'),
+    MongooseModule.forRoot('mongodb+srv://Admin:98pE-8FZADg8bbZ@eco-pallets.saefewe.mongodb.net/plastic-pallets-cart?retryWrites=true&w=majority&appName=Eco-Pallets'),
     MongooseModule.forFeature([
       { name: 'Cart', schema: CartSchema },
       { name: 'CartItem', schema: CartItemSchema },

@@ -6,6 +6,7 @@ import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ExistsAuthGuard } from './strategies/exists-auth.guard';
 import { CurrentUser } from '../decorators/get-user-id.decorator'; // Adjust the path based on your project structure
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import mongoose from 'mongoose';
 
 @Controller('identity')
 export class IdentityController {
@@ -22,6 +23,12 @@ export class IdentityController {
     console.log(command);
     return this.identityService.register(command.data);
   }
+
+  @MessagePattern('guestRegister')
+  async guestRegister(command) {
+    console.log(command);
+    return this.identityService.guestRegister(command.data);
+  }
   @UseGuards(LocalAuthGuard)
   @MessagePattern('login')
   async login(command) {
@@ -34,13 +41,4 @@ export class IdentityController {
     const { id, ...rest } = command.user;
     return rest;
   }
-  @UseGuards(JwtAuthGuard)
-  @Put('update-password')
-  async updatePassword(@CurrentUser() userId: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<{ success: boolean }> { 
-
-    const result = await this.identityService.updatePassword(userId, updatePasswordDto);
-
-    return { success: result };
-  }
- 
 }

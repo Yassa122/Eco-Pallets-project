@@ -6,8 +6,11 @@ import {
   MinLength,
   IsNotEmpty,
 } from 'class-validator';
+import mongoose from 'mongoose';
 
 export class CreateIdentityDto {
+
+
   @IsString()
   @IsNotEmpty()
   readonly firstName: string;
@@ -50,6 +53,9 @@ export class CreateIdentityDto {
   @IsOptional()
   passwordResetToken?: string;
 
-  @IsOptional() // Custom date validator could be applied if needed
+  @IsOptional()
   passwordResetExpires?: Date;
+
+  @IsString()
+  readonly role: string; // Add role field
 }

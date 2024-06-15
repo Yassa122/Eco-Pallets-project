@@ -2,22 +2,21 @@
 import { Schema } from 'mongoose';
 
 export const ProductSchema = new Schema({
-  
   name: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   images: {
     type: [String],
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   color: {
     type: String,
@@ -36,20 +35,20 @@ export const ProductSchema = new Schema({
   },
   availability: {
     type: Boolean,
-    default: true
+    default: true,
   },
   rentalOptions: {
     available: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // dailyRate: {
     //   type: Number,
     //   required: function() { return this.rentalOptions.available; }
     // },
-  deposit:{
-    type:Number,
-    require : false,
-  }
-  }
+    deposit: {
+      type: Number,
+      require: false,
+    },
+  },
 });

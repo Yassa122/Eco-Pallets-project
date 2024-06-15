@@ -136,14 +136,6 @@ export class AppService {
     return createdCartItem.save();
   }
 
-  async getCartItems(userId: string): Promise<any> {
-    const cart = await this.cartModel.findOne({ userId }).exec();
-    if (!cart) {
-      throw new Error('Cart not found');
-    }
-    return cart.cartItems;
-  }
-
   async addToCart(userId: string, cartItem: CartItemDto): Promise<any> {
     //working
     const cart = await this.cartModel.findOne({ userId }).exec();
@@ -153,7 +145,7 @@ export class AppService {
 
     // Check if the cartItem already exists in the cart
     const existingCartItem = cart.cartItems.find(
-      (item) => item.productId === cartItem.productId,
+      (item) => item.productId == cartItem.productId,
     );
 
     if (existingCartItem) {
@@ -232,8 +224,9 @@ export class AppService {
           },
         ],
         mode: 'payment',
-        success_url: `http://localhost:7000/pages/paymentSuccess?userId=${userId}`,
-        cancel_url: `http://localhost:7000/pages/cart`,
+        success_url:
+          'http://localhost:7000/pages/paymentSuccess?userId=${userId}',
+        cancel_url: 'http://localhost:7000/pages/cart',
       });
     } else {
       // Create a Stripe session with the user's cart items
@@ -249,8 +242,9 @@ export class AppService {
           quantity: cartItem.quantity,
         })),
         mode: 'payment',
-        success_url: `http://localhost:7000/pages/paymentSuccess?userId=${userId}`,
-        cancel_url: `http://localhost:7000/pages/cart`,
+        success_url:
+          'http://localhost:7000/pages/paymentSuccess?userId=${userId}',
+        cancel_url: 'http://localhost:7000/pages/cart',
       });
     }
     // console.log(session.payment_status);
@@ -290,11 +284,25 @@ export class AppService {
     cart.cartItems = []; // Remove all items from the cart
     cart.totalPrice = 0; // Reset total price
     cart.Subtotal = 0;
-    cart.PromoCodeMultiplier = 1; 
-    cart.status = 'pending'
+    cart.PromoCodeMultiplier = 1; // Reset promo code multiplier
     await cart.save();
     return { message: 'Cart cleared successfully' };
   }
+
+  // async clearCart(userId: string): Promise<any> {
+  //   const cart = await this.cartModel.findOne({ userId }).exec();
+  //   if (!cart) {
+  //     throw new Error('Cart not found');
+  //   }
+
+  //   cart.cartItems = []; // Remove all items from the cart
+  //   cart.totalPrice = 0; // Reset total price
+  //   cart.Subtotal = 0;
+  //   cart.PromoCodeMultiplier = 1;
+  //   cart.status = 'pending'
+  //   await cart.save();
+  //   return { message: 'Cart cleared successfully' };
+  // }
 
   async getOrderHistory(userId: string) {
     const orders = await this.ordersModel.find({ userId }).exec();
@@ -303,5 +311,4 @@ export class AppService {
     }
     return orders;
   }
-  
 }

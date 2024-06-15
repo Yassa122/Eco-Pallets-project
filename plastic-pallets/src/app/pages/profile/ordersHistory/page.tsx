@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import Pallet2 from '../../../images/cart/pallet2.png';
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Pallet2 from "../../../images/cart/pallet2.png";
 
 interface Order {
   _id: string;
@@ -20,29 +20,29 @@ const OrderHistoryPage: React.FC = () => {
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         if (!token) {
-          throw new Error('No access token found');
+          throw new Error("No access token found");
         }
 
-        const response = await fetch('http://localhost:7000/orderhistory', {
-          method: 'GET',
+        const response = await fetch("http://localhost:7000/orderhistory", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         const data = await response.json();
         if (response.ok) {
-          console.log('Fetched order history:', data);
+          console.log("Fetched order history:", data);
           setOrders(data);
         } else {
-          throw new Error(data.message || 'Failed to fetch order history');
+          throw new Error(data.message || "Failed to fetch order history");
         }
       } catch (error) {
-        console.error('Fetching error:', error);
+        console.error("Fetching error:", error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,7 @@ const OrderHistoryPage: React.FC = () => {
     fetchOrderHistory();
   }, []);
 
-  const handleViewOrderDetails = (order) => {
+  const handleViewOrderDetails = (order: string) => {
     router.push(`/pages/profile/orderDetails/`);
   };
 
@@ -70,11 +70,26 @@ const OrderHistoryPage: React.FC = () => {
         <div key={order._id} className="order-item">
           <div className="order-details">
             <div className="order-number">Order Number: {order._id}</div>
-            <Image src={Pallet2} alt="Pallet2" width={200} height={200} className="pallet-image" />
-            <div className="order-date">Date: {new Date(order.date).toLocaleDateString()}</div>
+            <Image
+              src={Pallet2}
+              alt="Pallet2"
+              width={200}
+              height={200}
+              className="pallet-image"
+            />
+            <div className="order-date">
+              Date: {new Date(order.date).toLocaleDateString()}
+            </div>
             <div className="order-status">Status: {order.status}</div>
-            <button className="add-to-cart" onClick={() => handleViewOrderDetails(order._id)}>View Order Details</button>
-            <div className="order-total">Total Amount: ${order.totalPrice.toFixed(2)}</div>
+            <button
+              className="add-to-cart"
+              onClick={() => handleViewOrderDetails(order._id)}
+            >
+              View Order Details
+            </button>
+            <div className="order-total">
+              Total Amount: ${order.totalPrice.toFixed(2)}
+            </div>
           </div>
         </div>
       ))}
@@ -136,11 +151,11 @@ const OrderHistoryPage: React.FC = () => {
           font-weight: 600;
           text-decoration: none;
           cursor: pointer;
-          border: 1px solid #38B2AC;
+          border: 1px solid #38b2ac;
           border-radius: 25px;
           outline: none;
           overflow: hidden;
-          color: #38B2AC;
+          color: #38b2ac;
           transition: color 0.3s 0.1s ease-out;
           text-align: center;
         }
@@ -156,7 +171,7 @@ const OrderHistoryPage: React.FC = () => {
           right: 0;
           bottom: 0;
           margin: auto;
-          content: '';
+          content: "";
           border-radius: 50%;
           display: block;
           width: 20em;
@@ -169,11 +184,11 @@ const OrderHistoryPage: React.FC = () => {
 
         .add-to-cart:hover {
           color: #fff;
-          border: 1px solid #38B2AC;
+          border: 1px solid #38b2ac;
         }
 
         .add-to-cart:hover::before {
-          box-shadow: inset 0 0 0 10em #38B2AC;
+          box-shadow: inset 0 0 0 10em #38b2ac;
         }
 
         .add-to-cart:disabled {

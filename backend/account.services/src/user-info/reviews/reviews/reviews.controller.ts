@@ -16,32 +16,6 @@ import { Product } from 'src/user-info/interfaces/product';
 export class ReviewsController {
   constructor(private readonly reviewService: ReviewsService) {}
 
-  @Post('create-prod')
-  @UseInterceptors(FilesInterceptor('files')) // Use FilesInterceptor for multiple files
-  async createProduct(
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body() createProductDto: CreateProductDto
-  ) {
-    // Handle file storage
-    const uploadPath = join(__dirname, '..', '..', 'uploads');
-    await mkdir(uploadPath, { recursive: true });
-
-    const imagePaths = await Promise.all(files.map(async (file) => {
-      const filename = `${Date.now()}-${file.originalname}`;
-      const filePath = join(uploadPath, filename);
-      await writeFile(filePath, file.buffer);
-      return `/uploads/${filename}`; // Return relative path to be used in the front-end
-    }));
-
-    createProductDto.images = imagePaths;
-
-    return this.reviewService.createProduct(createProductDto);
-  }
-  @Get('products')
-async getAllProducts(): Promise<Product[]> {
-  return this.reviewService.getAllProducts();
-}
-
 
   @Get('user-reviews')
   @UseGuards(JwtAuthGuard)

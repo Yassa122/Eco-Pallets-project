@@ -12,10 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> afc9ed8c873e7b7a8fd360f59ab772b4993d903a
+
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,

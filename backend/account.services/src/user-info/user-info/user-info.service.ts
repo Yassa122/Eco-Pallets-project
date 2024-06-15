@@ -24,6 +24,21 @@ export class UserInfoService {
       .exec();
   }
 
+  async updateUserDataByEmail(email: string, userData: GetUserDto): Promise<User> {
+    const user = await this.userModel.findOne({ email });
+    // If user is not found, return null or handle the error appropriately
+    if (!user) {
+      return null;
+    }
+    // Update user data
+    user.set(userData);
+
+    // Save the updated user data
+    await user.save();
+
+    // Return the updated user
+    return user;     
+}
   async addShippingAddress(
     userId: string,
     addressDto: AddShippingAddressDto,

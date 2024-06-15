@@ -1,26 +1,25 @@
-// wishlist.schema.ts
-import { Schema, Types } from 'mongoose';
-import { Wishlist, WishlistProduct } from '../interfaces/wishlist';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 
-export const WishlistProductSchema = new Schema<WishlistProduct>({
-  productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  images: { type: [String], required: true },
-  price: { type: Number, required: true },
-  color: { type: String, required: true },
-  size: { type: String, required: true },
-  material: { type: String, required: true },
-  availability: { type: Boolean, required: true },
-  rentalOptions: {
-    available: { type: Boolean, default: false },
-    duration: { type: Number },
-    price: { type: Number }
+export const WishlistSchema = new Schema({
+  productId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Product',
+    required: false,
   },
-  addedAt: { type: Date, default: Date.now }
-});
-
-export const WishlistSchema = new Schema<Wishlist>({
-  userId: Schema.Types.ObjectId,
-  products: [WishlistProductSchema]
+  userId: {
+    type: String,
+    ref: 'User',
+    required: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });

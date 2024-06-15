@@ -1,17 +1,37 @@
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import HomeComponents from "@/components/HomeComponents";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Modal from "@/components/modalTest"; // Import Modal component
 import "./global.css";
-export default function DashboardPage() {
+import { useState, useEffect, Suspense } from "react";
+
+const DashboardPageComponent = () => {
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success"); // Accessing query parameter 'success'
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      setIsModalOpen(true);
+    }
+  }, [success]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <ContentLayout title="Dashboard">
       <Breadcrumb>
@@ -27,7 +47,21 @@ export default function DashboardPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <PlaceholderContent>
+        <HomeComponents />{" "}
+        {/* Cart component is rendered inside PlaceholderContent */}
+      </PlaceholderContent>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </ContentLayout>
   );
-}
+};
+
+const DashboardPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DashboardPageComponent />
+    </Suspense>
+  );
+};
+
+export default DashboardPage;
