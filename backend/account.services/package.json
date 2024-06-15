@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nodemon",
+    "vercel-build": "nest build",
     "start:debug": "nest start --debug --watch",
     "start:prod": "nest start --prod",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

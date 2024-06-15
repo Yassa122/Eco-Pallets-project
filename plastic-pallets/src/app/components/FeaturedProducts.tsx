@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import product1 from "../pics/p2 Background Removed.png";
-import cart from "../pics/cacart Background Removed.png";
+import cart from "../public/pics/cacart Background Removed.png";
 import heart from "../pics/favs Background Removed.png";
 
 interface Item {
@@ -24,7 +23,7 @@ const FeaturedProducts = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:5555/items", {
+      const response = await fetch("http://localhost:5555/favorites/items", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +197,7 @@ const FeaturedProducts = () => {
               }}
             >
               <Image
-                src={product1}
+                src={`/${item.image}`}
                 layout="responsive"
                 width={300}
                 height={300}
