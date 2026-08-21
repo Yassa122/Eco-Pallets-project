@@ -1,3 +1,5 @@
+
+
 # Plastic Pallets E-commerce Website
 
 Welcome to the Plastic Pallets E-commerce Website project! This project is designed to provide a comprehensive platform for managing and purchasing plastic pallets, leveraging a microservice architecture. It's perfect for developers interested in modern web development with microservices, Kafka, and Next.js.
@@ -42,7 +44,7 @@ Follow these steps to get your development environment running:
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/Yassa122/Plastic-Pallets-Software-Project-2.git
+    git clone https://github.com/Yassa122/Eco-Pallets-project.git
     ```
 
 2. **Copy the URL of the repo**:
@@ -114,4 +116,3 @@ Follow these steps to get your development environment running:
 | [Dina](https://github.com/dinaa3)              | Product service, integration with kafka along with the cart microservice (backend & frontend) |
 | [Amir](https://github.com/amirwessam)              | Emailing service (backend), authentication pages (frontend), and user verification    |
 | [Yassa122](https://github.com/Yassa122)          | Team Leader, responsible for authentication flow and Kafka integration across the project                      |
-
